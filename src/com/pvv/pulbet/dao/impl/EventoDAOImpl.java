@@ -14,13 +14,12 @@ import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exception.DataException;
 import com.pvv.pulbet.model.Evento;
-import com.pvv.pulbet.model.Usuario;
+import com.pvv.pulbet.service.EventoCriteria;
 
 public class EventoDAOImpl implements EventoDAO{
 
 	@Override
-	public Evento create(Evento e) throws Exception {
-		Connection connection = null; 
+	public Evento create(Connection connection, Evento e) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -64,29 +63,26 @@ public class EventoDAOImpl implements EventoDAO{
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);			
-			JDBCUtils.closeConnection(connection);
 		}
 
 	}
 
 	@Override
-	public boolean update(Evento e) throws Exception {
+	public boolean update(Connection connection, Evento e) throws Exception {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public Long delete(Long id) throws Exception {
-		Connection connection = null; 
+	public Long delete(Connection connection, Long id) throws Exception {
 		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
 
 		try {
 			connection = ConnectionManager.getConnection();
 
 			String queryString =	
 					"DELETE FROM EVENTO " 
-					+ "WHERE ID_EVENTO = ? ";
+							+ "WHERE ID_EVENTO = ? ";
 
 
 			preparedStatement = connection.prepareStatement(queryString);
@@ -105,73 +101,114 @@ public class EventoDAOImpl implements EventoDAO{
 			JDBCUtils.closeStatement(preparedStatement);
 		}
 	}
+
 	
+
 	@Override
-	public List<Evento> findAll() throws Exception {
-		Connection connection = null;
+	public List<Evento> findByCriteria(Connection connection, EventoCriteria evento) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
+		StringBuilder queryString = null;
+
 		try {
-			connection = ConnectionManager.getConnection();
+			queryString = new StringBuilder(
+					"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte, p.id_participante "
+					+ "from evento e inner join competicion c on c.id_competicion = e.id_competicion "
+					+ "inner join resultado_participante_evento p on p.id_evento = e.id_evento ");
+			
+			boolean first = true;
+			
+			//Inners
 
-			String sql;
-			sql =  "SELECT ID_EVENTO, FECHA_HORA, ID_COMPETICION "
-					+"FROM EVENTO ";
+			if (evento.getIdDeporte()!=null) {
+				queryString.append("INNER JOIN producto_categoria pc ON p.id_producto = pc.id_producto INNER JOIN categoria c ON c.id_categoria=pc.id_categoria ");	
+			}
 
-			// Preparar a query
-			System.out.println("Creating statement...");
-			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			if (evento.getIdParticipante()!=null) {
+				queryString.append("INNER JOIN Producto_NJugadores pn ON p.id_producto = pn.id_producto INNER JOIN NJugadores n ON pn.id_njugador=n.id_nJugadores ");	
+			}
 
-			resultSet = preparedStatement.executeQuery();			
-			//STEP 5: Extract data from result set			
+			//Where/ands
 
-			List<Evento> results = new ArrayList<Evento>();                        
+			if (evento.getIdEvento()!=null) {
+				addClause(queryString, first, " e.id_evento LIKE ? ");
+				first = false;
+			}
+
+			if (evento.getFecha()!=null) {
+				addClause(queryString, first, " p.nombre LIKE ? ");
+				first = false;
+			}
+
+			if (evento.getIdCompeticion()!=null) {
+				addClause(queryString, first, " p.precio LIKE ? ");
+				first = false;
+			}
+
+			if (evento.getIdDeporte()!=null) {
+				addClause(queryString, first, " p.anio LIKE ? ");
+				first = false;
+			}			
+
+			if (evento.getIdParticipante()!=null) {
+				addClause(queryString, first, " p.requisitos LIKE ? ");
+				first = false;
+			}	
+			
+			
+			queryString.append("group by id_evento, id_participante");
+
+			preparedStatement = connection.prepareStatement(queryString.toString(),
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			int i = 1;       
+
+			if (evento.getIdEvento()!=null) 
+				preparedStatement.setLong(i++,  evento.getIdEvento() );
+			if (evento.getFecha()!=null) 
+				preparedStatement.setDate(i++, new java.sql.Date(evento.getFecha().getTime()));
+			if (evento.getIdCompeticion()!=null) 
+				preparedStatement.setLong(i++, evento.getIdCompeticion());
+			if (evento.getIdDeporte()!=null)
+				preparedStatement.setLong(i++, evento.getIdDeporte());
+			if (evento.getIdParticipante()!=null) 
+				preparedStatement.setLong(i++, evento.getIdParticipante());
+
+
+
+			resultSet = preparedStatement.executeQuery();
+
+			List<Evento> results = new ArrayList<Evento>();
 			Evento e = null;
-
+			
 
 			while(resultSet.next()) {
-				e = loadNext(resultSet);
+				e = loadNext(resultSet); //facer outro load next
 				results.add(e);               	
 			}
 
+		
 			return results;
-
-		} catch (SQLException ex) {
-			throw new DataException(ex);
-		} finally {            
+		} catch (SQLException e) {
+			
+			throw new DataException(e);
+		} finally {
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}
+
 	}
 
+
 	@Override
-	public Evento findById(Integer id) throws Exception {
+	public Evento findById(Connection connection, Integer id) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public List<Evento> findByParticipante(Integer id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public List<Evento> findByCompeticion(Integer id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	private Evento loadNext(ResultSet resultSet) throws Exception{
 
-	@Override
-	public List<Evento> findByDeporte(Integer id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-private Evento loadNext(ResultSet resultSet) throws Exception{
-
-		
 		Evento e = new Evento();
 		int i = 1;
 		Long id = resultSet.getLong(i++);
@@ -181,10 +218,15 @@ private Evento loadNext(ResultSet resultSet) throws Exception{
 		e.setIdEvento(id);
 		e.setFecha(fecha);
 		e.setIdCompeticion(idComp);
-		
+
 		return e;
 
 	}
-	
+
+	private void addClause(StringBuilder queryString, boolean first, String clause) {
+		queryString.append(first? "WHERE ": " AND ").append(clause);
+	}
+
+
 
 }

@@ -13,15 +13,12 @@ import com.pvv.pulbet.dao.CompeticionDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exception.DataException;
-import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.model.Competicion;
-import com.pvv.pulbet.model.Usuario;
 
 public class CompeticionDAOImpl implements CompeticionDAO{
 
 	@Override
-	public Competicion create(Competicion c) throws Exception {
-		Connection connection = null; 
+	public Competicion create(Connection connection, Competicion c) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -63,13 +60,11 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);			
-			JDBCUtils.closeConnection(connection);
 		}
 	}
 
 	@Override
-	public boolean update(Competicion c) throws Exception {
-		Connection connection = null; 
+	public boolean update(Connection connection, Competicion c) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -116,15 +111,12 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);			
-			JDBCUtils.closeConnection(connection);
 		}
 	}
 
 	@Override
-	public long delete(Long id) throws Exception {
-		Connection connection = null; 
+	public long delete(Connection connection, Long id) throws Exception {
 		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
 
 		try {
 			connection = ConnectionManager.getConnection();
@@ -153,10 +145,9 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 	}
 
 	@Override
-	public Competicion findById(Long id) throws Exception {
+	public Competicion findById(Connection connection, Long id) throws Exception {
 		Competicion c = null;
 
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -194,15 +185,13 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}  	
 
 		return c;
 	}
 
 	@Override
-	public List<Competicion> findByDeporte(Long id) throws Exception {
-		Connection connection = null;
+	public List<Competicion> findByDeporte(Connection connection, Long id) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -241,13 +230,11 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}  	
 	}
 	
 	@Override
-	public List<Competicion> findAll() throws Exception {
-		Connection connection = null;
+	public List<Competicion> findAll(Connection connection) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -280,13 +267,11 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}
 	}
 
 	@Override
-	public List<Competicion> findByNombre(String nome) throws Exception {
-		Connection connection = null;
+	public List<Competicion> findByNombre(Connection connection, String nome) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -329,7 +314,6 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}  
 	}
 	

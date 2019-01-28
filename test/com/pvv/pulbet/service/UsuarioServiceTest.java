@@ -48,8 +48,8 @@ public class UsuarioServiceTest {
 
 		try {
 			//test.testFindById();
-			test.testCreate();
-			//test.testLogin();
+			//test.testCreate();
+			test.testLogin();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

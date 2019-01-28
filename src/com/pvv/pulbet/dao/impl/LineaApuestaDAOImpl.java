@@ -19,9 +19,8 @@ import com.pvv.pulbet.model.Usuario;
 public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 	@Override
-	public LineaApuesta create(LineaApuesta l) throws Exception {
+	public LineaApuesta create(Connection connection, LineaApuesta l) throws Exception {
 
-		Connection connection = null; 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -53,14 +52,12 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);			
-			JDBCUtils.closeConnection(connection);
 		}
 	}
 
 
 	@Override
-	public int delete(LineaApuestaId id) throws Exception {
-		Connection connection = null; 
+	public int delete(Connection connection, LineaApuestaId id) throws Exception {
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -89,10 +86,9 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 	}
 
 	@Override
-	public LineaApuesta findById(LineaApuestaId id) throws Exception {
+	public LineaApuesta findById(Connection connection, LineaApuestaId id) throws Exception {
 		LineaApuesta l = null;
 
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -131,15 +127,13 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}  	
 
 		return l;
 	}
 
 	@Override
-	public List<LineaApuesta> findAll() throws Exception {
-		Connection connection = null;
+	public List<LineaApuesta> findAll(Connection connection) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -173,13 +167,11 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}
 	}
 
 	@Override
-	public List<LineaApuesta> findByApuesta(Long id) throws Exception {
-		Connection connection = null;
+	public List<LineaApuesta> findByApuesta(Connection connection, Long id) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -219,12 +211,11 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}  	
 	}
 
 	@Override
-	public List<LineaApuesta> findByEvento(Long id) throws Exception {
+	public List<LineaApuesta> findByEvento(Connection connection, Long id) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

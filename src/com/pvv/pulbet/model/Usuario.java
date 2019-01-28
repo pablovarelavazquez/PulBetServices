@@ -16,6 +16,7 @@ public class Usuario extends AbstractValueObject{
 	private String nomeUsuario = null;
 	// private String passwordEncriptada = null; 
 	private String DNI = null;
+	private Direccion direccion = null;
 	
 	public Usuario() {
 		
@@ -123,6 +124,14 @@ public class Usuario extends AbstractValueObject{
 
 	public void setDNI(String dNI) {
 		DNI = dNI;
+	}
+
+	public Direccion getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(Direccion direccion) {
+		this.direccion = direccion;
 	}
 
 	@Override

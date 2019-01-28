@@ -22,11 +22,11 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 	}
 
-	public Apuesta findById(Integer id)
+	@Override
+	public Apuesta findById(Connection connection, Integer id)
 			throws Exception {
 		Apuesta a = null;
 
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -64,17 +64,16 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}  	
 
 		return a;
 	}
 
-	public List<Apuesta> findByUsuario(Integer id)
+	@Override
+	public List<Apuesta> findByUsuario(Connection connection, Integer id)
 			throws Exception {
 
 
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -113,16 +112,15 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}  	
 
 	}
 
 	//falta algun finder para buscar apostas deperminadas, inda non determinadas e eso...
 
-	public Apuesta create(Apuesta a) 
+	@Override
+	public Apuesta create(Connection connection, Apuesta a) 
 			throws Exception{
-		Connection connection = null; 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -165,15 +163,13 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);			
-			JDBCUtils.closeConnection(connection);
 		}
 
 	}
 
 	@Override
-	public List<Apuesta> findAll() throws Exception {
+	public List<Apuesta> findAll(Connection connection) throws Exception {
 
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -206,7 +202,6 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}  	
 	}
 

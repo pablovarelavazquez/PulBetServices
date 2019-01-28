@@ -6,22 +6,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.pvv.pulbet.dao.DeporteDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exception.DataException;
-import com.pvv.pulbet.model.Competicion;
 import com.pvv.pulbet.model.Deporte;
-import com.pvv.pulbet.model.Usuario;
 
 public class DeporteDAOImpl implements DeporteDAO{
 	
 	@Override
-	public Deporte create(Deporte d) throws Exception {
-		Connection connection = null; 
+	public Deporte create(Connection connection, Deporte d) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -60,13 +56,11 @@ public class DeporteDAOImpl implements DeporteDAO{
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);			
-			JDBCUtils.closeConnection(connection);
 		}
 	}
 
 	@Override
-	public boolean update(Deporte d) throws Exception {
-		Connection connection = null; 
+	public boolean update(Connection connection, Deporte d) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -103,16 +97,13 @@ public class DeporteDAOImpl implements DeporteDAO{
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);			
-			JDBCUtils.closeConnection(connection);
 		}
 
 	}
 
 	@Override
-	public Long delete(Long id) throws Exception {
-		Connection connection = null; 
+	public Long delete(Connection connection, Long id) throws Exception {
 		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
 
 		try {
 			connection = ConnectionManager.getConnection();
@@ -141,8 +132,7 @@ public class DeporteDAOImpl implements DeporteDAO{
 	}
 
 	@Override
-	public List<Deporte> findAll() throws Exception {
-		Connection connection = null;
+	public List<Deporte> findAll(Connection connection) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -175,14 +165,12 @@ public class DeporteDAOImpl implements DeporteDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}  	
 	}
 	
 
 	@Override
-	public List<Deporte> findByNombre(String nombre) throws Exception {
-		Connection connection = null;
+	public List<Deporte> findByNombre(Connection connection, String nombre) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -223,7 +211,6 @@ public class DeporteDAOImpl implements DeporteDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}
 	}
 	

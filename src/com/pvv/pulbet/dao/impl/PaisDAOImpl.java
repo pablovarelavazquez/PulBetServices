@@ -18,10 +18,9 @@ import com.pvv.pulbet.model.Usuario;
 public class PaisDAOImpl implements PaisDAO{
 
 	@Override
-	public Pais findById(int id) throws Exception {
+	public Pais findById(Connection connection, int id) throws Exception {
 		Pais p = null;
 
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -60,15 +59,13 @@ public class PaisDAOImpl implements PaisDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}  	
 
 		return p;
 	}
 
 	@Override
-	public List<Pais> findAll() throws Exception {
-		Connection connection = null;
+	public List<Pais> findAll(Connection connection) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -101,13 +98,11 @@ public class PaisDAOImpl implements PaisDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}  	
 	}
 
 	@Override
-	public List<Pais> findByNombre(String nome) throws Exception {
-		Connection connection = null;
+	public List<Pais> findByNombre(Connection connection, String nome) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -149,7 +144,6 @@ public class PaisDAOImpl implements PaisDAO{
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
 		}
 	}
 

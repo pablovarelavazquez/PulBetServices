@@ -20,8 +20,164 @@ import com.pvv.pulbet.model.Usuario;
 public class DireccionDAOImpl implements DireccionDAO{
 
 	@Override
-	public Direccion create(Direccion d) throws Exception {
-		Connection connection = null; 
+	public List<Direccion> findByUsuario(Connection connection, Integer id) throws Exception {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			connection = ConnectionManager.getConnection();
+
+			String sql;
+			sql =  "SELECT ID_DIRECCION,ID_USUARIO,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
+					+"FROM DIRECCION "
+					+"WHERE ID_USUARIO = ? ";
+
+			// Preparar a query
+			System.out.println("Creating statement...");
+			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			// Establece os parámetros
+			int i = 1;
+			preparedStatement.setLong(i++, id);
+
+
+			resultSet = preparedStatement.executeQuery();			
+			//STEP 5: Extract data from result set			
+
+			List<Direccion> results = new ArrayList<Direccion>();                        
+			Direccion d = null;
+
+
+			while(resultSet.next()) {
+				d = loadNext(resultSet);
+				results.add(d);               	
+			}
+
+			return results;
+
+		} catch (SQLException ex) {
+			throw new DataException(ex);
+		} finally {            
+			JDBCUtils.closeResultSet(resultSet);
+			JDBCUtils.closeStatement(preparedStatement);
+		}  	
+	}
+
+	@Override
+	public List<Direccion> findAll(Connection connection) throws Exception {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			connection = ConnectionManager.getConnection();
+
+			String sql;
+			sql =  "SELECT ID_DIRECCION,ID_USUARIO,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
+					+"FROM DIRECCION ";
+
+			// Preparar a query
+			System.out.println("Creating statement...");
+			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			resultSet = preparedStatement.executeQuery();			
+			//STEP 5: Extract data from result set			
+
+			List<Direccion> results = new ArrayList<Direccion>();                        
+			Direccion d = null;
+
+
+			while(resultSet.next()) {
+				d = loadNext(resultSet);
+				results.add(d);               	
+			}
+
+			return results;
+
+		} catch (SQLException ex) {
+			throw new DataException(ex);
+		} finally {            
+			JDBCUtils.closeResultSet(resultSet);
+			JDBCUtils.closeStatement(preparedStatement);
+		}
+	}
+
+	@Override
+	public Direccion findById(Connection connection, Integer id) throws Exception {
+		Direccion d = null;
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			connection = ConnectionManager.getConnection();
+
+				
+			String sql;
+			sql =  "SELECT ID_DIRECCION,ID_USUARIO,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
+					+"FROM DIRECCION "
+					+"WHERE ID_DIRECCION = ? ";
+
+			// Preparar a query
+			System.out.println("Creating statement...");
+			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			// Establece os parámetros
+			int i = 1;
+			preparedStatement.setLong(i++, id);
+
+
+			resultSet = preparedStatement.executeQuery();			
+			//STEP 5: Extract data from result set			
+
+			if (resultSet.next()) {
+				d =  loadNext(resultSet);			
+				//System.out.println("Cargado "+u);
+			} else {
+				throw new Exception("Non se atopou direccion con id = "+id);
+			}
+			if (resultSet.next()) {
+				throw new Exception("Direccion con id = "+id+" duplicada");
+			}
+
+		} catch (SQLException ex) {
+			throw new DataException(ex);
+		} finally {            
+			JDBCUtils.closeResultSet(resultSet);
+			JDBCUtils.closeStatement(preparedStatement);
+		}  	
+
+		return d;
+	}
+
+
+	private Direccion loadNext(ResultSet resultSet) throws Exception{
+
+
+		Direccion d = new Direccion();
+		int i = 1;
+		Long id = resultSet.getLong(i++);
+		Long idusu = resultSet.getLong(i++);
+		String ciudad = resultSet.getString(i++);
+		Long idProv = resultSet.getLong(i++);
+		String calle = resultSet.getString(i++);
+		Integer numero = resultSet.getInt(i++); 
+		Integer codPostal = resultSet.getInt(i++);
+		Integer piso = resultSet.getInt(i++);
+		String letra = resultSet.getString(i++);
+
+		d.setId(id);
+		d.setIdUsuario(idusu);
+		d.setCiudad(ciudad);
+		d.setIdProvincia(idProv);
+		d.setCalle(calle);
+		d.setNumero(numero);
+		d.setCodPostal(codPostal);
+		d.setPiso(piso);
+		d.setLetra(letra);
+
+		return d;
+
+	}
+	
+	@Override
+	public Direccion create(Connection connection, Direccion d) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -66,19 +222,17 @@ public class DireccionDAOImpl implements DireccionDAO{
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);			
-			JDBCUtils.closeConnection(connection);
 		}
 	}
 
 	@Override
-	public boolean update(Direccion d) throws Exception {
+	public boolean update(Connection connection, Direccion d) throws Exception {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public Long delete(Long id) throws Exception {
-		Connection connection = null; 
+	public Long delete(Connection connection, Long id) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 
@@ -108,167 +262,5 @@ public class DireccionDAOImpl implements DireccionDAO{
 
 	}
 
-	@Override
-	public List<Direccion> findByUsuario(Integer id) throws Exception {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-		try {
-			connection = ConnectionManager.getConnection();
-
-			String sql;
-			sql =  "SELECT ID_DIRECCION,ID_USUARIO,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
-					+"FROM DIRECCION "
-					+"WHERE ID_USUARIO = ? ";
-
-			// Preparar a query
-			System.out.println("Creating statement...");
-			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
-			// Establece os parámetros
-			int i = 1;
-			preparedStatement.setLong(i++, id);
-
-
-			resultSet = preparedStatement.executeQuery();			
-			//STEP 5: Extract data from result set			
-
-			List<Direccion> results = new ArrayList<Direccion>();                        
-			Direccion d = null;
-
-
-			while(resultSet.next()) {
-				d = loadNext(resultSet);
-				results.add(d);               	
-			}
-
-			return results;
-
-		} catch (SQLException ex) {
-			throw new DataException(ex);
-		} finally {            
-			JDBCUtils.closeResultSet(resultSet);
-			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
-		}  	
-	}
-
-	@Override
-	public List<Direccion> findAll() throws Exception {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-		try {
-			connection = ConnectionManager.getConnection();
-
-			String sql;
-			sql =  "SELECT ID_DIRECCION,ID_USUARIO,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
-					+"FROM DIRECCION ";
-
-			// Preparar a query
-			System.out.println("Creating statement...");
-			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
-			resultSet = preparedStatement.executeQuery();			
-			//STEP 5: Extract data from result set			
-
-			List<Direccion> results = new ArrayList<Direccion>();                        
-			Direccion d = null;
-
-
-			while(resultSet.next()) {
-				d = loadNext(resultSet);
-				results.add(d);               	
-			}
-
-			return results;
-
-		} catch (SQLException ex) {
-			throw new DataException(ex);
-		} finally {            
-			JDBCUtils.closeResultSet(resultSet);
-			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
-		}
-	}
-
-	@Override
-	public Direccion findById(Integer id) throws Exception {
-		Direccion d = null;
-
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-		try {
-			connection = ConnectionManager.getConnection();
-
-				
-			String sql;
-			sql =  "SELECT ID_DIRECCION,ID_USUARIO,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
-					+"FROM DIRECCION "
-					+"WHERE ID_DIRECCION = ? ";
-
-			// Preparar a query
-			System.out.println("Creating statement...");
-			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
-			// Establece os parámetros
-			int i = 1;
-			preparedStatement.setLong(i++, id);
-
-
-			resultSet = preparedStatement.executeQuery();			
-			//STEP 5: Extract data from result set			
-
-			if (resultSet.next()) {
-				d =  loadNext(resultSet);			
-				//System.out.println("Cargado "+u);
-			} else {
-				throw new Exception("Non se atopou direccion con id = "+id);
-			}
-			if (resultSet.next()) {
-				throw new Exception("Direccion con id = "+id+" duplicada");
-			}
-
-		} catch (SQLException ex) {
-			throw new DataException(ex);
-		} finally {            
-			JDBCUtils.closeResultSet(resultSet);
-			JDBCUtils.closeStatement(preparedStatement);
-			JDBCUtils.closeConnection(connection);
-		}  	
-
-		return d;
-	}
-
-
-	private Direccion loadNext(ResultSet resultSet) throws Exception{
-
-
-		Direccion d = new Direccion();
-		int i = 1;
-		Long id = resultSet.getLong(i++);
-		Long idusu = resultSet.getLong(i++);
-		String ciudad = resultSet.getString(i++);
-		Long idProv = resultSet.getLong(i++);
-		String calle = resultSet.getString(i++);
-		Integer numero = resultSet.getInt(i++); 
-		Integer codPostal = resultSet.getInt(i++);
-		Integer piso = resultSet.getInt(i++);
-		String letra = resultSet.getString(i++);
-
-		d.setId(id);
-		d.setIdUsuario(idusu);
-		d.setCiudad(ciudad);
-		d.setIdProvincia(idProv);
-		d.setCalle(calle);
-		d.setNumero(numero);
-		d.setCodPostal(codPostal);
-		d.setPiso(piso);
-		d.setLetra(letra);
-
-		return d;
-
-	}
 
 }
