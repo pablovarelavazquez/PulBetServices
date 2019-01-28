@@ -8,7 +8,7 @@ import com.pvv.pulbet.model.Usuario;
 
 public interface UsuarioDAO {
 
-	public Usuario findById(Connection connection, Integer id) throws Exception;
+	public Usuario findById(Connection connection, Long id) throws Exception;
 	
 	public Usuario findByEmail(Connection connection, String email) throws Exception;
 

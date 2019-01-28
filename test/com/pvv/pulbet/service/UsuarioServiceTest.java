@@ -47,9 +47,9 @@ public class UsuarioServiceTest {
 		UsuarioServiceTest test = new UsuarioServiceTest();
 
 		try {
-			//test.testFindById();
-			//test.testCreate();
-			test.testLogin();
+			//test.testFindById(); //ok
+			//test.testCreate(); //ok
+			//test.testLogin(); //ok
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

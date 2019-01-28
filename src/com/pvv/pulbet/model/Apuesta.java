@@ -1,6 +1,7 @@
 package com.pvv.pulbet.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class Apuesta extends AbstractValueObject{
 	
@@ -8,6 +9,8 @@ public class Apuesta extends AbstractValueObject{
 	private Double importe = null;
 	private Long idUsuario = null;
 	private Date fecha = null;	
+	
+	private List<LineaApuesta> lineas = null;
 	
 	
 	public Apuesta() {
@@ -58,6 +61,14 @@ public class Apuesta extends AbstractValueObject{
 		this.idUsuario = idUsuario;
 	}
 
+
+	public List<LineaApuesta> getLineas() {
+		return lineas;
+	}
+
+	public void setLineas(List<LineaApuesta> lineas) {
+		this.lineas = lineas;
+	}
 
 	@Override
 	public boolean equals(Object obj) {

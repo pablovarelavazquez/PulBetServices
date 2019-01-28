@@ -2,18 +2,18 @@ package com.pvv.pulbet.model;
 
 public class TipoResultado extends AbstractValueObject{
 	
-	private String idTipoResultado = null;
+	private Integer idTipoResultado = null;
 	private String nome = null;
 	
 	public TipoResultado() {
 		
 	}
 
-	public String getIdTipoResultado() {
+	public Integer getIdTipoResultado() {
 		return idTipoResultado;
 	}
 
-	public void setIdTipoResultado(String idTipoResultado) {
+	public void setIdTipoResultado(Integer idTipoResultado) {
 		this.idTipoResultado = idTipoResultado;
 	}
 

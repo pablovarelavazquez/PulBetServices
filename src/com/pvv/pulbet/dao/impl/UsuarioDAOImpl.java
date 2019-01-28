@@ -26,7 +26,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 	}
 
 	@Override
-	public Usuario findById(Connection connection, Integer id) 
+	public Usuario findById(Connection connection, Long id) 
 			throws Exception{
 		Usuario u = null;
 

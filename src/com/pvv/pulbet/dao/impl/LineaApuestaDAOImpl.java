@@ -11,10 +11,9 @@ import com.pvv.pulbet.dao.LineaApuestaDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exception.DataException;
-import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.model.LineaApuesta;
 import com.pvv.pulbet.model.LineaApuestaId;
-import com.pvv.pulbet.model.Usuario;
+
 
 public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
@@ -216,8 +215,46 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 	@Override
 	public List<LineaApuesta> findByEvento(Connection connection, Long id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			connection = ConnectionManager.getConnection();
+
+			String sql;
+			sql =  "SELECT  NUMERO_LINEA,ID_APUESTA,ID_RESULTADO,ID_EVENTO "
+					+"FROM LINEA_APUESTA "
+					+ "WHERE ID_EVENTO = ? "
+					+ "ORDER BY ID_APUESTA, NUMERO_LINEA ";
+
+			// Preparar a query
+			System.out.println("Creating statement...");
+			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			// Establece os parámetros
+			int i = 1;
+			preparedStatement.setLong(i++, id);
+
+
+			resultSet = preparedStatement.executeQuery();			
+			//STEP 5: Extract data from result set			
+
+			List<LineaApuesta> results = new ArrayList<LineaApuesta>();                        
+			LineaApuesta l = null;
+
+
+			while(resultSet.next()) {
+				l = loadNext(resultSet);
+				results.add(l);               	
+			}
+
+			return results;
+
+		} catch (SQLException ex) {
+			throw new DataException(ex);
+		} finally {            
+			JDBCUtils.closeResultSet(resultSet);
+			JDBCUtils.closeStatement(preparedStatement);
+		}  	
 	}
 
 	private LineaApuesta loadNext(ResultSet resultSet) throws Exception{
@@ -237,5 +274,6 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		return l;
 
 	}
-
+	
+	
 }

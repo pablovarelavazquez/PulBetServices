@@ -10,12 +10,10 @@ public interface ResultadoDAO {
 
 	public Resultado create(Connection connection, Resultado r) throws Exception;
 	
-	public boolean update(Connection connection, Resultado r) throws Exception;
-	
-	public void delete(Connection connection, Resultado r) throws Exception;
+	public Long delete(Connection connection, Long id) throws Exception;
 	
 	public Resultado findById(Connection connection, Integer id) throws Exception;
 	
-	public List<Usuario> findByTipoResultado(Connection connection, Integer id) throws Exception;
+	public List<Resultado> findByTipoResultado(Connection connection, Integer id) throws Exception;
 
 }

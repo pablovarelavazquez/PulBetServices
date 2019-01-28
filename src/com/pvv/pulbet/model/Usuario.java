@@ -16,6 +16,7 @@ public class Usuario extends AbstractValueObject{
 	private String nomeUsuario = null;
 	// private String passwordEncriptada = null; 
 	private String DNI = null;
+	
 	private Direccion direccion = null;
 	
 	public Usuario() {

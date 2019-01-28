@@ -1,6 +1,7 @@
 package com.pvv.pulbet.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class Evento extends AbstractValueObject {
 
@@ -12,6 +13,9 @@ public class Evento extends AbstractValueObject {
 	private Long idDeporte = null;
 	private Long idParticipante = null;
 	
+	List<TipoResultado> mercados = null;
+	
+
 	public Evento() {
 		
 	}
@@ -54,6 +58,14 @@ public class Evento extends AbstractValueObject {
 
 	public void setIdParticipante(Long idParticipante) {
 		this.idParticipante = idParticipante;
+	}
+
+	public List<TipoResultado> getMercados() {
+		return mercados;
+	}
+
+	public void setMercados(List<TipoResultado> mercados) {
+		this.mercados = mercados;
 	}
 
 

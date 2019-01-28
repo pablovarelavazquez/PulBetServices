@@ -7,7 +7,9 @@ import com.pvv.pulbet.dao.UsuarioDAO;
 import com.pvv.pulbet.dao.impl.UsuarioDAOImpl;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
+import com.pvv.pulbet.exception.DataException;
 import com.pvv.pulbet.model.Usuario;
+import com.pvv.pulbet.service.BancoService;
 import com.pvv.pulbet.service.MailService;
 import com.pvv.pulbet.service.UsuarioService;
 
@@ -15,13 +17,15 @@ public class UsuarioServiceImpl implements UsuarioService{
 	
 	
 	UsuarioDAO dao = null;
+	BancoService banco = null;
 	
 	public UsuarioServiceImpl() {
 		dao = new UsuarioDAOImpl();
+		banco = new BancoServiceImpl();
 	}
 
 	@Override
-	public Usuario findById(Integer id) throws Exception {
+	public Usuario findById(Long id) throws Exception {
 		Connection c = null;
 		
 	try {
@@ -122,9 +126,42 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 
 	@Override
-	public boolean delete(Usuario u) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+	public long closeAccount(Usuario u) throws Exception {
+		Connection connection = null;
+        boolean commit = false;
+        Long result = null;
+
+        try {
+          
+            connection = ConnectionManager.getConnection();
+
+            connection.setTransactionIsolation(
+                    Connection.TRANSACTION_READ_COMMITTED);
+
+            connection.setAutoCommit(false);
+            
+            if(u.getBanco()>0d) {
+            	
+            banco.retirar(u.getIdUsuario(), u.getBanco());
+            
+            result = dao.delete(connection, u.getIdUsuario());   
+            
+            } else if ( u.getBanco()<=0d) {
+            	
+            	result = dao.delete(connection, u.getIdUsuario());
+            	
+            }
+            
+            
+            commit = true;            
+            return result;
+            
+        } catch (SQLException e) {
+            throw new DataException(e);
+
+        } finally {
+        	JDBCUtils.closeConnection(connection, commit);
+        }	
 	}
 
 

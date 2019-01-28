@@ -10,13 +10,21 @@ import java.util.Date;
 import java.util.List;
 
 import com.pvv.pulbet.dao.EventoDAO;
+import com.pvv.pulbet.dao.TipoResultadoDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exception.DataException;
 import com.pvv.pulbet.model.Evento;
+import com.pvv.pulbet.model.TipoResultado;
 import com.pvv.pulbet.service.EventoCriteria;
 
 public class EventoDAOImpl implements EventoDAO{
+	
+	TipoResultadoDAO tipoResultadoDAO = null;
+	
+	public EventoDAOImpl() {
+		tipoResultadoDAO = new TipoResultadoDAOImpl();
+	}
 
 	@Override
 	public Evento create(Connection connection, Evento e) throws Exception {
@@ -180,9 +188,12 @@ public class EventoDAOImpl implements EventoDAO{
 			List<Evento> results = new ArrayList<Evento>();
 			Evento e = null;
 			
-
+			List<TipoResultado> mercados = null;
+			
 			while(resultSet.next()) {
 				e = loadNext(resultSet); //facer outro load next
+				mercados = tipoResultadoDAO.findByEvento(connection, e.getIdEvento());
+				e.setMercados(mercados);
 				results.add(e);               	
 			}
 
@@ -218,7 +229,8 @@ public class EventoDAOImpl implements EventoDAO{
 		e.setIdEvento(id);
 		e.setFecha(fecha);
 		e.setIdCompeticion(idComp);
-
+		
+		
 		return e;
 
 	}

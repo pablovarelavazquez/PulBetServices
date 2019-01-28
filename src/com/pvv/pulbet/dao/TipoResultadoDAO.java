@@ -10,14 +10,10 @@ public interface TipoResultadoDAO {
 	
 	public TipoResultado create(Connection connection, TipoResultado t) throws Exception;
 	
-	public boolean update(Connection connection, TipoResultado t) throws Exception;
-	
-	public void delete(Connection connection, TipoResultado t) throws Exception;
+	public long delete(Connection connection, Integer id) throws Exception;
 	
 	public TipoResultado findById(Connection connection, Integer id) throws Exception;
 	
-	public List<Usuario> findByEvento(Connection connection, Integer id) throws Exception;
-	
-
+	public List<TipoResultado> findByEvento(Connection connection, Long id) throws Exception;
 
 }

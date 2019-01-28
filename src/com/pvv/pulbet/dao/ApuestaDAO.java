@@ -7,8 +7,6 @@ import com.pvv.pulbet.model.Apuesta;
 
 public interface ApuestaDAO {
 	
-
-
 	public Apuesta findById(Connection connection, Integer id)
 			throws Exception;
 
@@ -21,5 +19,10 @@ public interface ApuestaDAO {
 
 	public Apuesta create(Connection connection, Apuesta a) 
 			throws Exception;
+	
+	public long delete(Connection connection, Long id) 
+			throws Exception;
+	
+	public void update(Connection connection, Apuesta a) throws Exception;
 
 }
