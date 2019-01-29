@@ -14,6 +14,7 @@ import com.pvv.pulbet.dao.UsuarioDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.model.Direccion;
 import com.pvv.pulbet.model.Usuario;
 
 
@@ -37,7 +38,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 				
 			String sql;
-			sql =  "SELECT ID_USUARIO, EMAIL, NOMBRE, APELLIDO1, APELLIDO2, PASSWORD, BANCO, TELEFONO, FECHA_NACIMIENTO, NOMBRE_USUARIO, DNI "
+			sql =  "SELECT ID_USUARIO, EMAIL, NOMBRE, APELLIDO1, APELLIDO2, PASSWORD, BANCO, TELEFONO, FECHA_NACIMIENTO, NOMBRE_USUARIO, DNI, ID_DIRECCION "
 					+"FROM USUARIO "
 					+"WHERE ID_USUARIO = ? ";
 
@@ -54,7 +55,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			//STEP 5: Extract data from result set			
 
 			if (resultSet.next()) {
-				u =  loadNext(resultSet);			
+				u =  loadNext(connection, resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
 				throw new Exception("Non se atopou usuario con id = "+id);
@@ -84,7 +85,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			connection = ConnectionManager.getConnection();
 
 			String sql;
-			sql =    "SELECT ID_USUARIO, EMAIL, NOMBRE, APELLIDO1, APELLIDO2, PASSWORD, BANCO, TELEFONO, FECHA_NACIMIENTO, NOMBRE_USUARIO, DNI " 
+			sql =    "SELECT ID_USUARIO, EMAIL, NOMBRE, APELLIDO1, APELLIDO2, PASSWORD, BANCO, TELEFONO, FECHA_NACIMIENTO, NOMBRE_USUARIO, DNI, ID_DIRECCION " 
 					+" FROM USUARIO "
 					+" WHERE "
 					+"	UPPER(EMAIL) LIKE ?";
@@ -102,7 +103,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			//STEP 5: Extract data from result set			
 
 			if (resultSet.next()) {
-				u =  loadNext(resultSet);			
+				u =  loadNext(connection, resultSet);			
 	
 			} 
 
@@ -127,7 +128,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			connection = ConnectionManager.getConnection();
 
 			String sql;
-			sql =  "SELECT ID_USUARIO, EMAIL, NOMBRE, APELLIDO1, APELLIDO2, PASSWORD, BANCO, TELEFONO, FECHA_NACIMIENTO, NOMBRE_USUARIO, DNI "
+			sql =  "SELECT ID_USUARIO, EMAIL, NOMBRE, APELLIDO1, APELLIDO2, PASSWORD, BANCO, TELEFONO, FECHA_NACIMIENTO, NOMBRE_USUARIO, DNI, ID_DIRECCION "
 					+"FROM USUARIO ";
 
 			// Preparar a query
@@ -142,7 +143,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 
 			while(resultSet.next()) {
-				u = loadNext(resultSet);
+				u = loadNext(connection, resultSet);
 				results.add(u);               	
 			}
 
@@ -157,7 +158,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 	}
 
 
-	private Usuario loadNext(ResultSet resultSet) throws Exception{
+	private Usuario loadNext(Connection connection, ResultSet resultSet) throws Exception{
 
 		
 		Usuario u = new Usuario();
@@ -173,6 +174,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		Date fechaNac = resultSet.getDate(i++);
 		String nomeUsuario = resultSet.getString(i++);
 		String dni = resultSet.getString(i++);
+		Long idDireccion = resultSet.getLong(i++);
 
 		u.setIdUsuario(idu);
 		u.setEmail(email);
@@ -185,9 +187,10 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		u.setFechaNacimiento(fechaNac);
 		u.setNomeUsuario(nomeUsuario);
 		u.setDNI(dni);
+		u.setIdDireccion(idDireccion);
 		
-		//Departamento d = departamentoDAO.findByIdEmpleado() temos que crear private departamentoDAO = new departamentoDAO() en departamentoDAO
-		// u.setDeptId
+		Direccion d = direccionDAO.findByUsuario(connection, idu);
+		u.setDireccion(d);
 
 		return u;
 
@@ -202,14 +205,12 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		try {          
 
 			connection = ConnectionManager.getConnection();
-			//Check if the primary key already exists
-			//			if (exists(connection, e.getId())) {
-			//				throw new Exception("Duplicate employee "+e.getId());
-			//			}
 
-
-			String queryString = "INSERT INTO USUARIO(EMAIL,NOMBRE,APELLIDO1,APELLIDO2,PASSWORD,BANCO,TELEFONO,FECHA_NACIMIENTO,NOMBRE_USUARIO,DNI) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			//Creamos a direccion que logo lle asignaremos o usuario
+			direccionDAO.create(connection, u.getDireccion());
+			
+			String queryString = "INSERT INTO USUARIO(EMAIL,NOMBRE,APELLIDO1,APELLIDO2,PASSWORD,BANCO,TELEFONO,FECHA_NACIMIENTO,NOMBRE_USUARIO,DNI, ID_DIRECCION) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			preparedStatement = connection.prepareStatement(queryString, Statement.RETURN_GENERATED_KEYS);
 
@@ -224,12 +225,12 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			preparedStatement.setDate(i++, new java.sql.Date(u.getFechaNacimiento().getTime()));
 			preparedStatement.setString(i++, u.getNomeUsuario());
 			preparedStatement.setString(i++, u.getDNI());
-			
+			preparedStatement.setLong(i++, u.getIdDireccion());
 
 			int insertedRows = preparedStatement.executeUpdate();
 
 			if (insertedRows == 0) {
-				throw new SQLException("Can not add row to table 'Employees'");
+				throw new SQLException("Can not add row to table 'Usuarios'");
 			}
 
 			resultSet = preparedStatement.getGeneratedKeys();
@@ -240,8 +241,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 				throw new DataException("Unable to fetch autogenerated primary key");
 			}
 
-			
-			//...
+
 			return u;					
 
 		} catch (SQLException ex) {
@@ -254,19 +254,13 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 	}
 
 	@Override
-	public boolean update(Connection connection, Usuario u)
+	public void update(Connection connection, Usuario u)
 			throws Exception{
 
 		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
 		try {          
 
 			connection = ConnectionManager.getConnection();
-			//Check if the primary key already exists
-			//		if (exists(connection, e.getId())) {
-			//			throw new Exception("Duplicate employee "+e.getId());
-			//		}
-
 
 			String queryString = "UPDATE USUARIO "
 					+ "SET EMAIL = ?, "
@@ -279,6 +273,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 					+ "SET FECHA_NACIMIENTO = ?,"
 					+ "SET NOMBRE_USUARIO = ?,"
 					+ "SET DNI = ?"
+					+ "SET ID_DIRECCION = ?"
 					+ "WHERE ID_USUARIO=?";
 
 			preparedStatement = connection.prepareStatement(queryString);
@@ -295,25 +290,23 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			preparedStatement.setString(i++, u.getNomeUsuario());
 			preparedStatement.setString(i++, u.getDNI());
 			preparedStatement.setLong(i++, u.getIdUsuario());
+			preparedStatement.setLong(i++, u.getIdDireccion());
 
 
-			int insertedRows = preparedStatement.executeUpdate();
+			int updatedRows = preparedStatement.executeUpdate();
 
-			if (insertedRows == 0) 
-			{
+			if (updatedRows == 0) {
+				throw new Exception("Non se atopou o usuario");
+			}
 
-				throw new SQLException("Can not uppdate row to table 'USUARIO'");
-
-			} 
-			else { return true;}
-
-			//...
+			if (updatedRows > 1) {
+				throw new SQLException("Duplicate row for id = '" + u.getIdUsuario() + "' in table 'Usuario'");
+			}
 
 
 		} catch (SQLException ex) {
 			throw new DataException(ex);
 		} finally {
-			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);			
 		}
 
@@ -341,7 +334,10 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 			long removedRows = preparedStatement.executeUpdate();
 
-
+			//Temos que borrar a direccion do usuario
+			Direccion d = direccionDAO.findByUsuario(connection, id);
+			direccionDAO.delete(connection, d.getId());
+			
 			return removedRows;
 
 		} catch (SQLException e) {

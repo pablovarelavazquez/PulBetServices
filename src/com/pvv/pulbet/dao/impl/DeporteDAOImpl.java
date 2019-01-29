@@ -60,48 +60,6 @@ public class DeporteDAOImpl implements DeporteDAO{
 	}
 
 	@Override
-	public boolean update(Connection connection, Deporte d) throws Exception {
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-		try {          
-
-			connection = ConnectionManager.getConnection();
-
-
-			String queryString = "UPDATE DEPORTE "
-					+ "SET NOMBRE = ? "
-					+ "WHERE ID_DEPORTE=?";
-
-			preparedStatement = connection.prepareStatement(queryString);
-
-			int i = 1;     			
-			preparedStatement.setString(i++, d.getNome());
-			preparedStatement.setLong(i++, d.getIdDeporte());
-
-
-			int insertedRows = preparedStatement.executeUpdate();
-
-			if (insertedRows == 0) 
-			{
-
-				throw new SQLException("Can not uppdate row to table 'DEPORTE'");
-
-			} 
-			else { return true;}
-
-			//...
-
-
-		} catch (SQLException ex) {
-			throw new DataException(ex);
-		} finally {
-			JDBCUtils.closeResultSet(resultSet);
-			JDBCUtils.closeStatement(preparedStatement);			
-		}
-
-	}
-
-	@Override
 	public Long delete(Connection connection, Long id) throws Exception {
 		PreparedStatement preparedStatement = null;
 

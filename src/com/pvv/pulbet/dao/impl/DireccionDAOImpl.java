@@ -6,31 +6,28 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.pvv.pulbet.dao.DireccionDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exception.DataException;
-import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.model.Direccion;
-import com.pvv.pulbet.model.Usuario;
 
 public class DireccionDAOImpl implements DireccionDAO{
 
 	@Override
-	public List<Direccion> findByUsuario(Connection connection, Integer id) throws Exception {
+	public Direccion findByUsuario(Connection connection, Long id) throws Exception {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
 			connection = ConnectionManager.getConnection();
 
 			String sql;
-			sql =  "SELECT ID_DIRECCION,ID_USUARIO,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
-					+"FROM DIRECCION "
-					+"WHERE ID_USUARIO = ? ";
-
+			sql =  "SELECT D.ID_DIRECCION,D.CIUDAD,D.ID_PROVINCIA,D.CALLE,D.NUMERO,D.COD_POSTAL,D.PISO,D.LETRA "
+					+"FROM DIRECCION D INNER JOIN USUARIO U ON U.ID_DIRECCION = D.ID_DIRECCION"
+					+"WHERE U.ID_USUARIO = ? ";
+			
 			// Preparar a query
 			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -43,17 +40,15 @@ public class DireccionDAOImpl implements DireccionDAO{
 			resultSet = preparedStatement.executeQuery();			
 			//STEP 5: Extract data from result set			
 
-			List<Direccion> results = new ArrayList<Direccion>();                        
 			Direccion d = null;
 
+			if (resultSet.next()) {
+				d =  loadNext(connection, resultSet);			
+	
+			} 
 
-			while(resultSet.next()) {
-				d = loadNext(resultSet);
-				results.add(d);               	
-			}
-
-			return results;
-
+			return d;
+			
 		} catch (SQLException ex) {
 			throw new DataException(ex);
 		} finally {            
@@ -70,7 +65,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 			connection = ConnectionManager.getConnection();
 
 			String sql;
-			sql =  "SELECT ID_DIRECCION,ID_USUARIO,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
+			sql =  "SELECT ID_DIRECCION,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
 					+"FROM DIRECCION ";
 
 			// Preparar a query
@@ -85,7 +80,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 
 
 			while(resultSet.next()) {
-				d = loadNext(resultSet);
+				d = loadNext(connection, resultSet);
 				results.add(d);               	
 			}
 
@@ -110,7 +105,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 
 				
 			String sql;
-			sql =  "SELECT ID_DIRECCION,ID_USUARIO,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
+			sql =  "SELECT ID_DIRECCION,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
 					+"FROM DIRECCION "
 					+"WHERE ID_DIRECCION = ? ";
 
@@ -127,7 +122,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 			//STEP 5: Extract data from result set			
 
 			if (resultSet.next()) {
-				d =  loadNext(resultSet);			
+				d =  loadNext(connection, resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
 				throw new Exception("Non se atopou direccion con id = "+id);
@@ -147,13 +142,12 @@ public class DireccionDAOImpl implements DireccionDAO{
 	}
 
 
-	private Direccion loadNext(ResultSet resultSet) throws Exception{
+	private Direccion loadNext(Connection connection ,ResultSet resultSet) throws Exception{
 
 
 		Direccion d = new Direccion();
 		int i = 1;
 		Long id = resultSet.getLong(i++);
-		Long idusu = resultSet.getLong(i++);
 		String ciudad = resultSet.getString(i++);
 		Long idProv = resultSet.getLong(i++);
 		String calle = resultSet.getString(i++);
@@ -163,7 +157,6 @@ public class DireccionDAOImpl implements DireccionDAO{
 		String letra = resultSet.getString(i++);
 
 		d.setId(id);
-		d.setIdUsuario(idusu);
 		d.setCiudad(ciudad);
 		d.setIdProvincia(idProv);
 		d.setCalle(calle);
@@ -185,13 +178,12 @@ public class DireccionDAOImpl implements DireccionDAO{
 			connection = ConnectionManager.getConnection();
 
 
-			String queryString = "INSERT INTO DIRECCION(ID_USUARIO,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA) "
+			String queryString = "INSERT INTO DIRECCION(CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 			preparedStatement = connection.prepareStatement(queryString, Statement.RETURN_GENERATED_KEYS);
 
 			int i = 1;     			
-			preparedStatement.setLong(i++, d.getIdUsuario());
 			preparedStatement.setString(i++, d.getCiudad());
 			preparedStatement.setLong(i++, d.getIdProvincia());
 			preparedStatement.setString(i++, d.getCalle());
@@ -209,7 +201,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 			resultSet = preparedStatement.getGeneratedKeys();
 			if (resultSet.next()) {
 				Long id = resultSet.getLong(1);
-				d.setIdUsuario(id);				
+				d.setId(id);				
 			} else {
 				throw new DataException("Unable to fetch autogenerated primary key");
 			}
@@ -234,7 +226,6 @@ public class DireccionDAOImpl implements DireccionDAO{
 	@Override
 	public Long delete(Connection connection, Long id) throws Exception {
 		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
 
 		try {
 			connection = ConnectionManager.getConnection();

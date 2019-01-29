@@ -13,7 +13,7 @@ public interface DireccionDAO {
 	
 	public Long delete(Connection connection, Long id) throws Exception;
 	
-	public List<Direccion> findByUsuario(Connection connection, Integer id) throws Exception;
+	public Direccion findByUsuario(Connection connection, Long id) throws Exception;
 	
 	public List<Direccion> findAll(Connection connection) throws Exception;
 	

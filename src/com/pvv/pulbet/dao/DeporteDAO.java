@@ -10,8 +10,6 @@ public interface DeporteDAO {
 	
 	public Deporte create(Connection connection, Deporte d) throws Exception;
 
-	public boolean update(Connection connection, Deporte d) throws Exception;
-
 	public Long delete(Connection connection, Long id) throws Exception;
 	
 	public List<Deporte> findAll(Connection connection) throws Exception;

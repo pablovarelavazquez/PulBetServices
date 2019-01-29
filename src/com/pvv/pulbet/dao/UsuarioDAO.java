@@ -16,7 +16,7 @@ public interface UsuarioDAO {
 	
 	public Usuario create(Connection connection, Usuario u) throws Exception;
 
-	public boolean update(Connection connection, Usuario u) throws Exception;
+	public void update(Connection connection, Usuario u) throws Exception;
 
 	public long delete(Connection connection, Long id) throws Exception;
 

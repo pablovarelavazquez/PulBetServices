@@ -4,7 +4,6 @@ public class Direccion extends AbstractValueObject {
 	
 	
 	private Long id = null;
-	private Long idUsuario = null;
 	private String ciudad = null;
 	private Long idProvincia = null;
 	private String calle = null;
@@ -23,14 +22,6 @@ public class Direccion extends AbstractValueObject {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getIdUsuario() {
-		return idUsuario;
-	}
-
-	public void setIdUsuario(Long idUsuario) {
-		this.idUsuario = idUsuario;
 	}
 
 	public String getCiudad() {

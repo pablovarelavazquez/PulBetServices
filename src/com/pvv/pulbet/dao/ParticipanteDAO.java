@@ -8,15 +8,10 @@ import com.pvv.pulbet.model.Usuario;
 
 public interface ParticipanteDAO {
 
-	public Participante create(Connection connection, Participante p) throws Exception;
+
+	public Participante findById(Connection connection, Long id) throws Exception;
 	
-	public boolean update(Connection connection, Participante p) throws Exception;
+	public List<Participante> findByCompeticion(Connection connection, Long id) throws Exception;
 	
-	public void delete(Connection connection, Participante p) throws Exception;
-	
-	public Usuario findById(Connection connection, Integer id) throws Exception;
-	
-	public List<Usuario> findByCompeticion(Connection connection, Integer id) throws Exception;
-	
-	public List<Usuario> findByDeporte(Connection connection, Integer id) throws Exception;
+	public List<Participante> findByDeporte(Connection connection, Long id) throws Exception;
 }

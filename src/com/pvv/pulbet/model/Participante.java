@@ -1,6 +1,6 @@
 package com.pvv.pulbet.model;
 
-public abstract class Participante extends AbstractValueObject{ 	
+public class Participante extends AbstractValueObject{ 	
 															
 	private Long idParticipante = null;
 	private String nome = null;
