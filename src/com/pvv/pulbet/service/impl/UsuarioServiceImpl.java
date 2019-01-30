@@ -61,7 +61,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 		
 		
 		u = dao.create(c,u); 
-		mailService.sendMail("Benvido "+u.getNome(), "Blablabla", "pulbetsoporte@gmail.com");
+		mailService.sendMail("Benvido a PulBet", "Benvido "+u.getNome(), "pulbetsoporte@gmail.com");
 		
 		
 		commit=true;

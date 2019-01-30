@@ -11,6 +11,7 @@ public class Direccion extends AbstractValueObject {
 	private Integer codPostal = null;
 	private Integer piso = null;
 	private String letra = null;
+	private Long idUsuario = null;
 	
 	public Direccion() {
 		
@@ -78,6 +79,14 @@ public class Direccion extends AbstractValueObject {
 
 	public void setLetra(String letra) {
 		this.letra = letra;
+	}
+
+	public Long getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(Long idUsuario) {
+		this.idUsuario = idUsuario;
 	}
 
 

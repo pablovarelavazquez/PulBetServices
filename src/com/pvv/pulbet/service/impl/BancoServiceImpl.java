@@ -2,7 +2,6 @@ package com.pvv.pulbet.service.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
 
 import com.pvv.pulbet.dao.UsuarioDAO;
 import com.pvv.pulbet.dao.impl.UsuarioDAOImpl;
@@ -15,7 +14,6 @@ import com.pvv.pulbet.service.BancoService;
 public class BancoServiceImpl implements BancoService{
 	
 	private UsuarioDAO dao = null;
-	private static ResourceBundle dbConfiguration = ResourceBundle.getBundle("ServiceConfiguration");
 	
 	public BancoServiceImpl() {
 		dao = new UsuarioDAOImpl();

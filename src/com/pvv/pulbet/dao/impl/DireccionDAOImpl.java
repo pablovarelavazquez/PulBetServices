@@ -24,9 +24,9 @@ public class DireccionDAOImpl implements DireccionDAO{
 			connection = ConnectionManager.getConnection();
 
 			String sql;
-			sql =  "SELECT D.ID_DIRECCION,D.CIUDAD,D.ID_PROVINCIA,D.CALLE,D.NUMERO,D.COD_POSTAL,D.PISO,D.LETRA "
-					+"FROM DIRECCION D INNER JOIN USUARIO U ON U.ID_DIRECCION = D.ID_DIRECCION"
-					+"WHERE U.ID_USUARIO = ? ";
+			sql =  "SELECT ID_DIRECCION,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA,ID_USUARIO "
+					+"FROM DIRECCION "
+					+"WHERE ID_USUARIO = ? ";
 			
 			// Preparar a query
 			System.out.println("Creating statement...");
@@ -65,7 +65,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 			connection = ConnectionManager.getConnection();
 
 			String sql;
-			sql =  "SELECT ID_DIRECCION,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
+			sql =  "SELECT ID_DIRECCION,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA,ID_USUARIO "
 					+"FROM DIRECCION ";
 
 			// Preparar a query
@@ -105,7 +105,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 
 				
 			String sql;
-			sql =  "SELECT ID_DIRECCION,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA "
+			sql =  "SELECT ID_DIRECCION,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA,ID_USUARIO "
 					+"FROM DIRECCION "
 					+"WHERE ID_DIRECCION = ? ";
 
@@ -155,6 +155,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 		Integer codPostal = resultSet.getInt(i++);
 		Integer piso = resultSet.getInt(i++);
 		String letra = resultSet.getString(i++);
+		Long idusu = resultSet.getLong(i++);
 
 		d.setId(id);
 		d.setCiudad(ciudad);
@@ -164,7 +165,8 @@ public class DireccionDAOImpl implements DireccionDAO{
 		d.setCodPostal(codPostal);
 		d.setPiso(piso);
 		d.setLetra(letra);
-
+		d.setIdUsuario(idusu);
+		
 		return d;
 
 	}
@@ -178,7 +180,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 			connection = ConnectionManager.getConnection();
 
 
-			String queryString = "INSERT INTO DIRECCION(CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA) "
+			String queryString = "INSERT INTO DIRECCION(CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA,ID_USUARIO) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 			preparedStatement = connection.prepareStatement(queryString, Statement.RETURN_GENERATED_KEYS);
@@ -191,11 +193,12 @@ public class DireccionDAOImpl implements DireccionDAO{
 			preparedStatement.setInt(i++, d.getCodPostal());
 			preparedStatement.setInt(i++, d.getPiso());
 			preparedStatement.setString(i++, d.getLetra());
+			preparedStatement.setLong(i++, d.getIdUsuario());
 
 			int insertedRows = preparedStatement.executeUpdate();
 
 			if (insertedRows == 0) {
-				throw new SQLException("Can not add row to table 'Employees'");
+				throw new SQLException("Can not add row to table 'Direccion'");
 			}
 
 			resultSet = preparedStatement.getGeneratedKeys();
@@ -207,8 +210,8 @@ public class DireccionDAOImpl implements DireccionDAO{
 			}
 
 
-			//...
-			return d;	
+			return d;
+			
 		} catch (SQLException ex) {
 			throw new DataException(ex);
 		} finally {

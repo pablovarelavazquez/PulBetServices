@@ -16,8 +16,6 @@ public class Usuario extends AbstractValueObject{
 	private String nomeUsuario = null;
 	// private String passwordEncriptada = null; 
 	private String DNI = null;
-	private Long idDireccion = null;
-	
 	private Direccion direccion = null;
 	
 	public Usuario() {
@@ -128,16 +126,6 @@ public class Usuario extends AbstractValueObject{
 		DNI = dNI;
 	}
 
-
-
-
-	public Long getIdDireccion() {
-		return idDireccion;
-	}
-
-	public void setIdDireccion(Long idDireccion) {
-		this.idDireccion = idDireccion;
-	}
 
 	public Direccion getDireccion() {
 		return direccion;
