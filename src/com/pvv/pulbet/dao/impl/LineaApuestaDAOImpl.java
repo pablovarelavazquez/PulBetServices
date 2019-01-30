@@ -10,7 +10,9 @@ import java.util.List;
 import com.pvv.pulbet.dao.LineaApuestaDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.DuplicateInstanceException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.LineaApuesta;
 import com.pvv.pulbet.model.LineaApuestaId;
 
@@ -18,7 +20,7 @@ import com.pvv.pulbet.model.LineaApuestaId;
 public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 	@Override
-	public LineaApuesta create(Connection connection, LineaApuesta l) throws Exception {
+	public LineaApuesta create(Connection connection, LineaApuesta l) throws DuplicateInstanceException, DataException {
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -56,7 +58,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 
 	@Override
-	public int delete(Connection connection, LineaApuestaId id) throws Exception {
+	public int delete(Connection connection, LineaApuestaId id) throws InstanceNotFoundException, DataException {
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -75,6 +77,10 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 			int removedRows = preparedStatement.executeUpdate();
 
+			if (removedRows == 0) {
+				throw new InstanceNotFoundException("Non se atopou linea de aposta :"+id,LineaApuesta.class.getName());
+			} 
+			
 			return removedRows;
 
 		} catch (SQLException e) {
@@ -85,7 +91,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 	}
 
 	@Override
-	public LineaApuesta findById(Connection connection, LineaApuestaId id) throws Exception {
+	public LineaApuesta findById(Connection connection, LineaApuestaId id) throws InstanceNotFoundException, DataException {
 		LineaApuesta l = null;
 
 		PreparedStatement preparedStatement = null;
@@ -115,11 +121,9 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 				l =  loadNext(resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
-				throw new Exception("Non se atopou a liña de aposta.");
+				throw new InstanceNotFoundException("Non se atopou a liña de aposta: "+id, LineaApuesta.class.getName());
 			}
-			if (resultSet.next()) {
-				throw new Exception("Linea de aposta duplicada.");
-			}
+			
 
 		} catch (SQLException ex) {
 			throw new DataException(ex);
@@ -132,7 +136,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 	}
 
 	@Override
-	public List<LineaApuesta> findAll(Connection connection) throws Exception {
+	public List<LineaApuesta> findAll(Connection connection) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -170,7 +174,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 	}
 
 	@Override
-	public List<LineaApuesta> findByApuesta(Connection connection, Long id) throws Exception {
+	public List<LineaApuesta> findByApuesta(Connection connection, Long id) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -214,7 +218,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 	}
 
 	@Override
-	public List<LineaApuesta> findByEvento(Connection connection, Long id) throws Exception {
+	public List<LineaApuesta> findByEvento(Connection connection, Long id) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -257,7 +261,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		}  	
 	}
 
-	private LineaApuesta loadNext(ResultSet resultSet) throws Exception{
+	private LineaApuesta loadNext(ResultSet resultSet) throws SQLException{
 
 		LineaApuesta l = new LineaApuesta();
 		int i = 1;

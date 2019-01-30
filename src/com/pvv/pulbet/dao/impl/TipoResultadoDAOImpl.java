@@ -6,20 +6,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.pvv.pulbet.dao.TipoResultadoDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.DuplicateInstanceException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.TipoResultado;
-import com.pvv.pulbet.model.Usuario;
 
 public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 
 	@Override
-	public TipoResultado create(Connection connection, TipoResultado t) throws Exception {
+	public TipoResultado create(Connection connection, TipoResultado t) throws DuplicateInstanceException, DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -62,7 +62,7 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 	}
 
 	@Override
-	public long delete(Connection connection, Integer id) throws Exception {
+	public long delete(Connection connection, Integer id) throws InstanceNotFoundException, DataException {
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -93,7 +93,7 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 	}
 
 	@Override
-	public TipoResultado findById(Connection connection, Integer id) throws Exception {
+	public TipoResultado findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException {
 		TipoResultado t = null;
 
 		PreparedStatement preparedStatement = null;
@@ -123,12 +123,10 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 				t =  loadNext(resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
-				throw new Exception("Non se atopou TIPO_RESULTADO con id = "+id);
-			}
-			if (resultSet.next()) {
-				throw new Exception("TIPO_RESULTADO con id = "+id+" duplicado");
+				throw new InstanceNotFoundException("Non se atopou TIPO_RESULTADO con id = "+id, TipoResultado.class.getName());
 			}
 
+			return t;
 		} catch (SQLException ex) {
 			throw new DataException(ex);
 		} finally {            
@@ -136,11 +134,11 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 			JDBCUtils.closeStatement(preparedStatement);
 		}  	
 
-		return t;
+		
 	}
 
 	@Override
-	public List<TipoResultado> findByEvento(Connection connection, Long id) throws Exception {
+	public List<TipoResultado> findByEvento(Connection connection, Long id) throws DataException {
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -185,7 +183,7 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 		}
 	}
 
-	private TipoResultado loadNext(ResultSet resultSet) throws Exception{
+	private TipoResultado loadNext(ResultSet resultSet) throws SQLException{
 
 
 		TipoResultado t = new TipoResultado();

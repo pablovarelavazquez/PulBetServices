@@ -10,15 +10,14 @@ import java.util.List;
 import com.pvv.pulbet.dao.ParticipanteDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Participante;
-import com.pvv.pulbet.model.Provincia;
-import com.pvv.pulbet.model.Usuario;
 
 public class ParticipanteDAOImpl implements ParticipanteDAO{
 
 	@Override
-	public Participante findById(Connection connection, Long id) throws Exception {
+	public Participante findById(Connection connection, Long id) throws InstanceNotFoundException, DataException {
 		Participante p = null;
 
 		PreparedStatement preparedStatement = null;
@@ -48,11 +47,9 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 				p =  loadNext(connection, resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
-				throw new Exception("Non se atopou Participante con id = "+id);
+				throw new InstanceNotFoundException("Non se atopou Participante con id = "+id, Participante.class.getName());
 			}
-			if (resultSet.next()) {
-				throw new Exception("Participante con id = "+id+" duplicado");
-			}
+
 
 		} catch (SQLException ex) {
 			throw new DataException(ex);
@@ -65,7 +62,7 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 	}
 
 	@Override
-	public List<Participante> findByCompeticion(Connection connection, Long id) throws Exception {
+	public List<Participante> findByCompeticion(Connection connection, Long id) throws DataException {
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -113,7 +110,7 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 	}
 
 	@Override
-	public List<Participante> findByDeporte(Connection connection, Long id) throws Exception {
+	public List<Participante> findByDeporte(Connection connection, Long id) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -157,7 +154,7 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 		} 
 	}
 	
-	private Participante loadNext(Connection connection, ResultSet resultSet) throws Exception{
+	private Participante loadNext(Connection connection, ResultSet resultSet) throws SQLException{
 
 
 		Participante p = new Participante();

@@ -11,13 +11,15 @@ import java.util.List;
 import com.pvv.pulbet.dao.DeporteDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.DuplicateInstanceException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Deporte;
 
 public class DeporteDAOImpl implements DeporteDAO{
 	
 	@Override
-	public Deporte create(Connection connection, Deporte d) throws Exception {
+	public Deporte create(Connection connection, Deporte d) throws DuplicateInstanceException, DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -60,7 +62,7 @@ public class DeporteDAOImpl implements DeporteDAO{
 	}
 
 	@Override
-	public Long delete(Connection connection, Long id) throws Exception {
+	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException {
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -78,6 +80,9 @@ public class DeporteDAOImpl implements DeporteDAO{
 
 			long removedRows = preparedStatement.executeUpdate();
 
+			if (removedRows == 0) {
+				throw new InstanceNotFoundException("Non se atopou deporte: "+id,Deporte.class.getName());
+			} 
 
 			return removedRows;
 
@@ -90,7 +95,7 @@ public class DeporteDAOImpl implements DeporteDAO{
 	}
 
 	@Override
-	public List<Deporte> findAll(Connection connection) throws Exception {
+	public List<Deporte> findAll(Connection connection) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -128,7 +133,7 @@ public class DeporteDAOImpl implements DeporteDAO{
 	
 
 	@Override
-	public List<Deporte> findByNombre(Connection connection, String nombre) throws Exception {
+	public List<Deporte> findByNombre(Connection connection, String nombre) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -172,7 +177,7 @@ public class DeporteDAOImpl implements DeporteDAO{
 		}
 	}
 	
-private Deporte loadNext(ResultSet resultSet) throws Exception{
+private Deporte loadNext(ResultSet resultSet) throws SQLException{
 		
 		Deporte d = new Deporte();
 		int i = 1;
@@ -184,5 +189,11 @@ private Deporte loadNext(ResultSet resultSet) throws Exception{
 		
 		return d;
 	}
+
+@Override
+public Deporte findById(Connection connection, Long id) throws InstanceNotFoundException, DataException {
+	// TODO Auto-generated method stub
+	return null;
+}
 
 }

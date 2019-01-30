@@ -10,15 +10,14 @@ import java.util.List;
 import com.pvv.pulbet.dao.ProvinciaDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
-import com.pvv.pulbet.model.Pais;
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Provincia;
-import com.pvv.pulbet.model.Usuario;
 
 public class ProvinciaDAOImpl implements ProvinciaDAO{
 
 	@Override
-	public Provincia findById(Connection connection, int id) throws Exception {
+	public Provincia findById(Connection connection, int id) throws InstanceNotFoundException, DataException {
 		Provincia p = null;
 
 		PreparedStatement preparedStatement = null;
@@ -48,10 +47,7 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 				p =  loadNext(connection, resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
-				throw new Exception("Non se atopou Provincia con id = "+id);
-			}
-			if (resultSet.next()) {
-				throw new Exception("Provincia con id = "+id+" duplicado");
+				throw new InstanceNotFoundException("Non se atopou Provincia con id = "+id, Provincia.class.getName());
 			}
 
 		} catch (SQLException ex) {
@@ -65,7 +61,7 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 	}
 
 	@Override
-	public List<Provincia> findAll(Connection connection) throws Exception {
+	public List<Provincia> findAll(Connection connection) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -102,7 +98,7 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 	}
 
 	@Override
-	public List<Provincia> findByNombre(Connection connection, String nome) throws Exception {
+	public List<Provincia> findByNombre(Connection connection, String nome) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -148,7 +144,7 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 	}
 
 	@Override
-	public List<Provincia> findByPais(Connection connection, Integer id) throws Exception {
+	public List<Provincia> findByPais(Connection connection, Integer id) throws DataException {
 		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -194,7 +190,7 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 		}
 	}
 	
-	private Provincia loadNext(Connection connection, ResultSet resultSet) throws Exception{
+	private Provincia loadNext(Connection connection, ResultSet resultSet) throws SQLException{
 
 
 		Provincia p = new Provincia();

@@ -13,7 +13,9 @@ import com.pvv.pulbet.dao.ApuestaDAO;
 import com.pvv.pulbet.dao.LineaApuestaDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.DuplicateInstanceException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.model.LineaApuesta;
 
@@ -27,7 +29,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 	@Override
 	public Apuesta findById(Connection connection, Integer id)
-			throws Exception {
+			throws InstanceNotFoundException, DataException {
 		Apuesta a = null;
 
 		PreparedStatement preparedStatement = null;
@@ -56,11 +58,9 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 				a =  loadNext(resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
-				throw new Exception("Non se atopou apuesta con id = "+id);
+				throw new InstanceNotFoundException("Non se atopou apuesta con id = "+id, Apuesta.class.getName());
 			}
-			if (resultSet.next()) {
-				throw new Exception("Apuesta con id = "+id+" duplicado");
-			}
+
 
 		} catch (SQLException ex) {
 			throw new DataException(ex);
@@ -74,7 +74,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 	@Override
 	public List<Apuesta> findByUsuario(Connection connection, Integer id)
-			throws Exception {
+			throws DataException {
 
 
 		PreparedStatement preparedStatement = null;
@@ -123,7 +123,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 	@Override
 	public Apuesta create(Connection connection, Apuesta a) 
-			throws Exception{
+			throws DuplicateInstanceException, DataException{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -175,7 +175,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	}
 	
 	@Override
-	public void update(Connection connection, Apuesta a) throws Exception {
+	public void update(Connection connection, Apuesta a) throws InstanceNotFoundException, DataException {
 		PreparedStatement preparedStatement = null;
 		try {
 			
@@ -198,7 +198,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 			int updatedRows = preparedStatement.executeUpdate();
 
 			if (updatedRows == 0) {
-				throw new Exception();
+				throw new InstanceNotFoundException("Non se atopou aposta: "+a.getIdApuesta(), Apuesta.class.getName());
 			}
 
 			if (updatedRows > 1) {
@@ -218,7 +218,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	
 	@Override
 	public long delete(Connection connection, Long id) 
-			throws Exception {
+			throws InstanceNotFoundException, DataException {
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -237,7 +237,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 			int removedRows = preparedStatement.executeUpdate();
 
 			if (removedRows == 0) {
-				throw new Exception();
+				throw new InstanceNotFoundException("Non se atopou aposta :"+id, Apuesta.class.getName());
 			} 
 			return removedRows;
 
@@ -250,7 +250,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	}
 
 	@Override
-	public List<Apuesta> findAll(Connection connection) throws Exception {
+	public List<Apuesta> findAll(Connection connection) throws DataException {
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -290,7 +290,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 
 	private Apuesta loadNext(ResultSet resultSet) 
-			throws Exception{
+			throws SQLException{
 
 
 		Apuesta a = new Apuesta();
@@ -312,7 +312,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	}
 	
 	protected void deleteLineasApuesta(Connection c, Long idApuesta)
-			throws Exception {
+			throws SQLException, DataException {
 
 			PreparedStatement preparedStatement = null;
 
@@ -337,7 +337,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		}
 	
 	protected void createLineasPedido(Connection connection, Long idApuesta,  List<LineaApuesta> lineas)
-			throws Exception {
+			throws SQLException, DataException {
 
 		PreparedStatement preparedStatement = null;
 		try {          

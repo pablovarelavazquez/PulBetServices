@@ -7,7 +7,7 @@ import com.pvv.pulbet.dao.UsuarioDAO;
 import com.pvv.pulbet.dao.impl.UsuarioDAOImpl;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.model.Usuario;
 import com.pvv.pulbet.service.BancoService;
 

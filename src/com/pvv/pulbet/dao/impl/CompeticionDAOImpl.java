@@ -12,13 +12,15 @@ import java.util.List;
 import com.pvv.pulbet.dao.CompeticionDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.DuplicateInstanceException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Competicion;
 
 public class CompeticionDAOImpl implements CompeticionDAO{
 
 	@Override
-	public Competicion create(Connection connection, Competicion c) throws Exception {
+	public Competicion create(Connection connection, Competicion c) throws DuplicateInstanceException, DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -64,7 +66,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 	}
 
 	@Override
-	public boolean update(Connection connection, Competicion c) throws Exception {
+	public boolean update(Connection connection, Competicion c) throws InstanceNotFoundException, DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -93,14 +95,16 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 			preparedStatement.setLong(i++, c.getIdCompeticion());
 
 
-			int insertedRows = preparedStatement.executeUpdate();
+			int updatedRows = preparedStatement.executeUpdate();
 
-			if (insertedRows == 0) 
-			{
+			if (updatedRows == 0) {
+				throw new InstanceNotFoundException("Non se atopou competicion: "+c.getIdCompeticion(), Competicion.class.getName());
+			}
 
-				throw new SQLException("Can not uppdate row to table 'COMPETICION'");
-
-			} 
+			if (updatedRows > 1) {
+				throw new SQLException("Duplicate row for id = '" + 
+						c.getIdCompeticion() + "' in table 'competicion'");
+			}    
 			else { return true;}
 
 			//...
@@ -115,7 +119,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 	}
 
 	@Override
-	public long delete(Connection connection, Long id) throws Exception {
+	public long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException {
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -133,7 +137,9 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 
 			long removedRows = preparedStatement.executeUpdate();
 
-
+			if (removedRows == 0) {
+				throw new InstanceNotFoundException("Non se atopou competicion: "+id,Competicion.class.getName());
+			} 
 			return removedRows;
 
 		} catch (SQLException e) {
@@ -145,7 +151,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 	}
 
 	@Override
-	public Competicion findById(Connection connection, Long id) throws Exception {
+	public Competicion findById(Connection connection, Long id) throws InstanceNotFoundException, DataException {
 		Competicion c = null;
 
 		PreparedStatement preparedStatement = null;
@@ -174,11 +180,9 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 				c =  loadNext(resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
-				throw new Exception("Non se atopou competicion con id = "+id);
+				throw new InstanceNotFoundException("Non se atopou competicion con id = "+id, Competicion.class.getName());
 			}
-			if (resultSet.next()) {
-				throw new Exception("Competicion con id = "+id+" duplicada");
-			}
+
 
 		} catch (SQLException ex) {
 			throw new DataException(ex);
@@ -191,7 +195,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 	}
 
 	@Override
-	public List<Competicion> findByDeporte(Connection connection, Long id) throws Exception {
+	public List<Competicion> findByDeporte(Connection connection, Long id) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -234,7 +238,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 	}
 	
 	@Override
-	public List<Competicion> findAll(Connection connection) throws Exception {
+	public List<Competicion> findAll(Connection connection) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -271,7 +275,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 	}
 
 	@Override
-	public List<Competicion> findByNombre(Connection connection, String nome) throws Exception {
+	public List<Competicion> findByNombre(Connection connection, String nome) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -318,7 +322,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 	}
 	
 	private Competicion loadNext(ResultSet resultSet) 
-			throws Exception{
+			throws SQLException{
 
 
 		Competicion c = new Competicion();

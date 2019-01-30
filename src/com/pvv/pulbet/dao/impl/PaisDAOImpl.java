@@ -5,20 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.pvv.pulbet.dao.PaisDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Pais;
-import com.pvv.pulbet.model.Usuario;
 
 public class PaisDAOImpl implements PaisDAO{
 
 	@Override
-	public Pais findById(Connection connection, int id) throws Exception {
+	public Pais findById(Connection connection, int id) throws InstanceNotFoundException, DataException {
 		Pais p = null;
 
 		PreparedStatement preparedStatement = null;
@@ -48,11 +47,9 @@ public class PaisDAOImpl implements PaisDAO{
 				p =  loadNext(resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
-				throw new Exception("Non se atopou PAIS con id = "+id);
+				throw new InstanceNotFoundException("Non se atopou PAIS con id = "+id, Pais.class.getName());
 			}
-			if (resultSet.next()) {
-				throw new Exception("Empleado con id = "+id+" duplicado");
-			}
+
 
 		} catch (SQLException ex) {
 			throw new DataException(ex);
@@ -65,7 +62,7 @@ public class PaisDAOImpl implements PaisDAO{
 	}
 
 	@Override
-	public List<Pais> findAll(Connection connection) throws Exception {
+	public List<Pais> findAll(Connection connection) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -102,7 +99,7 @@ public class PaisDAOImpl implements PaisDAO{
 	}
 
 	@Override
-	public List<Pais> findByNombre(Connection connection, String nome) throws Exception {
+	public List<Pais> findByNombre(Connection connection, String nome) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -148,7 +145,7 @@ public class PaisDAOImpl implements PaisDAO{
 	}
 
 
-	private Pais loadNext(ResultSet resultSet) throws Exception{
+	private Pais loadNext(ResultSet resultSet) throws SQLException{
 
 
 		Pais p = new Pais();

@@ -13,7 +13,9 @@ import com.pvv.pulbet.dao.EventoDAO;
 import com.pvv.pulbet.dao.TipoResultadoDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.DuplicateInstanceException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Evento;
 import com.pvv.pulbet.model.TipoResultado;
 import com.pvv.pulbet.service.EventoCriteria;
@@ -27,7 +29,7 @@ public class EventoDAOImpl implements EventoDAO{
 	}
 
 	@Override
-	public Evento create(Connection connection, Evento e) throws Exception {
+	public Evento create(Connection connection, Evento e) throws DuplicateInstanceException, DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -76,13 +78,13 @@ public class EventoDAOImpl implements EventoDAO{
 	}
 
 	@Override
-	public boolean update(Connection connection, Evento e) throws Exception {
+	public boolean update(Connection connection, Evento e) throws InstanceNotFoundException, DataException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public Long delete(Connection connection, Long id) throws Exception {
+	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException {
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -100,7 +102,10 @@ public class EventoDAOImpl implements EventoDAO{
 
 			long removedRows = preparedStatement.executeUpdate();
 
-
+			if (removedRows == 0) {
+				throw new InstanceNotFoundException("Non se atopou evento: "+id,Evento.class.getName());
+			} 
+			
 			return removedRows;
 
 		} catch (SQLException e) {
@@ -113,7 +118,7 @@ public class EventoDAOImpl implements EventoDAO{
 	
 
 	@Override
-	public List<Evento> findByCriteria(Connection connection, EventoCriteria evento) throws Exception {
+	public List<Evento> findByCriteria(Connection connection, EventoCriteria evento) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		StringBuilder queryString = null;
@@ -211,13 +216,13 @@ public class EventoDAOImpl implements EventoDAO{
 
 
 	@Override
-	public Evento findById(Connection connection, Integer id) throws Exception {
+	public Evento findById(Connection connection, Integer id) throws DataException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
-	private Evento loadNext(ResultSet resultSet) throws Exception{
+	private Evento loadNext(ResultSet resultSet) throws SQLException{
 
 
 		Evento e = new Evento();

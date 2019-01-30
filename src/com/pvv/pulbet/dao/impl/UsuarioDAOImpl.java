@@ -13,7 +13,9 @@ import com.pvv.pulbet.dao.DireccionDAO;
 import com.pvv.pulbet.dao.UsuarioDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.DuplicateInstanceException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Direccion;
 import com.pvv.pulbet.model.Usuario;
 
@@ -28,7 +30,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 	@Override
 	public Usuario findById(Connection connection, Long id) 
-			throws Exception{
+			throws InstanceNotFoundException, DataException{
 		Usuario u = null;
 
 		PreparedStatement preparedStatement = null;
@@ -58,12 +60,11 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 				u =  loadNext(connection, resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
-				throw new Exception("Non se atopou usuario con id = "+id);
-			}
-			if (resultSet.next()) {
-				throw new Exception("Empleado con id = "+id+" duplicado");
+				throw new InstanceNotFoundException("Non se atopou usuario con id = "+id, Usuario.class.getName());
 			}
 
+			return u;
+			
 		} catch (SQLException ex) {
 			throw new DataException(ex);
 		} finally {            
@@ -71,11 +72,11 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			JDBCUtils.closeStatement(preparedStatement);
 		}  	
 
-		return u;
+		
 	}
 
 	@Override
-	public Usuario findByEmail(Connection connection, String email) throws Exception {
+	public Usuario findByEmail(Connection connection, String email) throws DataException {
 		
 		Usuario u = null;
 		PreparedStatement preparedStatement = null;
@@ -120,7 +121,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 	
 	@Override
 	public List<Usuario> findAll(Connection connection)
-			throws Exception {
+			throws DataException {
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -158,7 +159,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 	}
 
 
-	private Usuario loadNext(Connection connection, ResultSet resultSet) throws Exception{
+	private Usuario loadNext(Connection connection, ResultSet resultSet) throws SQLException, DataException{
 
 		
 		Usuario u = new Usuario();
@@ -196,7 +197,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 	@Override
 	public Usuario create(Connection connection, Usuario u)
-			throws Exception {
+			throws DuplicateInstanceException, DataException{
 		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -255,7 +256,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 	@Override
 	public void update(Connection connection, Usuario u)
-			throws Exception{
+			throws InstanceNotFoundException, DataException{
 
 		PreparedStatement preparedStatement = null;
 		try {          
@@ -294,7 +295,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			int updatedRows = preparedStatement.executeUpdate();
 
 			if (updatedRows == 0) {
-				throw new Exception("Non se atopou o usuario");
+				throw new InstanceNotFoundException("Non se atopou o usuario "+u.getIdUsuario(), Usuario.class.getName());
 			}
 
 			if (updatedRows > 1) {
@@ -313,7 +314,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 	@Override
 	public long delete(Connection connection, Long id)
-			throws Exception{
+			throws InstanceNotFoundException, DataException{
 
 		PreparedStatement preparedStatement = null;
 

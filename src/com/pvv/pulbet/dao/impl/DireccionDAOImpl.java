@@ -11,13 +11,15 @@ import java.util.List;
 import com.pvv.pulbet.dao.DireccionDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.DuplicateInstanceException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Direccion;
 
 public class DireccionDAOImpl implements DireccionDAO{
 
 	@Override
-	public Direccion findByUsuario(Connection connection, Long id) throws Exception {
+	public Direccion findByUsuario(Connection connection, Long id) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -58,7 +60,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 	}
 
 	@Override
-	public List<Direccion> findAll(Connection connection) throws Exception {
+	public List<Direccion> findAll(Connection connection) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -95,7 +97,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 	}
 
 	@Override
-	public Direccion findById(Connection connection, Integer id) throws Exception {
+	public Direccion findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException {
 		Direccion d = null;
 
 		PreparedStatement preparedStatement = null;
@@ -125,11 +127,9 @@ public class DireccionDAOImpl implements DireccionDAO{
 				d =  loadNext(connection, resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
-				throw new Exception("Non se atopou direccion con id = "+id);
+				throw new InstanceNotFoundException("Non se atopou direccion con id = "+id, Direccion.class.getName());
 			}
-			if (resultSet.next()) {
-				throw new Exception("Direccion con id = "+id+" duplicada");
-			}
+
 
 		} catch (SQLException ex) {
 			throw new DataException(ex);
@@ -142,7 +142,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 	}
 
 
-	private Direccion loadNext(Connection connection ,ResultSet resultSet) throws Exception{
+	private Direccion loadNext(Connection connection ,ResultSet resultSet) throws SQLException{
 
 
 		Direccion d = new Direccion();
@@ -172,7 +172,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 	}
 	
 	@Override
-	public Direccion create(Connection connection, Direccion d) throws Exception {
+	public Direccion create(Connection connection, Direccion d) throws DuplicateInstanceException, DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -220,14 +220,9 @@ public class DireccionDAOImpl implements DireccionDAO{
 		}
 	}
 
-	@Override
-	public boolean update(Connection connection, Direccion d) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
-	public Long delete(Connection connection, Long id) throws Exception {
+	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException {
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -245,7 +240,10 @@ public class DireccionDAOImpl implements DireccionDAO{
 
 			long removedRows = preparedStatement.executeUpdate();
 
-
+			if (removedRows == 0) {
+				throw new InstanceNotFoundException("Non se atopou direccion: "+id,Direccion.class.getName());
+			} 
+			
 			return removedRows;
 
 		} catch (SQLException e) {

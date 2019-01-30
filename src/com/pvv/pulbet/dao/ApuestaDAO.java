@@ -3,26 +3,27 @@ package com.pvv.pulbet.dao;
 import java.sql.Connection;
 import java.util.List;
 
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.DuplicateInstanceException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Apuesta;
 
 public interface ApuestaDAO {
 	
 	public Apuesta findById(Connection connection, Integer id)
-			throws Exception;
+			throws InstanceNotFoundException, DataException;
 
 	public List<Apuesta> findByUsuario(Connection connection, Integer id)
-			throws Exception;
+			throws DataException;
 	
-	public List<Apuesta> findAll(Connection connection) throws Exception;
+	public List<Apuesta> findAll(Connection connection) throws DataException;
 	
-	//falta algun finder para buscar apostas deperminadas, inda non determinadas e eso...
-
 	public Apuesta create(Connection connection, Apuesta a) 
-			throws Exception;
+			throws DuplicateInstanceException, DataException;
 	
 	public long delete(Connection connection, Long id) 
-			throws Exception;
+			throws InstanceNotFoundException, DataException;
 	
-	public void update(Connection connection, Apuesta a) throws Exception;
+	public void update(Connection connection, Apuesta a) throws InstanceNotFoundException, DataException;
 
 }

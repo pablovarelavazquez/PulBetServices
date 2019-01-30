@@ -11,14 +11,15 @@ import java.util.List;
 import com.pvv.pulbet.dao.ResultadoDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.DuplicateInstanceException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Resultado;
-import com.pvv.pulbet.model.TipoResultado;
 
 public class ResultadoDAOImpl implements ResultadoDAO{
 
 	@Override
-	public Resultado create(Connection connection, Resultado r) throws Exception {
+	public Resultado create(Connection connection, Resultado r) throws DuplicateInstanceException, DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -62,7 +63,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 	}
 
 	@Override
-	public Long delete(Connection connection, Long id) throws Exception {
+	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException {
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -80,7 +81,9 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 
 			long removedRows = preparedStatement.executeUpdate();
 
-
+			if (removedRows == 0) {
+				throw new InstanceNotFoundException("Non se atopou o resultado: "+id,Resultado.class.getName());
+			} 
 			return removedRows;
 
 		} catch (SQLException e) {
@@ -94,7 +97,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 	
 
 	@Override
-	public Resultado findById(Connection connection, Integer id) throws Exception {
+	public Resultado findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException {
 		Resultado r = null;
 
 		PreparedStatement preparedStatement = null;
@@ -124,11 +127,9 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 				r =  loadNext(resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
-				throw new Exception("Non se atopou RESULTADO con id = "+id);
+				throw new InstanceNotFoundException("Non se atopou RESULTADO con id = "+id, Resultado.class.getName());
 			}
-			if (resultSet.next()) {
-				throw new Exception("RESULTADO con id = "+id+" duplicado");
-			}
+
 
 		} catch (SQLException ex) {
 			throw new DataException(ex);
@@ -141,7 +142,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 	}
 
 	@Override
-	public List<Resultado> findByTipoResultado(Connection connection, Integer id) throws Exception {
+	public List<Resultado> findByTipoResultado(Connection connection, Integer id) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -185,7 +186,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 		}
 	}
 	
-	private Resultado loadNext(ResultSet resultSet) throws Exception{
+	private Resultado loadNext(ResultSet resultSet) throws SQLException{
 
 
 		Resultado r = new Resultado();
