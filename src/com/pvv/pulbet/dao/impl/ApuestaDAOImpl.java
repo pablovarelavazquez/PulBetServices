@@ -11,7 +11,6 @@ import java.util.List;
 
 import com.pvv.pulbet.dao.ApuestaDAO;
 import com.pvv.pulbet.dao.LineaApuestaDAO;
-import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
@@ -35,10 +34,9 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
-			sql =  "SELECT ID_APUESTA, IMPORTE, ID_USUARIO, FECHA "
+			sql =  "SELECT ID_APUESTA, IMPORTE, ID_USUARIO, FECHA, PROCESADO"
 					+"FROM APUESTA "
 					+"WHERE ID_USUARIO = ? ";
 
@@ -55,7 +53,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 			//STEP 5: Extract data from result set			
 
 			if (resultSet.next()) {
-				a =  loadNext(resultSet);			
+				a =  loadNext(connection, resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
 				throw new InstanceNotFoundException("Non se atopou apuesta con id = "+id, Apuesta.class.getName());
@@ -80,10 +78,9 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
-			sql =  "SELECT ID_APUESTA, IMPORTE, ID_USUARIO, FECHA "
+			sql =  "SELECT ID_APUESTA, IMPORTE, ID_USUARIO, FECHA, PROCESADO "
 					+"FROM APUESTA "
 					+"WHERE ID_USUARIO = ? ";
 
@@ -104,7 +101,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 
 			while(resultSet.next()) {
-				a = loadNext(resultSet);
+				a = loadNext(connection, resultSet);
 				results.add(a);               	
 			}
 
@@ -119,7 +116,6 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 	}
 
-	//falta algun finder para buscar apostas deperminadas, inda non determinadas e eso...
 
 	@Override
 	public Apuesta create(Connection connection, Apuesta a) 
@@ -127,8 +123,6 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
-
-			connection = ConnectionManager.getConnection();
 
 
 			String queryString = "INSERT INTO APUESTA(IMPORTE, ID_USUARIO, FECHA) "
@@ -183,7 +177,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 			
 			String queryString = 
 					"UPDATE APUESTA " +
-					"SET IMPORTE = ? , ID_USUARIO = ? , FECHA = ? " +
+					"SET IMPORTE = ? , ID_USUARIO = ? , FECHA = ? "+
 					"WHERE ID_APUESTA = ? ";
 
 			preparedStatement = connection.prepareStatement(queryString);
@@ -192,8 +186,6 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 			preparedStatement.setDouble(i++, a.getImporte());
 			preparedStatement.setLong(i++, a.getIdUsuario());
 			preparedStatement.setDate(i++, new java.sql.Date(a.getFecha().getTime()));
-			
-			
 
 			int updatedRows = preparedStatement.executeUpdate();
 
@@ -255,10 +247,9 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
-			sql =  "SELECT ID_APUESTA, IMPORTE, ID_USUARIO, FECHA "
+			sql =  "SELECT ID_APUESTA, IMPORTE, ID_USUARIO, FECHA, PROCESADO "
 					+"FROM APUESTA";
 
 			// Preparar a query
@@ -273,7 +264,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 
 			while(resultSet.next()) {
-				a = loadNext(resultSet);
+				a = loadNext(connection, resultSet);
 				results.add(a);               	
 			}
 
@@ -289,8 +280,8 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 
 
-	private Apuesta loadNext(ResultSet resultSet) 
-			throws SQLException{
+	private Apuesta loadNext(Connection c, ResultSet resultSet) 
+			throws SQLException, DataException{
 
 
 		Apuesta a = new Apuesta();
@@ -299,13 +290,16 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		Double importe = resultSet.getDouble(i++);
 		Long idUsuario = resultSet.getLong(i++); 
 		Date fecha = resultSet.getDate(i++);
+		Boolean procesado = resultSet.getBoolean(i++);
 
 		a.setIdApuesta(idApuesta);
 		a.setImporte(importe);
 		a.setFecha(fecha);
 		a.setIdUsuario(idUsuario);
-		//Departamento d = departamentoDAO.findByIdEmpleado() temos que crear private departamentoDAO = new departamentoDAO() en departamentoDAO
-		// u.setDeptId
+		a.setProcesado(procesado);
+		
+		List<LineaApuesta> lineas = lineaApuestaDAO.findByApuesta(c, idApuesta);
+		a.setLineas(lineas);
 
 		return a;
 

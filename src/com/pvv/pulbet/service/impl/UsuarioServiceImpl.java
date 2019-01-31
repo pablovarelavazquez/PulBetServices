@@ -153,7 +153,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 
 	@Override
-	public long delete(Long id) throws DataException {
+	public long delete(Long id) throws InstanceNotFoundException, DataException {
 		Connection connection = null;
         boolean commit = false;
         Long result = null;

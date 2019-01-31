@@ -25,8 +25,6 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		ResultSet resultSet = null;
 		try {          
 
-			connection = ConnectionManager.getConnection();
-
 			String queryString = "INSERT INTO COMPETICION(NOMBRE,ID_DEPORTE,FECHA_INICIO, FECHA_FIN) "
 					+ "VALUES (?, ?, ?, ?)";
 
@@ -70,13 +68,6 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
-
-			connection = ConnectionManager.getConnection();
-			//Check if the primary key already exists
-			//		if (exists(connection, e.getId())) {
-			//			throw new Exception("Duplicate employee "+e.getId());
-			//		}
-
 
 			String queryString = "UPDATE COMPETICION "
 					+ "SET NOMBRE = ?, "
@@ -123,11 +114,10 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		PreparedStatement preparedStatement = null;
 
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String queryString =	
 					"DELETE FROM COMPETICION " 
-					+ "WHERE ID_COMPETICION = ? ";
+							+ "WHERE ID_COMPETICION = ? ";
 
 
 			preparedStatement = connection.prepareStatement(queryString);
@@ -147,7 +137,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		} finally {
 			JDBCUtils.closeStatement(preparedStatement);
 		}
-		
+
 	}
 
 	@Override
@@ -157,7 +147,6 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =  "SELECT ID_COMPETICION,NOMBRE,ID_DEPORTE,FECHA_INICIO, FECHA_FIN "
@@ -199,7 +188,6 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =  "SELECT ID_COMPETICION, NOMBRE, ID_DEPORTE, FECHA_INICIO, FECHA_FIN "
@@ -236,13 +224,12 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 			JDBCUtils.closeStatement(preparedStatement);
 		}  	
 	}
-	
+
 	@Override
 	public List<Competicion> findAll(Connection connection) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =  "SELECT ID_COMPETICION, NOMBRE, ID_DEPORTE, FECHA_INICIO, FECHA_FIN "
@@ -280,14 +267,12 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		ResultSet resultSet = null;
 		try{
 
-			connection = ConnectionManager.getConnection();
-
 			String sql;
 			sql =    "SELECT ID_COMPETICION, NOMBRE, ID_DEPORTE, FECHA_INICIO, FECHA_FIN " 
 					+" FROM COMPETICION "
 					+" WHERE "
 					+"	UPPER(NOMBRE) LIKE ?";
-					
+
 			// Preparar a query
 			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -309,10 +294,10 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 				c = loadNext(resultSet);
 				results.add(c);               	
 			}
-			
-			 
+
+
 			return results;
-			
+
 		} catch (SQLException ex) {
 			throw new DataException(ex);
 		} finally {            
@@ -320,7 +305,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 			JDBCUtils.closeStatement(preparedStatement);
 		}  
 	}
-	
+
 	private Competicion loadNext(ResultSet resultSet) 
 			throws SQLException{
 
@@ -338,8 +323,6 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		c.setIdDeporte(idDeporte);
 		c.setFechaInicio(fechaInicio);
 		c.setFechaFin(fechaFin);
-		//Departamento d = departamentoDAO.findByIdEmpleado() temos que crear private departamentoDAO = new departamentoDAO() en departamentoDAO
-		// u.setDeptId
 
 		return c;
 

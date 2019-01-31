@@ -12,7 +12,6 @@ import java.util.List;
 import com.pvv.pulbet.dao.ApuestaDAO;
 import com.pvv.pulbet.dao.DireccionDAO;
 import com.pvv.pulbet.dao.UsuarioDAO;
-import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
@@ -29,6 +28,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 	public UsuarioDAOImpl () {
 		direccionDAO = new DireccionDAOImpl();
+		apuestaDAO = new ApuestaDAOImpl();
 	}
 
 	@Override
@@ -39,8 +39,6 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
-
 				
 			String sql;
 			sql =  "SELECT ID_USUARIO, EMAIL, NOMBRE, APELLIDO1, APELLIDO2, PASSWORD, BANCO, TELEFONO, FECHA_NACIMIENTO, NOMBRE_USUARIO, DNI "
@@ -86,8 +84,6 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		ResultSet resultSet = null;
 		try{
 
-			connection = ConnectionManager.getConnection();
-
 			String sql;
 			sql =    "SELECT ID_USUARIO, EMAIL, NOMBRE, APELLIDO1, APELLIDO2, PASSWORD, BANCO, TELEFONO, FECHA_NACIMIENTO, NOMBRE_USUARIO, DNI " 
 					+" FROM USUARIO "
@@ -129,7 +125,6 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =  "SELECT ID_USUARIO, EMAIL, NOMBRE, APELLIDO1, APELLIDO2, PASSWORD, BANCO, TELEFONO, FECHA_NACIMIENTO, NOMBRE_USUARIO, DNI "
@@ -206,8 +201,6 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		ResultSet resultSet = null;
 		try {          
 
-			connection = ConnectionManager.getConnection();
-
 			String queryString = "INSERT INTO USUARIO(EMAIL,NOMBRE,APELLIDO1,APELLIDO2,PASSWORD,BANCO,TELEFONO,FECHA_NACIMIENTO,NOMBRE_USUARIO,DNI) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -266,8 +259,6 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		PreparedStatement preparedStatement = null;
 		try {          
 
-			connection = ConnectionManager.getConnection();
-			
 			//Direccion d = u.getDireccion();
 			//direccionDAO.delete(connection, d.getId());
 
@@ -310,11 +301,6 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 				throw new SQLException("Duplicate row for id = '" + u.getIdUsuario() + "' in table 'Usuario'");
 			}
 			
-			//d = u.getDireccion();
-			//d.setIdUsuario(u.getIdUsuario());
-			//d = direccionDAO.create(connection, d);
-			//u.setDireccion(d);
-
 
 		} catch (SQLException ex) {
 			throw new DataException(ex);
@@ -330,16 +316,14 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			throws InstanceNotFoundException, DataException{
 
 		PreparedStatement preparedStatement = null;
-		List<Apuesta> apuestas = new ArrayList<Apuesta>();
 		
 		try {
-			connection = ConnectionManager.getConnection();
 			
 			//Temos que borrar a direccion do usuario e as apuestas
 			Direccion d = direccionDAO.findByUsuario(connection, id);
 			direccionDAO.delete(connection, d.getId());
 			
-			apuestas = apuestaDAO.findByUsuario(connection, id);
+			List<Apuesta> apuestas = apuestaDAO.findByUsuario(connection, id);
 			
 			for(Apuesta a : apuestas) {
 				apuestaDAO.delete(connection, a.getIdApuesta());

@@ -24,8 +24,6 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 		ResultSet resultSet = null;
 		try {          
 
-			connection = ConnectionManager.getConnection();
-
 			String queryString = "INSERT INTO RESULTADO(NOMBRE, ID_TIPO_RESULTADO) "
 					+ "VALUES (?,?)";
 
@@ -67,7 +65,6 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 		PreparedStatement preparedStatement = null;
 
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String queryString =	
 					"DELETE FROM RESULTADO " 
@@ -103,9 +100,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
-				
 			String sql;
 			sql =  "SELECT ID_RESULTADO, NOMBRE, ID_TIPO_RESULTADO "
 					+"FROM RESULTADO "
@@ -146,8 +141,6 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
-
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =    "SELECT ID_RESULTADO, NOMBRE, ID_TIPO_RESULTADO " 

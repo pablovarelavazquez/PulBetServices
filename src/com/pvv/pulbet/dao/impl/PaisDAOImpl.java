@@ -23,8 +23,6 @@ public class PaisDAOImpl implements PaisDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
-
 				
 			String sql;
 			sql =  "SELECT ID_PAIS, NOMBRE "
@@ -66,7 +64,6 @@ public class PaisDAOImpl implements PaisDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =  "SELECT ID_PAIS,NOMBRE "
@@ -103,8 +100,6 @@ public class PaisDAOImpl implements PaisDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
-
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =    "SELECT ID_PAIS,NOMBRE " 

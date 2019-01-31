@@ -24,8 +24,6 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 		ResultSet resultSet = null;
 		try {          
 
-			connection = ConnectionManager.getConnection();
-
 			String queryString = "INSERT INTO TIPO_RESULTADO(NOMBRE) "
 					+ "VALUES (?)";
 
@@ -66,8 +64,6 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 		PreparedStatement preparedStatement = null;
 
 		try {
-			connection = ConnectionManager.getConnection();
-
 			String queryString =	
 					"DELETE FROM TIPO_RESULTADO " 
 							+ "WHERE ID_TIPO_RESULTADO = ? ";
@@ -99,8 +95,6 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
-
 
 			String sql;
 			sql =  "SELECT ID_TIPO_RESULTADO, NOMBRE "
@@ -143,8 +137,6 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
-
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =    "SELECT T.ID_TIPO_RESULTADO, T.NOMBRE " 

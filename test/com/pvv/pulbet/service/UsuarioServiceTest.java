@@ -127,7 +127,7 @@ public class UsuarioServiceTest {
 			//test.testUpdateDireccion(); //ok --cambia direccion
 			//test.testIngresar(); //ok
 			//test.testRetirar();	//ok
-			//test.testDelete(); //falla
+			//test.testDelete(); //ok
 
 		} catch (Exception e) {
 			e.printStackTrace();

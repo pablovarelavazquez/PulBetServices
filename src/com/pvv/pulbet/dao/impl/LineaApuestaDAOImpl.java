@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pvv.pulbet.dao.LineaApuestaDAO;
-import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
@@ -25,10 +24,6 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
-
-			connection = ConnectionManager.getConnection();
-
-
 
 			String queryString = "INSERT INTO LINEA_APUESTA(NUMERO_LINEA,ID_APUESTA,ID_RESULTADO,ID_EVENTO) "
 					+ "VALUES (?, ?, ?, ?)";
@@ -62,7 +57,6 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		PreparedStatement preparedStatement = null;
 
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String queryString =	
 					"DELETE FROM LINEA_APUESTA " 
@@ -97,11 +91,10 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 
 			String sql;
-			sql =  "SELECT NUMERO_LINEA,ID_APUESTA,ID_RESULTADO,ID_EVENTO "
+			sql =  "SELECT NUMERO_LINEA,ID_APUESTA,ID_RESULTADO,ID_EVENTO, PROCESADO "
 					+"FROM LINEA_APUESTA "
 					+"WHERE ID_APUESTA = ? AND NUMERO_LINEA = ? ";
 
@@ -140,10 +133,9 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
-			sql =  "SELECT  NUMERO_LINEA,ID_APUESTA,ID_RESULTADO,ID_EVENTO "
+			sql =  "SELECT  NUMERO_LINEA,ID_APUESTA,ID_RESULTADO,ID_EVENTO, PROCESADO "
 					+"FROM LINEA_APUESTA "
 					+ "ORDER BY ID_APUESTA,NUMERO_LINEA ";
 
@@ -178,10 +170,9 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
-			sql =  "SELECT  NUMERO_LINEA,ID_APUESTA,ID_RESULTADO,ID_EVENTO "
+			sql =  "SELECT  NUMERO_LINEA,ID_APUESTA,ID_RESULTADO,ID_EVENTO, PROCESADO "
 					+"FROM LINEA_APUESTA "
 					+ "WHERE ID_APUESTA = ? "
 					+ "ORDER BY NUMERO_LINEA ";
@@ -222,10 +213,9 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
-			sql =  "SELECT  NUMERO_LINEA,ID_APUESTA,ID_RESULTADO,ID_EVENTO "
+			sql =  "SELECT  NUMERO_LINEA,ID_APUESTA,ID_RESULTADO,ID_EVENTO, PROCESADO "
 					+"FROM LINEA_APUESTA "
 					+ "WHERE ID_EVENTO = ? "
 					+ "ORDER BY ID_APUESTA, NUMERO_LINEA ";
@@ -269,11 +259,13 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		Long idApuesta = resultSet.getLong(i++);
 		Long idRes = resultSet.getLong(i++);
 		Long idEv = resultSet.getLong(i++);
+		Boolean procesado = resultSet.getBoolean(i++);
 
 		l.setNumLinea(numeroLinea);
 		l.setIdApuesta(idApuesta);
 		l.setIdResultado(idRes);
 		l.setIdEvento(idEv);
+		l.setProcesado(procesado);
 
 		return l;
 

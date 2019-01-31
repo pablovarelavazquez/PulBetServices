@@ -24,8 +24,6 @@ public class DeporteDAOImpl implements DeporteDAO{
 		ResultSet resultSet = null;
 		try {          
 
-			connection = ConnectionManager.getConnection();
-
 
 			String queryString = "INSERT INTO DEPORTE(NOMBRE) "
 					+ "VALUES (?)";
@@ -66,7 +64,6 @@ public class DeporteDAOImpl implements DeporteDAO{
 		PreparedStatement preparedStatement = null;
 
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String queryString =	
 					"DELETE FROM DEPORTE " 
@@ -99,7 +96,6 @@ public class DeporteDAOImpl implements DeporteDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =  "SELECT ID_DEPORTE, NOMBRE "
@@ -137,8 +133,6 @@ public class DeporteDAOImpl implements DeporteDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
-
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =    "SELECT ID_DEPORTE, NOMBRE " 

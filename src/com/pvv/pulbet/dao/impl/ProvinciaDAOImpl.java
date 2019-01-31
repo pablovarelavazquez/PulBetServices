@@ -23,8 +23,6 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
-
 				
 			String sql;
 			sql =  "SELECT ID_PROVINCIA, NOMBRE, ID_PAIS "
@@ -65,7 +63,6 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =  "SELECT ID_PROVINCIA, NOMBRE, ID_PAIS "
@@ -102,8 +99,6 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
-
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =    "SELECT ID_PROVINCIA,NOMBRE,ID_PAIS " 
@@ -149,8 +144,6 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
-
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =    "SELECT ID_PROVINCIA, NOMBRE, ID_PAIS " 

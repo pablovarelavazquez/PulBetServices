@@ -2,6 +2,8 @@ package com.pvv.pulbet.service;
 
 import java.util.List;
 
+import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.service.impl.ApuestaServiceImpl;
 
@@ -13,7 +15,7 @@ public class ApuestaServiceTest {
 		apuestaService = new ApuestaServiceImpl();
 	}
 
-	public void testFindById() 
+	public void testFindByUsuario() 
 			throws Exception {
 		List<Apuesta> lista = apuestaService.findByUsuario(1l);
 		
@@ -23,13 +25,19 @@ public class ApuestaServiceTest {
 	}
 
 	
+	public void testDelete() throws InstanceNotFoundException, DataException {
+		apuestaService.delete(5l);
+	}
+
+	
 
 	public static void main(String args[]){
 
 		ApuestaServiceTest test = new ApuestaServiceTest();
 
 		try {
-			test.testFindById();
+			//test.testFindByUsuario(); //OK
+			test.testDelete();
 
 		} catch (Exception e) {
 			e.printStackTrace();

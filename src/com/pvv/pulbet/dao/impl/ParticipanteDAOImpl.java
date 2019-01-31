@@ -23,8 +23,6 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
-
 				
 			String sql;
 			sql =  "SELECT ID_PARTICIPANTE, NOMBRE, ID_DEPORTE "
@@ -67,8 +65,6 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
-
 				
 			String sql;
 			sql =  "SELECT ID_PARTICIPANTE, NOMBRE, ID_DEPORTE "
@@ -114,8 +110,6 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
-
 				
 			String sql;
 			sql =  "SELECT ID_PARTICIPANTE, NOMBRE, ID_DEPORTE "

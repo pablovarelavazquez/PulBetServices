@@ -6,6 +6,7 @@ public class LineaApuesta extends AbstractValueObject {
 	private Long idApuesta = null;
 	private Long idResultado = null;
 	private Long idEvento = null;
+	private Boolean procesado = null;
 	
 	public LineaApuesta() {
 		
@@ -41,6 +42,14 @@ public class LineaApuesta extends AbstractValueObject {
 
 	public void setIdEvento(Long idEvento) {
 		this.idEvento = idEvento;
+	}
+
+	public Boolean getProcesado() {
+		return procesado;
+	}
+
+	public void setProcesado(Boolean procesado) {
+		this.procesado = procesado;
 	}
 	
 }

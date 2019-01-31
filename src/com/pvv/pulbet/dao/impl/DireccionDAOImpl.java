@@ -23,7 +23,6 @@ public class DireccionDAOImpl implements DireccionDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =  "SELECT ID_DIRECCION,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA,ID_USUARIO "
@@ -64,7 +63,6 @@ public class DireccionDAOImpl implements DireccionDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String sql;
 			sql =  "SELECT ID_DIRECCION,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA,ID_USUARIO "
@@ -103,8 +101,6 @@ public class DireccionDAOImpl implements DireccionDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = ConnectionManager.getConnection();
-
 				
 			String sql;
 			sql =  "SELECT ID_DIRECCION,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA,ID_USUARIO "
@@ -177,9 +173,6 @@ public class DireccionDAOImpl implements DireccionDAO{
 		ResultSet resultSet = null;
 		try {          
 
-			connection = ConnectionManager.getConnection();
-
-
 			String queryString = "INSERT INTO DIRECCION(CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA,ID_USUARIO) "
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -226,7 +219,6 @@ public class DireccionDAOImpl implements DireccionDAO{
 		PreparedStatement preparedStatement = null;
 
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String queryString ="DELETE FROM DIRECCION " 
 							+ "WHERE ID_DIRECCION = ? ";

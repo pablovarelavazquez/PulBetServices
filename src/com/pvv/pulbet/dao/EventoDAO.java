@@ -13,8 +13,6 @@ public interface EventoDAO {
 	
 	public Evento create(Connection connection, Evento e) throws DuplicateInstanceException, DataException;
 	
-	public boolean update(Connection connection, Evento e) throws InstanceNotFoundException, DataException;
-	
 	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException;
 	
 	public Evento findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException;

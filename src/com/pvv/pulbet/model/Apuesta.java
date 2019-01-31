@@ -9,6 +9,7 @@ public class Apuesta extends AbstractValueObject{
 	private Double importe = null;
 	private Long idUsuario = null;
 	private Date fecha = null;	
+	private Boolean procesado = null;
 	
 	private List<LineaApuesta> lineas = null;
 	
@@ -51,6 +52,14 @@ public class Apuesta extends AbstractValueObject{
 
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
+	}
+
+	public Boolean getProcesado() {
+		return procesado;
+	}
+
+	public void setProcesado(Boolean procesado) {
+		this.procesado = procesado;
 	}
 
 	public Long getIdUsuario() {

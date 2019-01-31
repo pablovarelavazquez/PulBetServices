@@ -21,9 +21,9 @@ import com.pvv.pulbet.model.TipoResultado;
 import com.pvv.pulbet.service.EventoCriteria;
 
 public class EventoDAOImpl implements EventoDAO{
-	
+
 	TipoResultadoDAO tipoResultadoDAO = null;
-	
+
 	public EventoDAOImpl() {
 		tipoResultadoDAO = new TipoResultadoDAOImpl();
 	}
@@ -33,13 +33,6 @@ public class EventoDAOImpl implements EventoDAO{
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
-
-			connection = ConnectionManager.getConnection();
-			//Check if the primary key already exists
-			//			if (exists(connection, e.getId())) {
-			//				throw new Exception("Duplicate employee "+e.getId());
-			//			}
-
 
 			String queryString = "INSERT INTO EVENTO(FECHA_HORA,ID_COMPETICION) "
 					+ "VALUES (?, ?)";
@@ -78,17 +71,10 @@ public class EventoDAOImpl implements EventoDAO{
 	}
 
 	@Override
-	public boolean update(Connection connection, Evento e) throws InstanceNotFoundException, DataException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException {
 		PreparedStatement preparedStatement = null;
 
 		try {
-			connection = ConnectionManager.getConnection();
 
 			String queryString =	
 					"DELETE FROM EVENTO " 
@@ -105,7 +91,7 @@ public class EventoDAOImpl implements EventoDAO{
 			if (removedRows == 0) {
 				throw new InstanceNotFoundException("Non se atopou evento: "+id,Evento.class.getName());
 			} 
-			
+
 			return removedRows;
 
 		} catch (SQLException e) {
@@ -115,7 +101,7 @@ public class EventoDAOImpl implements EventoDAO{
 		}
 	}
 
-	
+
 
 	@Override
 	public List<Evento> findByCriteria(Connection connection, EventoCriteria evento) throws DataException {
@@ -124,88 +110,200 @@ public class EventoDAOImpl implements EventoDAO{
 		StringBuilder queryString = null;
 
 		try {
-			queryString = new StringBuilder(
-					"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte, p.id_participante "
-					+ "from evento e inner join competicion c on c.id_competicion = e.id_competicion "
-					+ "inner join resultado_participante_evento p on p.id_evento = e.id_evento ");
+
+			if ((evento.getIdDeporte()==null) && (evento.getIdParticipante()==null)){
+				queryString = new StringBuilder("select e.id_evento, e.fecha_hora, e.id_competicion "
+						+ "from evento e ");
+
+				boolean first = true;
+
+				if (evento.getIdEvento()!=null) {
+					addClause(queryString, first, " e.id_evento = ? ");
+					first = false;
+				}
+
+				if (evento.getFecha()!=null) {
+					addClause(queryString, first, " e.fecha_hora < ? ");
+					first = false;
+				}
+
+				if (evento.getIdCompeticion()!=null) {
+					addClause(queryString, first, " e.id_competicion = ? ");
+					first = false;
+				}
+
+
+				queryString.append("order by e.fecha_hora ");
+
+				preparedStatement = connection.prepareStatement(queryString.toString(),
+						ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				int i = 1;       
+
+				if (evento.getIdEvento()!=null) 
+					preparedStatement.setLong(i++,  evento.getIdEvento() );
+				if (evento.getFecha()!=null) 
+					preparedStatement.setDate(i++, new java.sql.Date(evento.getFecha().getTime()));
+				if (evento.getIdCompeticion()!=null) 
+					preparedStatement.setLong(i++, evento.getIdCompeticion());
+
+			} else if ((evento.getIdDeporte()==null) && (evento.getIdParticipante()!=null)){
+
+				queryString = new StringBuilder(
+						"select e.id_evento, e.fecha_hora, e.id_competicion, p.id_participante "
+								+ "from evento e inner join resultado_participante_evento p on p.id_evento = e.id_evento ");
+
+				boolean first = true;
+
+				if (evento.getIdEvento()!=null) {
+					addClause(queryString, first, " e.id_evento = ? ");
+					first = false;
+				}
+
+				if (evento.getFecha()!=null) {
+					addClause(queryString, first, " e.fecha_hora < ? ");
+					first = false;
+				}
+
+				if (evento.getIdCompeticion()!=null) {
+					addClause(queryString, first, " e.id_competicion = ? ");
+					first = false;
+				}	
+
+				if (evento.getIdParticipante()!=null) {
+					addClause(queryString, first, " e.id_participante = ? ");
+					first = false;
+				}	
+
+				queryString.append("group by id_evento, id_participante order by e.fecha_hora");
+
+				preparedStatement = connection.prepareStatement(queryString.toString(),
+						ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				int i = 1;       
+
+				if (evento.getIdEvento()!=null) 
+					preparedStatement.setLong(i++,  evento.getIdEvento() );
+				if (evento.getFecha()!=null) 
+					preparedStatement.setDate(i++, new java.sql.Date(evento.getFecha().getTime()));
+				if (evento.getIdCompeticion()!=null) 
+					preparedStatement.setLong(i++, evento.getIdCompeticion());
+				if (evento.getIdParticipante()!=null) 
+					preparedStatement.setLong(i++, evento.getIdParticipante());
+
+			} else if ((evento.getIdDeporte()!=null) && (evento.getIdParticipante()==null)){
+				queryString = new StringBuilder(
+						"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte "
+								+ "from evento e inner join competicion c on c.id_competicion = e.id_competicion ");
+
+				boolean first = true;
+
+				if (evento.getIdEvento()!=null) {
+					addClause(queryString, first, " e.id_evento = ? ");
+					first = false;
+				}
+
+				if (evento.getFecha()!=null) {
+					addClause(queryString, first, " e.fecha_hora < ? ");
+					first = false;
+				}
+
+				if (evento.getIdCompeticion()!=null) {
+					addClause(queryString, first, " e.id_competicion = ? ");
+					first = false;
+				}	
+
+				if (evento.getIdDeporte()!=null) {
+					addClause(queryString, first, " e.id_deporte = ? ");
+					first = false;
+				}	
+
+				queryString.append("group by id_evento, id_participante order by e.fecha_hora");
+
+				preparedStatement = connection.prepareStatement(queryString.toString(),
+						ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				int i = 1;       
+
+				if (evento.getIdEvento()!=null) 
+					preparedStatement.setLong(i++,  evento.getIdEvento() );
+				if (evento.getFecha()!=null) 
+					preparedStatement.setDate(i++, new java.sql.Date(evento.getFecha().getTime()));
+				if (evento.getIdCompeticion()!=null) 
+					preparedStatement.setLong(i++, evento.getIdCompeticion());
+				if (evento.getIdParticipante()!=null) 
+					preparedStatement.setLong(i++, evento.getIdDeporte());
+
+			} else if ((evento.getIdDeporte()!=null) && (evento.getIdParticipante()==null)) {
+
+				queryString = new StringBuilder(
+								"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte, p.id_participante "
+								+ "from evento e inner join competicion c on c.id_competicion = e.id_competicion "
+								+ "inner join resultado_participante_evento p on p.id_evento = e.id_evento ");
+
+				boolean first = true;
+
+
+				if (evento.getIdEvento()!=null) {
+					addClause(queryString, first, " e.id_evento = ? ");
+					first = false;
+				}
+
+				if (evento.getFecha()!=null) {
+					addClause(queryString, first, " e.fecha_hora < ? ");
+					first = false;
+				}
+
+				if (evento.getIdCompeticion()!=null) {
+					addClause(queryString, first, " e.id_competicion = ? ");
+					first = false;
+				}
+
+				if (evento.getIdDeporte()!=null) {
+					addClause(queryString, first, " c.id_deporte = ? ");
+					first = false;
+				}			
+
+				if (evento.getIdParticipante()!=null) {
+					addClause(queryString, first, " p.id_participante = ? ");
+					first = false;
+				}	
+
+
+				queryString.append("group by id_evento, id_participante order by e.fecha_hora ");
+
+				preparedStatement = connection.prepareStatement(queryString.toString(),
+						ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				int i = 1;       
+
+				if (evento.getIdEvento()!=null) 
+					preparedStatement.setLong(i++,  evento.getIdEvento() );
+				if (evento.getFecha()!=null) 
+					preparedStatement.setDate(i++, new java.sql.Date(evento.getFecha().getTime()));
+				if (evento.getIdCompeticion()!=null) 
+					preparedStatement.setLong(i++, evento.getIdCompeticion());
+				if (evento.getIdDeporte()!=null)
+					preparedStatement.setLong(i++, evento.getIdDeporte());
+				if (evento.getIdParticipante()!=null) 
+					preparedStatement.setLong(i++, evento.getIdParticipante());
+			}
+
 			
-			boolean first = true;
-			
-			//Inners
-
-			if (evento.getIdDeporte()!=null) {
-				queryString.append("INNER JOIN producto_categoria pc ON p.id_producto = pc.id_producto INNER JOIN categoria c ON c.id_categoria=pc.id_categoria ");	
-			}
-
-			if (evento.getIdParticipante()!=null) {
-				queryString.append("INNER JOIN Producto_NJugadores pn ON p.id_producto = pn.id_producto INNER JOIN NJugadores n ON pn.id_njugador=n.id_nJugadores ");	
-			}
-
-			//Where/ands
-
-			if (evento.getIdEvento()!=null) {
-				addClause(queryString, first, " e.id_evento LIKE ? ");
-				first = false;
-			}
-
-			if (evento.getFecha()!=null) {
-				addClause(queryString, first, " p.nombre LIKE ? ");
-				first = false;
-			}
-
-			if (evento.getIdCompeticion()!=null) {
-				addClause(queryString, first, " p.precio LIKE ? ");
-				first = false;
-			}
-
-			if (evento.getIdDeporte()!=null) {
-				addClause(queryString, first, " p.anio LIKE ? ");
-				first = false;
-			}			
-
-			if (evento.getIdParticipante()!=null) {
-				addClause(queryString, first, " p.requisitos LIKE ? ");
-				first = false;
-			}	
-			
-			
-			queryString.append("group by id_evento, id_participante");
-
-			preparedStatement = connection.prepareStatement(queryString.toString(),
-					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			int i = 1;       
-
-			if (evento.getIdEvento()!=null) 
-				preparedStatement.setLong(i++,  evento.getIdEvento() );
-			if (evento.getFecha()!=null) 
-				preparedStatement.setDate(i++, new java.sql.Date(evento.getFecha().getTime()));
-			if (evento.getIdCompeticion()!=null) 
-				preparedStatement.setLong(i++, evento.getIdCompeticion());
-			if (evento.getIdDeporte()!=null)
-				preparedStatement.setLong(i++, evento.getIdDeporte());
-			if (evento.getIdParticipante()!=null) 
-				preparedStatement.setLong(i++, evento.getIdParticipante());
-
-
-
 			resultSet = preparedStatement.executeQuery();
 
 			List<Evento> results = new ArrayList<Evento>();
 			Evento e = null;
-			
+
 			List<TipoResultado> mercados = null;
-			
+
 			while(resultSet.next()) {
-				e = loadNext(resultSet); //facer outro load next
+				e = loadNext(connection, resultSet); 
 				mercados = tipoResultadoDAO.findByEvento(connection, e.getIdEvento());
 				e.setMercados(mercados);
 				results.add(e);               	
 			}
 
-		
+
 			return results;
 		} catch (SQLException e) {
-			
+
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
@@ -222,7 +320,7 @@ public class EventoDAOImpl implements EventoDAO{
 	}
 
 
-	private Evento loadNext(ResultSet resultSet) throws SQLException{
+	private Evento loadNext(Connection connection, ResultSet resultSet) throws SQLException{
 
 
 		Evento e = new Evento();
@@ -234,8 +332,8 @@ public class EventoDAOImpl implements EventoDAO{
 		e.setIdEvento(id);
 		e.setFecha(fecha);
 		e.setIdCompeticion(idComp);
-		
-		
+
+
 		return e;
 
 	}
