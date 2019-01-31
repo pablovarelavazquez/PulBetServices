@@ -10,10 +10,10 @@ import com.pvv.pulbet.model.Apuesta;
 
 public interface ApuestaDAO {
 	
-	public Apuesta findById(Connection connection, Integer id)
+	public Apuesta findById(Connection connection, Long id)
 			throws InstanceNotFoundException, DataException;
 
-	public List<Apuesta> findByUsuario(Connection connection, Integer id)
+	public List<Apuesta> findByUsuario(Connection connection, Long id)
 			throws DataException;
 	
 	public List<Apuesta> findAll(Connection connection) throws DataException;

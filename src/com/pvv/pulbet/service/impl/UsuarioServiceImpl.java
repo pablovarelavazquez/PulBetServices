@@ -3,11 +3,17 @@ package com.pvv.pulbet.service.impl;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.pvv.pulbet.dao.DireccionDAO;
 import com.pvv.pulbet.dao.UsuarioDAO;
+import com.pvv.pulbet.dao.impl.DireccionDAOImpl;
 import com.pvv.pulbet.dao.impl.UsuarioDAOImpl;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
+import com.pvv.pulbet.exceptions.DuplicateInstanceException;
+import com.pvv.pulbet.exceptions.InstanceNotFoundException;
+import com.pvv.pulbet.exceptions.MailException;
+import com.pvv.pulbet.model.Direccion;
 import com.pvv.pulbet.model.Usuario;
 import com.pvv.pulbet.service.BancoService;
 import com.pvv.pulbet.service.MailService;
@@ -16,16 +22,18 @@ import com.pvv.pulbet.service.UsuarioService;
 public class UsuarioServiceImpl implements UsuarioService{
 	
 	
-	UsuarioDAO dao = null;
+	UsuarioDAO usuarioDAO = null;
+	DireccionDAO direccionDAO = null;
 	BancoService banco = null;
 	
 	public UsuarioServiceImpl() {
-		dao = new UsuarioDAOImpl();
+		usuarioDAO = new UsuarioDAOImpl();
 		banco = new BancoServiceImpl();
+		direccionDAO = new DireccionDAOImpl();
 	}
 
 	@Override
-	public Usuario findById(Long id) throws Exception {
+	public Usuario findById(Long id) throws InstanceNotFoundException, DataException {
 		Connection c = null;
 		
 	try {
@@ -33,13 +41,12 @@ public class UsuarioServiceImpl implements UsuarioService{
 		c = ConnectionManager.getConnection();
 		c.setAutoCommit(true);
 		
-		Usuario u = dao.findById(c,id); 
+		Usuario u = usuarioDAO.findById(c,id); 
 		
 		return u;
 		
 	} catch (SQLException e){
-		e.printStackTrace();
-		throw e;
+		throw new DataException(e);
 	} finally {
 		JDBCUtils.closeConnection(c);
 	}
@@ -47,7 +54,8 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 
 	@Override
-	public Usuario create(Usuario u) throws Exception {
+	public Usuario create(Usuario u)
+			throws  DuplicateInstanceException, DataException, MailException {
 		boolean commit = false;
 		Connection c = null;
 		MailService mailService = null;
@@ -60,7 +68,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 		
 		
 		
-		u = dao.create(c,u); 
+		u = usuarioDAO.create(c,u); 
 		mailService.sendMail("Benvido a PulBet", "Benvido "+u.getNome(), "pulbetsoporte@gmail.com");
 		
 		
@@ -69,15 +77,14 @@ public class UsuarioServiceImpl implements UsuarioService{
 		return u;
 		
 	} catch (SQLException e){
-		e.printStackTrace();
-		throw e;
+		throw new DataException(e);
 	} finally {
 		JDBCUtils.closeConnection(c,commit);
 	}
 	}
 	
 	@Override
-	public Usuario login(String email, String password) throws Exception {
+	public Usuario login(String email, String password) throws DataException {
 		Connection connection = null;
 		
 	try {
@@ -94,7 +101,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 			return null;
 		}
 		
-		Usuario u = dao.findByEmail(connection, email);
+		Usuario u = usuarioDAO.findByEmail(connection, email);
 		
 		if(u == null) {
 			return u;
@@ -111,8 +118,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 				
 				
 			} catch (SQLException e){
-				e.printStackTrace();
-				throw e;
+				throw new DataException(e);
 			} finally {
 				JDBCUtils.closeConnection(connection);
 			}
@@ -120,16 +126,38 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 
 	@Override
-	public void update(Usuario u) throws Exception {
-		// TODO Auto-generated method stub
+	public void update(Usuario u) 
+			throws InstanceNotFoundException, DataException {
 		
+	    Connection connection = null;
+        boolean commit = false;
+
+        try {
+          
+            connection = ConnectionManager.getConnection();
+
+            connection.setTransactionIsolation(
+                    Connection.TRANSACTION_READ_COMMITTED);
+
+            connection.setAutoCommit(false);
+
+            usuarioDAO.update(connection,u);
+            commit = true;
+            
+        } catch (SQLException e) {
+            throw new DataException(e);
+
+        } finally {
+        	JDBCUtils.closeConnection(connection, commit);
+        }
 	}
 
 	@Override
-	public long closeAccount(Usuario u) throws Exception {
+	public long delete(Long id) throws DataException {
 		Connection connection = null;
         boolean commit = false;
         Long result = null;
+        Usuario u = null;
 
         try {
           
@@ -140,15 +168,17 @@ public class UsuarioServiceImpl implements UsuarioService{
 
             connection.setAutoCommit(false);
             
+            u = usuarioDAO.findById(connection, id);
+            
             if(u.getBanco()>0d) {
             	
             banco.retirar(u.getIdUsuario(), u.getBanco());
             
-            result = dao.delete(connection, u.getIdUsuario());   
+            result = usuarioDAO.delete(connection, id);   
             
             } else if ( u.getBanco()<=0d) {
             	
-            	result = dao.delete(connection, u.getIdUsuario());
+            	result = usuarioDAO.delete(connection, id);
             	
             }
             
@@ -162,6 +192,37 @@ public class UsuarioServiceImpl implements UsuarioService{
         } finally {
         	JDBCUtils.closeConnection(connection, commit);
         }	
+	}
+
+	@Override
+	public void editDireccion(Direccion direccion, Usuario u) throws InstanceNotFoundException, DataException {
+		  Connection connection = null;
+	        boolean commit = false;
+	        Direccion d = null;
+
+	        try {
+	          
+	            connection = ConnectionManager.getConnection();
+
+	            connection.setTransactionIsolation(
+	                    Connection.TRANSACTION_READ_COMMITTED);
+
+	            connection.setAutoCommit(false);
+
+	            d = u.getDireccion(); 
+	            
+	            direccionDAO.delete(connection, d.getId());
+	            commit = true;
+	            
+	            u.setDireccion(direccion);
+	            direccionDAO.create(connection, direccion);
+	            
+	        } catch (SQLException e) {
+	            throw new DataException(e);
+
+	        } finally {
+	        	JDBCUtils.closeConnection(connection, commit);
+	        }
 	}
 
 

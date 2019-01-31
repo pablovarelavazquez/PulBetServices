@@ -3,11 +3,13 @@ package com.pvv.pulbet.service.impl;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.HtmlEmail;
 
+import com.pvv.pulbet.exceptions.MailException;
 import com.pvv.pulbet.service.MailService;
 
 public class MailServiceImpl implements MailService{
 	
-	public boolean sendMail(String mensajeHTMl, String subject, String... to) {
+	@Override
+	public void sendMail(String mensajeHTMl, String subject, String... to) throws MailException{
 
 		
 		try {
@@ -21,10 +23,11 @@ public class MailServiceImpl implements MailService{
 			email.setHtmlMsg(mensajeHTMl);
 			email.addTo(to);
 			email.send();
-			return true;
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
+			throw new MailException ("Trying to send email "
+					+ " from pulbet "
+					+ " to " + to, e);
 		}
 	}
 	

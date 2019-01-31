@@ -28,7 +28,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	}
 
 	@Override
-	public Apuesta findById(Connection connection, Integer id)
+	public Apuesta findById(Connection connection, Long id)
 			throws InstanceNotFoundException, DataException {
 		Apuesta a = null;
 
@@ -73,7 +73,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	}
 
 	@Override
-	public List<Apuesta> findByUsuario(Connection connection, Integer id)
+	public List<Apuesta> findByUsuario(Connection connection, Long id)
 			throws DataException {
 
 
@@ -223,7 +223,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 		try {
 			
-			deleteLineasApuesta (connection, id);
+			deleteLineasApuesta(connection, id);
 
 			String queryString =	
 					  "DELETE FROM APUESTA " 

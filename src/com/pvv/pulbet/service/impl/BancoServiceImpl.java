@@ -20,7 +20,7 @@ public class BancoServiceImpl implements BancoService{
 	}
 	
 	@Override
-	public void ingresar(Long idUsuario, Double cantidad) throws Exception {
+	public void ingresar(Long idUsuario, Double cantidad) throws DataException {
 		Connection connection = null;
 		Usuario u = null;
 		try {
@@ -42,7 +42,7 @@ public class BancoServiceImpl implements BancoService{
 	}
 
 	@Override
-	public void retirar(Long idUsuario, Double cantidad) throws Exception {
+	public void retirar(Long idUsuario, Double cantidad) throws DataException {
 		Connection connection = null;
 		Usuario u = null;
 		try {

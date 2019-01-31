@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.pvv.pulbet.dao.ApuestaDAO;
 import com.pvv.pulbet.dao.DireccionDAO;
 import com.pvv.pulbet.dao.UsuarioDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
@@ -16,6 +17,7 @@ import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
+import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.model.Direccion;
 import com.pvv.pulbet.model.Usuario;
 
@@ -23,6 +25,7 @@ import com.pvv.pulbet.model.Usuario;
 public class UsuarioDAOImpl implements UsuarioDAO{
 	
 	private DireccionDAO direccionDAO = null;
+	private ApuestaDAO apuestaDAO = null;
 
 	public UsuarioDAOImpl () {
 		direccionDAO = new DireccionDAOImpl();
@@ -234,8 +237,10 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 				u.setIdUsuario(id);	
 				
 				//Creamos a direccion do usuario
-				Direccion d = direccionDAO.create(connection, u.getDireccion());
-				d.setIdUsuario(u.getIdUsuario());
+				
+				Direccion d = u.getDireccion();
+				d.setIdUsuario(id);
+				direccionDAO.create(connection, d);
 				u.setDireccion(d);
 				
 			} else {
@@ -262,19 +267,22 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		try {          
 
 			connection = ConnectionManager.getConnection();
+			
+			//Direccion d = u.getDireccion();
+			//direccionDAO.delete(connection, d.getId());
 
 			String queryString = "UPDATE USUARIO "
 					+ "SET EMAIL = ?, "
-					+ "SET NOMBRE_USUARIO = ?, "
-					+ "SET APELLIDO1 = ?, "
-					+ "SET APELLIDO2 = ?, "
-					+ "SET PASSWORD = ?,  "
-					+ "SET BANCO = ?, "
-					+ "SET TELFONO = ?, "
-					+ "SET FECHA_NACIMIENTO = ?,"
-					+ "SET NOMBRE_USUARIO = ?,"
-					+ "SET DNI = ?"
-					+ "WHERE ID_USUARIO=?";
+					+ "NOMBRE = ?, "
+					+ "APELLIDO1 = ?, "
+					+ "APELLIDO2 = ?, "
+					+ "PASSWORD = ?, "
+					+ "BANCO = ?, "
+					+ "TELEFONO = ?, "
+					+ "FECHA_NACIMIENTO = ?, "
+					+ "NOMBRE_USUARIO = ?, "
+					+ "DNI = ? "
+					+ "WHERE ID_USUARIO= ? ";
 
 			preparedStatement = connection.prepareStatement(queryString);
 
@@ -301,6 +309,11 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			if (updatedRows > 1) {
 				throw new SQLException("Duplicate row for id = '" + u.getIdUsuario() + "' in table 'Usuario'");
 			}
+			
+			//d = u.getDireccion();
+			//d.setIdUsuario(u.getIdUsuario());
+			//d = direccionDAO.create(connection, d);
+			//u.setDireccion(d);
 
 
 		} catch (SQLException ex) {
@@ -317,9 +330,20 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			throws InstanceNotFoundException, DataException{
 
 		PreparedStatement preparedStatement = null;
-
+		List<Apuesta> apuestas = new ArrayList<Apuesta>();
+		
 		try {
 			connection = ConnectionManager.getConnection();
+			
+			//Temos que borrar a direccion do usuario e as apuestas
+			Direccion d = direccionDAO.findByUsuario(connection, id);
+			direccionDAO.delete(connection, d.getId());
+			
+			apuestas = apuestaDAO.findByUsuario(connection, id);
+			
+			for(Apuesta a : apuestas) {
+				apuestaDAO.delete(connection, a.getIdApuesta());
+			}
 
 			String queryString =	
 					"DELETE FROM USUARIO " 
@@ -333,10 +357,6 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 			long removedRows = preparedStatement.executeUpdate();
 
-			//Temos que borrar a direccion do usuario
-			Direccion d = direccionDAO.findByUsuario(connection, id);
-			direccionDAO.delete(connection, d.getId());
-			
 			return removedRows;
 
 		} catch (SQLException e) {

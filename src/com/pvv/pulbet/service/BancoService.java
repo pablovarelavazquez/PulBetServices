@@ -1,10 +1,10 @@
 package com.pvv.pulbet.service;
 
-import java.sql.Connection;
+import com.pvv.pulbet.exceptions.DataException;
 
 public interface BancoService {
 	
-	public void ingresar(Long idUsuario, Double cantidad) throws Exception;
+	public void ingresar(Long idUsuario, Double cantidad) throws DataException;
 
-	public void retirar(Long idUsuario, Double cantidad) throws Exception;
+	public void retirar(Long idUsuario, Double cantidad) throws DataException;
 }

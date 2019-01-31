@@ -228,8 +228,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 		try {
 			connection = ConnectionManager.getConnection();
 
-			String queryString =	
-					"DELETE FROM DIRECCION " 
+			String queryString ="DELETE FROM DIRECCION " 
 							+ "WHERE ID_DIRECCION = ? ";
 
 

@@ -1,10 +1,11 @@
 package com.pvv.pulbet.service;
 
 import com.pvv.pulbet.model.Usuario;
+import com.pvv.pulbet.service.impl.MailServiceImpl;
 
 public class MailServiceTest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
 		Usuario u1 = new Usuario();
 		u1.setNome("Pepe");
@@ -26,14 +27,14 @@ public class MailServiceTest {
 		usuarios[0] = u1;
 		usuarios[1] = u2;
 		
-		MailService mailService = new MailService();
+		MailService mailService = new MailServiceImpl();
 		
 		for (Usuario u: usuarios) {
 			
 			String benvida = "Hola usuario "+ u.getNome() +" "+ u.getApelido1();
 			String mensajeHTML = "<html><body><p style=\"font-size:20px\">Benvido a PulBet <b>"+u.getNomeUsuario()+"</b>. Vostede dispon agoramismo no seu banco de: "+u.getBanco()+" </p></body></html>";
 			
-			MailService.sendMail(mensajeHTML,benvida,u.getEmail());
+			mailService.sendMail(mensajeHTML,benvida,u.getEmail());
 		
 		}
 		
