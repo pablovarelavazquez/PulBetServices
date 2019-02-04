@@ -8,15 +8,23 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.pvv.pulbet.dao.ResultadoDAO;
 import com.pvv.pulbet.dao.TipoResultadoDAO;
-import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
+import com.pvv.pulbet.model.Resultado;
 import com.pvv.pulbet.model.TipoResultado;
 
 public class TipoResultadoDAOImpl implements TipoResultadoDAO{
+	
+	ResultadoDAO resultadoDAO = null;
+	
+	public TipoResultadoDAOImpl() {
+		resultadoDAO = new ResultadoDAOImpl();
+	}
+	
 
 	@Override
 	public TipoResultado create(Connection connection, TipoResultado t) throws DuplicateInstanceException, DataException {
@@ -101,8 +109,6 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 					+"FROM TIPO_RESULTADO "
 					+"WHERE ID_TIPO_RESULTADO = ? ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -114,7 +120,7 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 			//STEP 5: Extract data from result set			
 
 			if (resultSet.next()) {
-				t =  loadNext(resultSet);			
+				t =  loadNext(connection, resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
 				throw new InstanceNotFoundException("Non se atopou TIPO_RESULTADO con id = "+id, TipoResultado.class.getName());
@@ -145,8 +151,6 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 					+"	E.ID_EVENTO = ?";
 
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -161,7 +165,46 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 
 
 			while(resultSet.next()) {
-				t = loadNext(resultSet);
+				t = loadNext(connection, resultSet);
+				results.add(t);               	
+			}
+
+			return results;
+
+		} catch (SQLException ex) {
+			throw new DataException(ex);
+		} finally {            
+			JDBCUtils.closeResultSet(resultSet);
+			JDBCUtils.closeStatement(preparedStatement);
+		}
+	}
+	
+	@Override
+	public List<TipoResultado> findByDeporte(Connection connection, Long id) throws DataException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try{
+
+			String sql;
+			sql =    "select tr.id_tipo_resultado, tr.nombre " 
+					+" from tipo_resultado tr inner join tipo_resultado_deporte rd on rd.id_tipo_resultado = tr.id_tipo_resultado "
+					+" where rd.id_deporte = ? ";
+
+			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			// Establece os parámetros
+			int i = 1;
+			preparedStatement.setLong(i++, id);
+
+			resultSet = preparedStatement.executeQuery();			
+			//STEP 5: Extract data from result set			
+
+			List<TipoResultado> results = new ArrayList<TipoResultado>();                        
+			TipoResultado t = null;
+
+
+			while(resultSet.next()) {
+				t = loadNext(connection, resultSet);
 				results.add(t);               	
 			}
 
@@ -175,7 +218,8 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 		}
 	}
 
-	private TipoResultado loadNext(ResultSet resultSet) throws SQLException{
+
+	private TipoResultado loadNext(Connection connection, ResultSet resultSet) throws SQLException, DataException{
 
 
 		TipoResultado t = new TipoResultado();
@@ -185,10 +229,15 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 
 		t.setIdTipoResultado(id);
 		t.setNome(nome);
+		
+		List<Resultado> resultados = resultadoDAO.findByTipoResultado(connection, id);
+		t.setResultados(resultados);
+		
 
 		return t;
 
 	}
+
 
 
 }

@@ -17,5 +17,7 @@ public interface TipoResultadoDAO {
 	public TipoResultado findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException;
 	
 	public List<TipoResultado> findByEvento(Connection connection, Long id) throws DataException;
+	
+	public List<TipoResultado> findByDeporte(Connection connection, Long id) throws DataException;
 
 }

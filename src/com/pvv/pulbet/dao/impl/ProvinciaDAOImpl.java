@@ -29,8 +29,6 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 					+"FROM PROVINCIA "
 					+"WHERE ID_PROVINCIA = ? ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -68,8 +66,6 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 			sql =  "SELECT ID_PROVINCIA, NOMBRE, ID_PAIS "
 					+"FROM PROVINCIA ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			resultSet = preparedStatement.executeQuery();			
@@ -106,8 +102,6 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 					+" WHERE "
 					+"	UPPER(NOMBRE) LIKE ?";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -152,8 +146,6 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 					+"	ID_PAIS = ?";
 
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros

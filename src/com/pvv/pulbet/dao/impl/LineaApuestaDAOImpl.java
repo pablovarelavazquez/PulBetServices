@@ -25,8 +25,8 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		ResultSet resultSet = null;
 		try {          
 
-			String queryString = "INSERT INTO LINEA_APUESTA(NUMERO_LINEA,ID_APUESTA,ID_RESULTADO,ID_EVENTO) "
-					+ "VALUES (?, ?, ?, ?)";
+			String queryString = "INSERT INTO LINEA_APUESTA(NUMERO_LINEA,ID_APUESTA,ID_RESULTADO,ID_EVENTO,PROCESADO) "
+					+ "VALUES (?, ?, ?, ?, ?)";
 
 			preparedStatement = connection.prepareStatement(queryString);
 
@@ -35,6 +35,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 			preparedStatement.setLong(i++,l.getIdApuesta());
 			preparedStatement.setLong(i++,l.getIdResultado());
 			preparedStatement.setLong(i++, l.getIdEvento());
+			preparedStatement.setInt(i++, l.getProcesado());
 
 			int insertedRows = preparedStatement.executeUpdate();
 
@@ -74,13 +75,53 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 			if (removedRows == 0) {
 				throw new InstanceNotFoundException("Non se atopou linea de aposta :"+id,LineaApuesta.class.getName());
 			} 
-			
+
 			return removedRows;
 
 		} catch (SQLException e) {
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeStatement(preparedStatement);
+		}
+	}
+	
+	@Override
+	public void update(Connection connection, LineaApuesta l) throws InstanceNotFoundException, DataException {
+		PreparedStatement preparedStatement = null;
+
+		try {          
+
+			String queryString = "UPDATE LINEA_APUESTA "
+					+ "SET ID_RESULTADO = ?, "
+					+ "ID_EVENTO = ?, "
+					+ "PROCESADO = ? "
+					+ "WHERE ID_APUESTA= ? AND NUMERO_LINEA = ? ";
+
+			preparedStatement = connection.prepareStatement(queryString);
+
+			int i = 1;     			
+			
+			preparedStatement.setLong(i++, l.getIdResultado());
+			preparedStatement.setLong(i++, l.getIdEvento());
+			preparedStatement.setInt(i++, l.getProcesado());
+			preparedStatement.setLong(i++, l.getIdApuesta());
+			preparedStatement.setInt(i++, l.getNumLinea());
+
+			int updatedRows = preparedStatement.executeUpdate();
+
+
+			if (updatedRows == 0) {
+				throw new InstanceNotFoundException("Non se atopou a Linea de aposta aposta: "+l.getIdApuesta()+" liña "+l.getNumLinea(), LineaApuesta.class.getName());
+			}
+
+			if (updatedRows > 1) {
+				throw new SQLException("Duplicate row for id_apuesta = "+l.getIdApuesta()+" numero_linea "+l.getNumLinea()+" in table 'Linea_Apuesta'");
+			}
+			
+		} catch (SQLException ex) {
+			throw new DataException(ex);
+		} finally {
+			JDBCUtils.closeStatement(preparedStatement);			
 		}
 	}
 
@@ -98,8 +139,6 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 					+"FROM LINEA_APUESTA "
 					+"WHERE ID_APUESTA = ? AND NUMERO_LINEA = ? ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -111,12 +150,12 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 			//STEP 5: Extract data from result set			
 
 			if (resultSet.next()) {
-				l =  loadNext(resultSet);			
+				l =  loadNext(connection,resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
 				throw new InstanceNotFoundException("Non se atopou a liña de aposta: "+id, LineaApuesta.class.getName());
 			}
-			
+
 
 		} catch (SQLException ex) {
 			throw new DataException(ex);
@@ -139,8 +178,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 					+"FROM LINEA_APUESTA "
 					+ "ORDER BY ID_APUESTA,NUMERO_LINEA ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
+
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			resultSet = preparedStatement.executeQuery();			
@@ -151,7 +189,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 
 			while(resultSet.next()) {
-				l = loadNext(resultSet);
+				l = loadNext(connection,resultSet);
 				results.add(l);               	
 			}
 
@@ -177,8 +215,6 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 					+ "WHERE ID_APUESTA = ? "
 					+ "ORDER BY NUMERO_LINEA ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -194,7 +230,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 
 			while(resultSet.next()) {
-				l = loadNext(resultSet);
+				l = loadNext(connection,resultSet);
 				results.add(l);               	
 			}
 
@@ -220,8 +256,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 					+ "WHERE ID_EVENTO = ? "
 					+ "ORDER BY ID_APUESTA, NUMERO_LINEA ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
+
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -237,7 +272,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 
 			while(resultSet.next()) {
-				l = loadNext(resultSet);
+				l = loadNext(connection,resultSet);
 				results.add(l);               	
 			}
 
@@ -251,7 +286,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		}  	
 	}
 
-	private LineaApuesta loadNext(ResultSet resultSet) throws SQLException{
+	private LineaApuesta loadNext(Connection connection,ResultSet resultSet) throws SQLException{
 
 		LineaApuesta l = new LineaApuesta();
 		int i = 1;
@@ -259,7 +294,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		Long idApuesta = resultSet.getLong(i++);
 		Long idRes = resultSet.getLong(i++);
 		Long idEv = resultSet.getLong(i++);
-		Boolean procesado = resultSet.getBoolean(i++);
+		Integer procesado = resultSet.getInt(i++);
 
 		l.setNumLinea(numeroLinea);
 		l.setIdApuesta(idApuesta);
@@ -270,6 +305,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 		return l;
 
 	}
-	
-	
+
 }
+
+

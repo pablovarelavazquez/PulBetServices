@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pvv.pulbet.dao.PaisDAO;
-import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
@@ -29,8 +28,6 @@ public class PaisDAOImpl implements PaisDAO{
 					+"FROM PAIS "
 					+"WHERE ID_PAIS = ? ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -42,7 +39,7 @@ public class PaisDAOImpl implements PaisDAO{
 			//STEP 5: Extract data from result set			
 
 			if (resultSet.next()) {
-				p =  loadNext(resultSet);			
+				p =  loadNext(connection,resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
 				throw new InstanceNotFoundException("Non se atopou PAIS con id = "+id, Pais.class.getName());
@@ -69,8 +66,6 @@ public class PaisDAOImpl implements PaisDAO{
 			sql =  "SELECT ID_PAIS,NOMBRE "
 					+"FROM PAIS ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			resultSet = preparedStatement.executeQuery();			
@@ -81,7 +76,7 @@ public class PaisDAOImpl implements PaisDAO{
 
 
 			while(resultSet.next()) {
-				p = loadNext(resultSet);
+				p = loadNext(connection,resultSet);
 				results.add(p);               	
 			}
 
@@ -107,8 +102,6 @@ public class PaisDAOImpl implements PaisDAO{
 					+" WHERE "
 					+"	UPPER(NOMBRE) LIKE ?";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -124,7 +117,7 @@ public class PaisDAOImpl implements PaisDAO{
 
 
 			while(resultSet.next()) {
-				p = loadNext(resultSet);
+				p = loadNext(connection,resultSet);
 				results.add(p);               	
 			}
 			
@@ -140,7 +133,7 @@ public class PaisDAOImpl implements PaisDAO{
 	}
 
 
-	private Pais loadNext(ResultSet resultSet) throws SQLException{
+	private Pais loadNext(Connection connection,ResultSet resultSet) throws SQLException{
 
 
 		Pais p = new Pais();

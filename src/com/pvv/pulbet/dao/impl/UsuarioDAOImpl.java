@@ -19,6 +19,7 @@ import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.model.Direccion;
 import com.pvv.pulbet.model.Usuario;
+import com.pvv.pulbet.util.PasswordEncryptionUtil;
 
 
 public class UsuarioDAOImpl implements UsuarioDAO{
@@ -45,8 +46,6 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 					+"FROM USUARIO "
 					+"WHERE ID_USUARIO = ? ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -91,8 +90,6 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 					+"	UPPER(EMAIL) LIKE ?";
 
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -130,8 +127,6 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			sql =  "SELECT ID_USUARIO, EMAIL, NOMBRE, APELLIDO1, APELLIDO2, PASSWORD, BANCO, TELEFONO, FECHA_NACIMIENTO, NOMBRE_USUARIO, DNI "
 					+"FROM USUARIO ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			resultSet = preparedStatement.executeQuery();			
@@ -211,7 +206,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			preparedStatement.setString(i++, u.getNome());
 			preparedStatement.setString(i++, u.getApelido1());
 			preparedStatement.setString(i++, u.getApelido2());
-			preparedStatement.setString(i++, u.getPassword());
+			preparedStatement.setString(i++, PasswordEncryptionUtil.encryptPassword(u.getPassword()));
 			preparedStatement.setDouble(i++, u.getBanco());
 			preparedStatement.setString(i++, u.getTelefono());
 			preparedStatement.setDate(i++, new java.sql.Date(u.getFechaNacimiento().getTime()));

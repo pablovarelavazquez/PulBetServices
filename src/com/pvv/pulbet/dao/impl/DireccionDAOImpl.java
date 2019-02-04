@@ -29,8 +29,6 @@ public class DireccionDAOImpl implements DireccionDAO{
 					+"FROM DIRECCION "
 					+"WHERE ID_USUARIO = ? ";
 			
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -68,8 +66,6 @@ public class DireccionDAOImpl implements DireccionDAO{
 			sql =  "SELECT ID_DIRECCION,CIUDAD,ID_PROVINCIA,CALLE,NUMERO,COD_POSTAL,PISO,LETRA,ID_USUARIO "
 					+"FROM DIRECCION ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			resultSet = preparedStatement.executeQuery();			
@@ -107,8 +103,6 @@ public class DireccionDAOImpl implements DireccionDAO{
 					+"FROM DIRECCION "
 					+"WHERE ID_DIRECCION = ? ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros

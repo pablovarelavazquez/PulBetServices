@@ -106,8 +106,6 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 					+"FROM RESULTADO "
 					+"WHERE ID_RESULTADO = ? ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -119,7 +117,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 			//STEP 5: Extract data from result set			
 
 			if (resultSet.next()) {
-				r =  loadNext(resultSet);			
+				r =  loadNext(connection,resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
 				throw new InstanceNotFoundException("Non se atopou RESULTADO con id = "+id, Resultado.class.getName());
@@ -146,11 +144,9 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 			sql =    "SELECT ID_RESULTADO, NOMBRE, ID_TIPO_RESULTADO " 
 					+" FROM RESULTADO "
 					+" WHERE "
-					+"	ID_RESULTADO = ?";
+					+"	ID_TIPO_RESULTADO = ?";
 
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -165,7 +161,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 
 
 			while(resultSet.next()) {
-				r = loadNext(resultSet);
+				r = loadNext(connection,resultSet);
 				results.add(r);               	
 			}
 
@@ -179,7 +175,8 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 		}
 	}
 	
-	private Resultado loadNext(ResultSet resultSet) throws SQLException{
+	
+	private Resultado loadNext(Connection connection,ResultSet resultSet) throws SQLException{
 
 
 		Resultado r = new Resultado();
@@ -195,5 +192,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 		return r;
 
 	}
+
+
 
 }

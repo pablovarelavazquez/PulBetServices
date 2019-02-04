@@ -17,5 +17,5 @@ public interface ResultadoDAO {
 	public Resultado findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException;
 	
 	public List<Resultado> findByTipoResultado(Connection connection, Integer id) throws DataException;
-
+	
 }

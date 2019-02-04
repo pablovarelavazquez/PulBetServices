@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pvv.pulbet.dao.ParticipanteDAO;
-import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
@@ -29,8 +28,6 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 					+"FROM PARTICIPANTE "
 					+"WHERE ID_PARTICIPANTE = ? ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -73,8 +70,6 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 			
 			
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -118,8 +113,6 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 			
 			
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros

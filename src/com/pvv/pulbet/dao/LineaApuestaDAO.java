@@ -6,6 +6,7 @@ import java.util.List;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
+import com.pvv.pulbet.model.Evento;
 import com.pvv.pulbet.model.LineaApuesta;
 import com.pvv.pulbet.model.LineaApuestaId;
 
@@ -14,6 +15,8 @@ public interface LineaApuestaDAO {
 	public LineaApuesta create(Connection connection, LineaApuesta l) throws DuplicateInstanceException, DataException;
 	
 	public int delete(Connection connection, LineaApuestaId id) throws InstanceNotFoundException, DataException;
+	
+	public void update(Connection connection, LineaApuesta l) throws InstanceNotFoundException, DataException;
 	
 	public LineaApuesta findById(Connection connection, LineaApuestaId id) throws InstanceNotFoundException, DataException;
 	

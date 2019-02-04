@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pvv.pulbet.dao.DeporteDAO;
-import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Deporte;
+import com.pvv.pulbet.model.Usuario;
 
 public class DeporteDAOImpl implements DeporteDAO{
 	
@@ -101,8 +101,6 @@ public class DeporteDAOImpl implements DeporteDAO{
 			sql =  "SELECT ID_DEPORTE, NOMBRE "
 					+"FROM DEPORTE ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			resultSet = preparedStatement.executeQuery();			
@@ -113,7 +111,7 @@ public class DeporteDAOImpl implements DeporteDAO{
 
 
 			while(resultSet.next()) {
-				d = loadNext(resultSet);
+				d = loadNext(connection, resultSet);
 				results.add(d);               	
 			}
 
@@ -140,8 +138,6 @@ public class DeporteDAOImpl implements DeporteDAO{
 					+" WHERE "
 					+"	UPPER(NOMBRE) LIKE ?"; 
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -156,7 +152,7 @@ public class DeporteDAOImpl implements DeporteDAO{
 
 
 			while(resultSet.next()) {
-				d = loadNext(resultSet);
+				d = loadNext(connection, resultSet);
 				results.add(d);               	
 			}
 			
@@ -171,7 +167,43 @@ public class DeporteDAOImpl implements DeporteDAO{
 		}
 	}
 	
-private Deporte loadNext(ResultSet resultSet) throws SQLException{
+	@Override
+	public Deporte findById(Connection connection, Long id) throws InstanceNotFoundException, DataException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Deporte d = null;
+		try{
+
+			String sql;
+			sql =    "SELECT ID_DEPORTE, NOMBRE " 
+					+" FROM DEPORTE "
+					+" WHERE ID_DEPORTE = ?"; 
+
+			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			// Establece os parámetros
+			int i = 1;
+			preparedStatement.setLong(i++, id);
+
+			resultSet = preparedStatement.executeQuery();			
+
+			if (resultSet.next()) {
+				d =  loadNext(connection, resultSet);			
+			} else {
+				throw new InstanceNotFoundException("Non se atopou usuario con id = "+id, Usuario.class.getName());
+			}
+
+			return d;
+			
+		} catch (SQLException ex) {
+			throw new DataException(ex);
+		} finally {            
+			JDBCUtils.closeResultSet(resultSet);
+			JDBCUtils.closeStatement(preparedStatement);
+		}
+	}
+	
+private Deporte loadNext(Connection connection, ResultSet resultSet) throws SQLException{
 		
 		Deporte d = new Deporte();
 		int i = 1;
@@ -184,10 +216,6 @@ private Deporte loadNext(ResultSet resultSet) throws SQLException{
 		return d;
 	}
 
-@Override
-public Deporte findById(Connection connection, Long id) throws InstanceNotFoundException, DataException {
-	// TODO Auto-generated method stub
-	return null;
-}
+
 
 }

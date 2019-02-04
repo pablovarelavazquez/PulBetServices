@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.pvv.pulbet.dao.CompeticionDAO;
-import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
@@ -52,7 +51,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 			}
 
 
-			//...
+			
 			return c;					
 
 		} catch (SQLException ex) {
@@ -153,8 +152,6 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 					+"FROM COMPETICION "
 					+"WHERE ID_COMPETICION = ? ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -166,7 +163,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 			//STEP 5: Extract data from result set			
 
 			if (resultSet.next()) {
-				c =  loadNext(resultSet);			
+				c =  loadNext(connection,resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
 				throw new InstanceNotFoundException("Non se atopou competicion con id = "+id, Competicion.class.getName());
@@ -194,8 +191,6 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 					+"FROM COMPETICION "
 					+"WHERE ID_DEPORTE = ? ";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -211,7 +206,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 
 
 			while(resultSet.next()) {
-				c = loadNext(resultSet);
+				c = loadNext(connection,resultSet);
 				results.add(c);               	
 			}
 
@@ -235,8 +230,6 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 			sql =  "SELECT ID_COMPETICION, NOMBRE, ID_DEPORTE, FECHA_INICIO, FECHA_FIN "
 					+"FROM COMPETICION";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			resultSet = preparedStatement.executeQuery();			
@@ -247,7 +240,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 
 
 			while(resultSet.next()) {
-				c = loadNext(resultSet);
+				c = loadNext(connection,resultSet);
 				results.add(c);               	
 			}
 
@@ -273,8 +266,6 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 					+" WHERE "
 					+"	UPPER(NOMBRE) LIKE ?";
 
-			// Preparar a query
-			System.out.println("Creating statement...");
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
@@ -291,7 +282,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 
 
 			while(resultSet.next()) {
-				c = loadNext(resultSet);
+				c = loadNext(connection,resultSet);
 				results.add(c);               	
 			}
 
@@ -306,7 +297,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 		}  
 	}
 
-	private Competicion loadNext(ResultSet resultSet) 
+	private Competicion loadNext(Connection connection, ResultSet resultSet) 
 			throws SQLException{
 
 

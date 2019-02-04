@@ -18,6 +18,7 @@ import com.pvv.pulbet.model.Usuario;
 import com.pvv.pulbet.service.BancoService;
 import com.pvv.pulbet.service.MailService;
 import com.pvv.pulbet.service.UsuarioService;
+import com.pvv.pulbet.util.PasswordEncryptionUtil;
 
 public class UsuarioServiceImpl implements UsuarioService{
 	
@@ -107,7 +108,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 			return u;
 		} 
 		
-		if(u.getPassword().equals(password)) {
+		if(PasswordEncryptionUtil.checkPassword(password, u.getPassword())) {
 			System.out.println("Usuario "+u.getEmail()+" autenticado!");
 			return u;
 		} else {
@@ -212,11 +213,12 @@ public class UsuarioServiceImpl implements UsuarioService{
 	            d = u.getDireccion(); 
 	            
 	            direccionDAO.delete(connection, d.getId());
-	            commit = true;
 	            
 	            u.setDireccion(direccion);
 	            direccionDAO.create(connection, direccion);
 	            
+	            commit = true;
+	            	            
 	        } catch (SQLException e) {
 	            throw new DataException(e);
 
