@@ -1,6 +1,5 @@
 package com.pvv.pulbet.service;
 
-import java.sql.Connection;
 import java.util.List;
 
 import com.pvv.pulbet.exceptions.DataException;

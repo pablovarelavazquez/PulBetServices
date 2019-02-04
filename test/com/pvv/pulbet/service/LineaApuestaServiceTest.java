@@ -41,8 +41,8 @@ public class LineaApuestaServiceTest {
 
 		try {
 			//test.testUpdate(); //OK
-			test.testComprobar();
-
+			//test.testComprobar(); //OK
+ 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

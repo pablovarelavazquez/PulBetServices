@@ -29,25 +29,25 @@ public class UsuarioServiceTest {
 			throws Exception{
 
 		Direccion d = new Direccion();
-		d.setCalle("Calle la prueba2");
-		d.setCiudad("PruebaCity2");
-		d.setCodPostal(27702);
+		d.setCalle("Rua Xoan XXVIII");
+		d.setCiudad("Chantada");
+		d.setCodPostal(27500);
 		d.setIdProvincia(27l);
 		d.setLetra("B");
-		d.setNumero(12);
+		d.setNumero(35);
 		d.setPiso(4);
 
 		Usuario u = new Usuario();
-		u.setEmail("prueba@estovaiii.com");
-		u.setNome("Pepee");
-		u.setApelido1("Pruebaa");
-		u.setApelido2("Probandoo");
-		u.setPassword("holaa");
+		u.setEmail("pruebaencriptada@vai.com");
+		u.setNome("Encriptado");
+		u.setApelido1("Encriptando");
+		u.setApelido2("Amoaveh");
+		u.setPassword("abc123.");
 		u.setBanco(10.0d);
-		u.setTelefono("982441122");
+		u.setTelefono("670897654");
 		u.setFechaNacimiento(new Date());
-		u.setNomeUsuario("pruebita2");
-		u.setDNI("76192887W");
+		u.setNomeUsuario("encript");
+		u.setDNI("11111222J");
 		u.setDireccion(d);
 
 		usuarioService.create(u);
@@ -56,7 +56,7 @@ public class UsuarioServiceTest {
 	}
 
 	public void testLogin() throws Exception{
-		usuarioService.login("prueba@estovaii.com", "hola");
+		usuarioService.login("pruebaencriptada@vai.com", "abc123.");
 	}
 
 	public void testUpdate() throws Exception{
@@ -122,7 +122,7 @@ public class UsuarioServiceTest {
 
 			//test.testFindById(); //ok
 			//test.testCreate(); //ok
-			//test.testLogin(); //ok
+			test.testLogin(); //ok
 			//test.testUpdate(); //ok --cambia datos de usuario, non direccion
 			//test.testUpdateDireccion(); //ok --cambia direccion
 			//test.testIngresar(); //ok
