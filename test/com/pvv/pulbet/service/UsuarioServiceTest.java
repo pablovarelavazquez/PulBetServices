@@ -120,7 +120,7 @@ public class UsuarioServiceTest {
 
 		try {
 
-			//test.testFindById(); //ok
+			test.testFindById(); //ok
 			//test.testCreate(); //ok
 			//test.testLogin(); //ok
 			//test.testUpdate(); //ok --cambia datos de usuario, non direccion

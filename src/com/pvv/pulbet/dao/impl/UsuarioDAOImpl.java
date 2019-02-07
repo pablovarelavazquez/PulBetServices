@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.ApuestaDAO;
 import com.pvv.pulbet.dao.DireccionDAO;
 import com.pvv.pulbet.dao.UsuarioDAO;
@@ -24,6 +27,7 @@ import com.pvv.pulbet.util.PasswordEncryptionUtil;
 
 public class UsuarioDAOImpl implements UsuarioDAO{
 	
+	private static Logger logger = LogManager.getLogger(UsuarioDAOImpl.class);
 	private DireccionDAO direccionDAO = null;
 	private ApuestaDAO apuestaDAO = null;
 
@@ -35,6 +39,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 	@Override
 	public Usuario findById(Connection connection, Long id) 
 			throws InstanceNotFoundException, DataException{
+		logger.debug("Id = "+id);
 		Usuario u = null;
 
 		PreparedStatement preparedStatement = null;
@@ -60,12 +65,14 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 				u =  loadNext(connection, resultSet);			
 				//System.out.println("Cargado "+u);
 			} else {
+				
 				throw new InstanceNotFoundException("Non se atopou usuario con id = "+id, Usuario.class.getName());
 			}
 
 			return u;
 			
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);

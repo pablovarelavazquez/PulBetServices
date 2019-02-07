@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.CompeticionDAO;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
@@ -18,8 +21,16 @@ import com.pvv.pulbet.model.Competicion;
 
 public class CompeticionDAOImpl implements CompeticionDAO{
 
+	private static Logger logger = LogManager.getLogger(CompeticionDAOImpl.class);
+
 	@Override
 	public Competicion create(Connection connection, Competicion c) throws DuplicateInstanceException, DataException {
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("Competicion = {}", c);
+		}
+
+
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -51,10 +62,11 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 			}
 
 
-			
+
 			return c;					
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
@@ -64,6 +76,11 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 
 	@Override
 	public boolean update(Connection connection, Competicion c) throws InstanceNotFoundException, DataException {
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("Competicion = {}", c);
+		}
+
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -101,6 +118,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
@@ -110,6 +128,11 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 
 	@Override
 	public long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException {
+
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {} ", id);
+		}
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -132,6 +155,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 			return removedRows;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeStatement(preparedStatement);
@@ -141,6 +165,11 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 
 	@Override
 	public Competicion findById(Connection connection, Long id) throws InstanceNotFoundException, DataException {
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+
 		Competicion c = null;
 
 		PreparedStatement preparedStatement = null;
@@ -171,6 +200,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -182,6 +212,11 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 
 	@Override
 	public List<Competicion> findByDeporte(Connection connection, Long id) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -213,6 +248,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -247,6 +283,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -256,6 +293,11 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 
 	@Override
 	public List<Competicion> findByNombre(Connection connection, String nome) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Nome = {}", nome);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -290,6 +332,7 @@ public class CompeticionDAOImpl implements CompeticionDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);

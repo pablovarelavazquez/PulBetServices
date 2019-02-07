@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.ApuestaDAO;
 import com.pvv.pulbet.dao.impl.ApuestaDAOImpl;
 import com.pvv.pulbet.dao.util.ConnectionManager;
@@ -21,6 +24,7 @@ import com.pvv.pulbet.service.LineaApuestaService;
 
 public class ApuestaServiceImpl implements ApuestaService{
 
+	private static Logger logger = LogManager.getLogger(ApuestaServiceImpl.class);
 	ApuestaDAO apuestaDAO = null;
 	LineaApuestaService lineaService = null;
 
@@ -31,8 +35,13 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 	@Override
 	public List<Apuesta> findByUsuario(Long id) throws DataException {
-		Connection connection = null;
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
 
+		Connection connection = null;
+		
 		try {
 
 			connection = ConnectionManager.getConnection();
@@ -41,6 +50,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 			return apuestaDAO.findByUsuario(connection, id);
 
 		} catch (SQLException e){
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeConnection(connection);
@@ -50,6 +60,11 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 	@Override
 	public long delete(Long id)  throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		Connection connection = null;
 		boolean commit = false;
 		Long result = null;
@@ -69,6 +84,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 			return result;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 
 		} finally {
@@ -78,6 +94,12 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 	@Override
 	public List<Apuesta> findHistorial(ApuestaCriteria apuesta, Date hasta) throws DataException {
+		
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("ApuestaCriteria = {0}, Fecha Hasta = {1}", apuesta, hasta);
+		}
+		
 		Connection connection = null;
 		boolean commit = false;
 		List<Apuesta> result = null;
@@ -106,8 +128,8 @@ public class ApuestaServiceImpl implements ApuestaService{
 			return finalizados;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
-
 		} finally {
 			JDBCUtils.closeConnection(connection, commit);
 		}	
@@ -115,6 +137,11 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 	@Override
 	public List<Apuesta> findOpenBets(ApuestaCriteria apuesta, Date hasta) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("ApuestaCriteria = {0}, Fecha Hasta = {1}", apuesta, hasta);
+		}
+		
 		Connection connection = null;
 		boolean commit = false;
 		List<Apuesta> result = null;
@@ -142,6 +169,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 			return noFinalizados;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 
 		} finally {
@@ -151,6 +179,11 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 	@Override
 	public Apuesta comprobarApuesta(Apuesta apuesta) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("ApuestaCriteria = {0}", apuesta);
+		}
+		
 		Connection connection = null;
 		boolean commit = false;
 		boolean acertada = true;
@@ -213,6 +246,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 			return apuesta;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 
 		} finally {
@@ -222,6 +256,11 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 	@Override
 	public Apuesta create(Apuesta a) throws DuplicateInstanceException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("ApuestaCriteria = {0}", a);
+		}
+		
 		Connection connection = null;
 		boolean commit = false;
 		
@@ -242,6 +281,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 			return a;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 
 		} finally {
@@ -251,6 +291,11 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 	@Override
 	public Apuesta findById(Long id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		Connection connection = null;
 
 		try {
@@ -261,6 +306,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 			return apuestaDAO.findById(connection, id);
 
 		} catch (SQLException e){
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeConnection(connection);

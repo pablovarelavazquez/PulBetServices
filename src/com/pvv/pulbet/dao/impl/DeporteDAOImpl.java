@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.DeporteDAO;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
@@ -18,8 +21,15 @@ import com.pvv.pulbet.model.Usuario;
 
 public class DeporteDAOImpl implements DeporteDAO{
 	
+	private static Logger logger = LogManager.getLogger(DeporteDAOImpl.class);
+	
 	@Override
 	public Deporte create(Connection connection, Deporte d) throws DuplicateInstanceException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Deporte = {} ", d);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -52,6 +62,7 @@ public class DeporteDAOImpl implements DeporteDAO{
 			return d;					
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
@@ -61,6 +72,11 @@ public class DeporteDAOImpl implements DeporteDAO{
 
 	@Override
 	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("ID = {} ", id);
+		}
+		
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -84,6 +100,7 @@ public class DeporteDAOImpl implements DeporteDAO{
 			return removedRows;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeStatement(preparedStatement);
@@ -118,6 +135,7 @@ public class DeporteDAOImpl implements DeporteDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -128,6 +146,12 @@ public class DeporteDAOImpl implements DeporteDAO{
 
 	@Override
 	public List<Deporte> findByNombre(Connection connection, String nombre) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Nombre = {}", nombre);
+		}
+
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -160,6 +184,7 @@ public class DeporteDAOImpl implements DeporteDAO{
 			return results;
 			
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -169,6 +194,11 @@ public class DeporteDAOImpl implements DeporteDAO{
 	
 	@Override
 	public Deporte findById(Connection connection, Long id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		Deporte d = null;
@@ -196,6 +226,7 @@ public class DeporteDAOImpl implements DeporteDAO{
 			return d;
 			
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
