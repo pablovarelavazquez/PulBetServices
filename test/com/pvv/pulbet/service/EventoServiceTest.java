@@ -17,7 +17,7 @@ public class EventoServiceTest {
 	
 	public void testFindCriteria() throws DataException {
 		EventoCriteria e  = new EventoCriteria();
-		//e.setIdParticipante(2l);
+		e.setIdParticipante(2l);
 		//e.setIdDeporte(1l);
 		//e.setFecha(new Date());
 		//e.setIdCompeticion(1l);

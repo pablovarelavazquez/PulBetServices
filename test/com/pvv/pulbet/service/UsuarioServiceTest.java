@@ -107,7 +107,7 @@ public class UsuarioServiceTest {
 	}
 	
 	public void testDelete() throws DataException {
-		usuarioService.delete(1l);
+		usuarioService.delete(11l);
 	}
 	
 	public void testDeleteApuestas() {
@@ -122,7 +122,7 @@ public class UsuarioServiceTest {
 
 			//test.testFindById(); //ok
 			//test.testCreate(); //ok
-			test.testLogin(); //ok
+			//test.testLogin(); //ok
 			//test.testUpdate(); //ok --cambia datos de usuario, non direccion
 			//test.testUpdateDireccion(); //ok --cambia direccion
 			//test.testIngresar(); //ok
