@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.DireccionDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
@@ -17,9 +20,16 @@ import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Direccion;
 
 public class DireccionDAOImpl implements DireccionDAO{
+	
+	private static Logger logger = LogManager.getLogger(DireccionDAOImpl.class);	
 
 	@Override
 	public Direccion findByUsuario(Connection connection, Long id) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = "+id);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -49,6 +59,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 			return d;
 			
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -83,6 +94,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -92,6 +104,11 @@ public class DireccionDAOImpl implements DireccionDAO{
 
 	@Override
 	public Direccion findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = "+id);
+		}
+		
 		Direccion d = null;
 
 		PreparedStatement preparedStatement = null;
@@ -122,6 +139,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -163,6 +181,11 @@ public class DireccionDAOImpl implements DireccionDAO{
 	
 	@Override
 	public Direccion create(Connection connection, Direccion d) throws DuplicateInstanceException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Direccion = {}", d);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -200,6 +223,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 			return d;
 			
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
@@ -210,6 +234,11 @@ public class DireccionDAOImpl implements DireccionDAO{
 
 	@Override
 	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {} ", id);
+		}
+		
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -232,6 +261,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 			return removedRows;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeStatement(preparedStatement);

@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.PaisDAO;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
@@ -15,8 +18,15 @@ import com.pvv.pulbet.model.Pais;
 
 public class PaisDAOImpl implements PaisDAO{
 
+	private static Logger logger = LogManager.getLogger(PaisDAOImpl.class);	
+	
 	@Override
 	public Pais findById(Connection connection, int id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		Pais p = null;
 
 		PreparedStatement preparedStatement = null;
@@ -47,6 +57,7 @@ public class PaisDAOImpl implements PaisDAO{
 
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -83,6 +94,7 @@ public class PaisDAOImpl implements PaisDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -92,6 +104,11 @@ public class PaisDAOImpl implements PaisDAO{
 
 	@Override
 	public List<Pais> findByNombre(Connection connection, String nome) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Nombre= {}", nome);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{

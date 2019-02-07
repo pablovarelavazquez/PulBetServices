@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.ProvinciaDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
@@ -16,8 +19,15 @@ import com.pvv.pulbet.model.Provincia;
 
 public class ProvinciaDAOImpl implements ProvinciaDAO{
 
+	private static Logger logger = LogManager.getLogger(ProvinciaDAOImpl.class);
+	
 	@Override
 	public Provincia findById(Connection connection, int id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		Provincia p = null;
 
 		PreparedStatement preparedStatement = null;
@@ -47,6 +57,7 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 			}
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -83,6 +94,7 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -92,6 +104,11 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 
 	@Override
 	public List<Provincia> findByNombre(Connection connection, String nome) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Nombre = {}", nome);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -125,6 +142,7 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 			return results;
 			
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -134,6 +152,10 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 
 	@Override
 	public List<Provincia> findByPais(Connection connection, Integer id) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
 		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -168,6 +190,7 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 			return results;
 			
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);

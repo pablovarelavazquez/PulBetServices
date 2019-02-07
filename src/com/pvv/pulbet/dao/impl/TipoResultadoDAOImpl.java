@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.ResultadoDAO;
 import com.pvv.pulbet.dao.TipoResultadoDAO;
 import com.pvv.pulbet.dao.util.JDBCUtils;
@@ -19,7 +22,8 @@ import com.pvv.pulbet.model.TipoResultado;
 
 public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 	
-	ResultadoDAO resultadoDAO = null;
+	private static Logger logger = LogManager.getLogger(TipoResultadoDAOImpl.class);
+	private ResultadoDAO resultadoDAO = null;
 	
 	public TipoResultadoDAOImpl() {
 		resultadoDAO = new ResultadoDAOImpl();
@@ -28,6 +32,11 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 
 	@Override
 	public TipoResultado create(Connection connection, TipoResultado t) throws DuplicateInstanceException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("TipoResultado = {}", t);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -59,6 +68,7 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 			return t;					
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
@@ -69,6 +79,12 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 
 	@Override
 	public long delete(Connection connection, Integer id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+
+		
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -88,6 +104,7 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 			return removedRows;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeStatement(preparedStatement);
@@ -98,6 +115,11 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 
 	@Override
 	public TipoResultado findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		TipoResultado t = null;
 
 		PreparedStatement preparedStatement = null;
@@ -128,6 +150,7 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 
 			return t;
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -140,6 +163,10 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 	@Override
 	public List<TipoResultado> findByEvento(Connection connection, Long id) throws DataException {
 
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -172,6 +199,7 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -181,6 +209,12 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 	
 	@Override
 	public List<TipoResultado> findByDeporte(Connection connection, Long id) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -211,6 +245,7 @@ public class TipoResultadoDAOImpl implements TipoResultadoDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);

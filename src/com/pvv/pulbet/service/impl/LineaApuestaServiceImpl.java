@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.EventoDAO;
 import com.pvv.pulbet.dao.LineaApuestaDAO;
 import com.pvv.pulbet.dao.impl.EventoDAOImpl;
@@ -18,8 +21,9 @@ import com.pvv.pulbet.service.LineaApuestaService;
 
 public class LineaApuestaServiceImpl implements LineaApuestaService{
 
-	LineaApuestaDAO lineaApuestaDAO = null;
-	EventoDAO eventoDAO = null;
+	private static Logger logger = LogManager.getLogger(LineaApuestaServiceImpl.class);
+	private LineaApuestaDAO lineaApuestaDAO = null;
+	private EventoDAO eventoDAO = null;
 
 	public LineaApuestaServiceImpl() {
 		lineaApuestaDAO =  new LineaApuestaDAOImpl();
@@ -28,6 +32,11 @@ public class LineaApuestaServiceImpl implements LineaApuestaService{
 
 	@Override
 	public LineaApuesta comprobarLinea(LineaApuesta lineaApuesta) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("LineaApuesta = {}", lineaApuesta);
+		}
+		
 		Connection connection = null;
 		boolean commit = false;
 		boolean correcta = false;
@@ -61,6 +70,7 @@ public class LineaApuestaServiceImpl implements LineaApuestaService{
 			return lineaApuesta;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 
 		} finally {
@@ -71,6 +81,10 @@ public class LineaApuestaServiceImpl implements LineaApuestaService{
 
 	@Override
 	public LineaApuesta update(LineaApuesta lineaApuesta) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("LineaApuesta = {}", lineaApuesta);
+		}
 
 		Connection connection = null;
 		try {
@@ -82,6 +96,7 @@ public class LineaApuestaServiceImpl implements LineaApuestaService{
 
 			return lineaApuesta;
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 
 		} finally {
@@ -92,6 +107,11 @@ public class LineaApuestaServiceImpl implements LineaApuestaService{
 
 	@Override
 	public LineaApuesta findById(LineaApuestaId id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		Connection connection = null;
 
 		try {
@@ -102,6 +122,7 @@ public class LineaApuestaServiceImpl implements LineaApuestaService{
 			return lineaApuestaDAO.findById(connection, id);	
 
 		} catch (SQLException e){
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeConnection(connection);

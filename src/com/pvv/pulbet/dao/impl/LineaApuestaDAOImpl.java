@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.LineaApuestaDAO;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
@@ -17,10 +20,16 @@ import com.pvv.pulbet.model.LineaApuestaId;
 
 
 public class LineaApuestaDAOImpl implements LineaApuestaDAO{
+	
+	private static Logger logger = LogManager.getLogger(LineaApuestaDAOImpl.class);
 
 	@Override
 	public LineaApuesta create(Connection connection, LineaApuesta l) throws DuplicateInstanceException, DataException {
 
+		if(logger.isDebugEnabled()) {
+			logger.debug("LineaApuesta = {}", l);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -45,6 +54,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 			return l;
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
@@ -55,6 +65,11 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 	@Override
 	public int delete(Connection connection, LineaApuestaId id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -79,6 +94,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 			return removedRows;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeStatement(preparedStatement);
@@ -87,6 +103,11 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 	
 	@Override
 	public void update(Connection connection, LineaApuesta l) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("LineaApuesta = {}", l);
+		}
+		
 		PreparedStatement preparedStatement = null;
 
 		try {          
@@ -119,6 +140,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 			}
 			
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {
 			JDBCUtils.closeStatement(preparedStatement);			
@@ -127,6 +149,11 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 	@Override
 	public LineaApuesta findById(Connection connection, LineaApuestaId id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("LineaApuestaId = {}", id);
+		}
+		
 		LineaApuesta l = null;
 
 		PreparedStatement preparedStatement = null;
@@ -158,6 +185,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -196,6 +224,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -205,6 +234,11 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 	@Override
 	public List<LineaApuesta> findByApuesta(Connection connection, Long id) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -237,6 +271,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -246,6 +281,12 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 
 	@Override
 	public List<LineaApuesta> findByEvento(Connection connection, Long id) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -279,6 +320,7 @@ public class LineaApuestaDAOImpl implements LineaApuestaDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);

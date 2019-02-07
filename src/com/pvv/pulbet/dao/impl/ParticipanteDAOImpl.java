@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.ParticipanteDAO;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
@@ -15,8 +18,15 @@ import com.pvv.pulbet.model.Participante;
 
 public class ParticipanteDAOImpl implements ParticipanteDAO{
 
+	private static Logger logger = LogManager.getLogger(ParticipanteDAOImpl.class);
+	
 	@Override
 	public Participante findById(Connection connection, Long id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		Participante p = null;
 
 		PreparedStatement preparedStatement = null;
@@ -47,6 +57,7 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -59,6 +70,10 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 	@Override
 	public List<Participante> findByCompeticion(Connection connection, Long id) throws DataException {
 
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -91,6 +106,7 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -102,6 +118,11 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 
 	@Override
 	public List<Participante> findByDeporte(Connection connection, Long id) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -134,6 +155,7 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);

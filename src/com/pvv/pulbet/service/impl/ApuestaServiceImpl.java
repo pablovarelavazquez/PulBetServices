@@ -25,8 +25,8 @@ import com.pvv.pulbet.service.LineaApuestaService;
 public class ApuestaServiceImpl implements ApuestaService{
 
 	private static Logger logger = LogManager.getLogger(ApuestaServiceImpl.class);
-	ApuestaDAO apuestaDAO = null;
-	LineaApuestaService lineaService = null;
+	private ApuestaDAO apuestaDAO = null;
+	private LineaApuestaService lineaService = null;
 
 	public ApuestaServiceImpl() {
 		apuestaDAO = new ApuestaDAOImpl();

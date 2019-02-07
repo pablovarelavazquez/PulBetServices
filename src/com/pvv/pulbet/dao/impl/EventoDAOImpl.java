@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.EventoDAO;
 import com.pvv.pulbet.dao.TipoResultadoDAO;
 import com.pvv.pulbet.dao.util.JDBCUtils;
@@ -22,7 +25,8 @@ import com.pvv.pulbet.service.EventoCriteria;
 
 public class EventoDAOImpl implements EventoDAO{
 
-	TipoResultadoDAO tipoResultadoDAO = null;
+	private static Logger logger = LogManager.getLogger(EventoDAOImpl.class);
+	private TipoResultadoDAO tipoResultadoDAO = null;
 
 	public EventoDAOImpl() {
 		tipoResultadoDAO = new TipoResultadoDAOImpl();
@@ -30,6 +34,12 @@ public class EventoDAOImpl implements EventoDAO{
 
 	@Override
 	public Evento create(Connection connection, Evento e) throws DuplicateInstanceException, DataException {
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("Evento = {}", e);
+		}
+
+
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -61,6 +71,7 @@ public class EventoDAOImpl implements EventoDAO{
 			return e;					
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
@@ -70,6 +81,11 @@ public class EventoDAOImpl implements EventoDAO{
 
 	@Override
 	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException {
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -93,15 +109,21 @@ public class EventoDAOImpl implements EventoDAO{
 			return removedRows;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeStatement(preparedStatement);
 		}
 	}
-	
+
 	@Override
 	public void update(Connection connection, Evento e)
 			throws InstanceNotFoundException, DataException{
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("Evento = {}", e);
+		}
+
 
 		PreparedStatement preparedStatement = null;
 		try {          
@@ -128,8 +150,9 @@ public class EventoDAOImpl implements EventoDAO{
 			if (updatedRows > 1) {
 				throw new SQLException("Duplicate row for id = '" + e.getIdEvento() + "' in table 'Evento'");
 			}
-			
+
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {
 			JDBCUtils.closeStatement(preparedStatement);			
@@ -140,6 +163,10 @@ public class EventoDAOImpl implements EventoDAO{
 	@Override
 	public List<Evento> findByCriteria(Connection connection, EventoCriteria evento) throws DataException {
 
+		if(logger.isDebugEnabled()) {
+			logger.debug("EventoCriteria = {}", evento);
+		}
+
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		StringBuilder queryString = null;
@@ -147,7 +174,7 @@ public class EventoDAOImpl implements EventoDAO{
 		try {
 
 			queryString = new StringBuilder(
-							"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte, p.id_participante "
+					"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte, p.id_participante "
 							+ "from evento e inner join competicion c on c.id_competicion = e.id_competicion "
 							+ "inner join resultado_participante_evento p on p.id_evento = e.id_evento ");
 
@@ -210,7 +237,7 @@ public class EventoDAOImpl implements EventoDAO{
 
 			return results;
 		} catch (SQLException e) {
-
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
@@ -222,6 +249,10 @@ public class EventoDAOImpl implements EventoDAO{
 
 	@Override
 	public Evento findById(Connection connection, Integer id) throws DataException {
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
 		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -255,7 +286,7 @@ public class EventoDAOImpl implements EventoDAO{
 
 			return e;
 		} catch (SQLException ex) {
-
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
@@ -265,11 +296,15 @@ public class EventoDAOImpl implements EventoDAO{
 
 	@Override
 	public List<Long> findResultadoFinal(Connection connection, Long id) throws DataException {
+
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}		
 		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		List<Long> resultados = new ArrayList<Long>();
-		
+
 		try {
 
 			String queryString = 
@@ -283,23 +318,24 @@ public class EventoDAOImpl implements EventoDAO{
 			preparedStatement.setLong(i++, id);
 
 			resultSet = preparedStatement.executeQuery();
-			
+
 			while(resultSet.next()) {
 				Long idResultado = resultSet.getLong(1);
 				resultados.add(idResultado);
 			}
-			
+
 			return resultados;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
 			JDBCUtils.closeStatement(preparedStatement);
 		}
-		
 
-		
+
+
 	}
 
 	private Evento loadNext(Connection connection, ResultSet resultSet) throws SQLException, DataException{

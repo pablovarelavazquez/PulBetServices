@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.pvv.pulbet.dao.ResultadoDAO;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
@@ -17,9 +20,17 @@ import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Resultado;
 
 public class ResultadoDAOImpl implements ResultadoDAO{
+	
+	private static Logger logger = LogManager.getLogger(ResultadoDAOImpl.class);	
 
 	@Override
 	public Resultado create(Connection connection, Resultado r) throws DuplicateInstanceException, DataException {
+		
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Resultado = {}", r);
+		}
+
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {          
@@ -52,6 +63,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 			return r;					
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {
 			JDBCUtils.closeResultSet(resultSet);
@@ -62,6 +74,11 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 
 	@Override
 	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -84,6 +101,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 			return removedRows;
 
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
 		} finally {
 			JDBCUtils.closeStatement(preparedStatement);
@@ -95,6 +113,11 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 
 	@Override
 	public Resultado findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		Resultado r = null;
 
 		PreparedStatement preparedStatement = null;
@@ -125,6 +148,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
@@ -136,6 +160,11 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 
 	@Override
 	public List<Resultado> findByTipoResultado(Connection connection, Integer id) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try{
@@ -168,6 +197,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 			return results;
 
 		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
 		} finally {            
 			JDBCUtils.closeResultSet(resultSet);
