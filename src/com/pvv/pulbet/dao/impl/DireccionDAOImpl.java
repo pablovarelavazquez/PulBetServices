@@ -27,7 +27,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 	public Direccion findByUsuario(Connection connection, Long id) throws DataException {
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("Id = "+id);
+			logger.debug("Id = {}",id);
 		}
 		
 		PreparedStatement preparedStatement = null;
@@ -106,7 +106,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 	public Direccion findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException {
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("Id = "+id);
+			logger.debug("Id = {}",id);
 		}
 		
 		Direccion d = null;

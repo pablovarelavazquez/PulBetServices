@@ -41,7 +41,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			throws InstanceNotFoundException, DataException{
 
 		if(logger.isDebugEnabled()) {
-			logger.debug("Id = "+id);
+			logger.debug("Id = {}",id);
 		}
 
 		Usuario u = null;
@@ -90,7 +90,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 	public Usuario findByEmail(Connection connection, String email) throws DataException {
 
 		if(logger.isDebugEnabled()) {
-			logger.debug("EMAIL = "+email);
+			logger.debug("EMAIL = {}",email);
 		}
 		
 		Usuario u = null;
@@ -210,7 +210,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			throws DuplicateInstanceException, DataException{
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("Usuario: id:{0}, nome:{1}, email:{2}, apelidos:{3} {4}, banco:{5}, dni:{6}, fecha:{7}, nomeUsuario:{8}, password{9}, direccion{10}"
+			logger.debug("Usuario: id:{}, nome:{}, email:{}, apelidos:{} {}, banco:{}, dni:{}, fecha:{}, nomeUsuario:{}, password{}, direccion{}"
 			,u.getIdUsuario(), u.getNome(), u.getEmail(), u.getApelido1(), u.getApelido2(), u.getBanco(), u.getDNI(), 
 			u.getFechaNacimiento(), u.getNomeUsuario(), (u.getPassword()==null), u.getDireccion());
 		}
@@ -276,7 +276,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			throws InstanceNotFoundException, DataException{
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("Usuario: id:{0}, nome:{1}, email:{2}, apelidos:{3} {4}, banco:{5}, dni:{6}, fecha:{7}, nomeUsuario:{8}, password{9}, direccion{10}"
+			logger.debug("Usuario: id:{}, nome:{}, email:{}, apelidos:{} {}, banco:{}, dni:{}, fecha:{}, nomeUsuario:{}, password{}, direccion{}"
 			,u.getIdUsuario(), u.getNome(), u.getEmail(), u.getApelido1(), u.getApelido2(), u.getBanco(), u.getDNI(), 
 			u.getFechaNacimiento(), u.getNomeUsuario(), (u.getPassword()==null), u.getDireccion());
 		}
@@ -342,7 +342,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			throws InstanceNotFoundException, DataException{
 
 		if(logger.isDebugEnabled()) {
-			logger.debug("ID = "+id);
+			logger.debug("ID = {}",id);
 		}
 		
 		PreparedStatement preparedStatement = null;

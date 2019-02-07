@@ -97,7 +97,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 		
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("ApuestaCriteria = {0}, Fecha Hasta = {1}", apuesta, hasta);
+			logger.debug("ApuestaCriteria = {}, Fecha Hasta = {}", apuesta, hasta);
 		}
 		
 		Connection connection = null;
@@ -139,7 +139,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 	public List<Apuesta> findOpenBets(ApuestaCriteria apuesta, Date hasta) throws DataException {
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("ApuestaCriteria = {0}, Fecha Hasta = {1}", apuesta, hasta);
+			logger.debug("ApuestaCriteria = {}, Fecha Hasta = {}", apuesta, hasta);
 		}
 		
 		Connection connection = null;
@@ -181,7 +181,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 	public Apuesta comprobarApuesta(Apuesta apuesta) throws DataException {
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("ApuestaCriteria = {0}", apuesta);
+			logger.debug("ApuestaCriteria = {}", apuesta);
 		}
 		
 		Connection connection = null;
@@ -258,7 +258,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 	public Apuesta create(Apuesta a) throws DuplicateInstanceException, DataException {
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("ApuestaCriteria = {0}", a);
+			logger.debug("ApuestaCriteria = {}", a);
 		}
 		
 		Connection connection = null;

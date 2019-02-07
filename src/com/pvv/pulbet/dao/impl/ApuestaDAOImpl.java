@@ -313,7 +313,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	public List<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta, Date hasta)
 			throws DataException {
 		if(logger.isDebugEnabled()) {
-			logger.debug("ApuestaCriteria = {0}, Fecha Hasta = {1}", apuesta, hasta);
+			logger.debug("ApuestaCriteria = {}, Fecha Hasta = {}", apuesta, hasta);
 		}
 
 		PreparedStatement preparedStatement = null;
@@ -457,7 +457,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 			throws SQLException, DataException {
 
 		if(logger.isDebugEnabled()) {
-			logger.debug("Id = {0}, lineas{1}", idApuesta, lineas);
+			logger.debug("Id = {}, lineas{}", idApuesta, lineas);
 		}
 
 		PreparedStatement preparedStatement = null;

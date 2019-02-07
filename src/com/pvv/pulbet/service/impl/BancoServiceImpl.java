@@ -27,7 +27,7 @@ public class BancoServiceImpl implements BancoService{
 	public void ingresar(Long idUsuario, Double cantidad) throws DataException {
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("Id = {0}, cantidad = {1}", idUsuario, cantidad);
+			logger.debug("Id = {}, cantidad = {}", idUsuario, cantidad);
 		}
 		
 		Connection connection = null;
@@ -55,7 +55,7 @@ public class BancoServiceImpl implements BancoService{
 	public void retirar(Long idUsuario, Double cantidad) throws DataException {
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("Id = {0}, cantidad = {1}", idUsuario, cantidad);
+			logger.debug("Id = {}, cantidad = {}", idUsuario, cantidad);
 		}
 		
 		Connection connection = null;
