@@ -9,12 +9,12 @@ public class Evento extends AbstractValueObject {
 	private Date fecha = null;
 	private Long idCompeticion = null;
 	private Long idDeporte = null;
-	private Long idParticipante = null;
+	private String participante = null;
 
-	List<Participante> participantes = null;
+	private Participante local = null;
+	private Participante visitante = null;
 	List<TipoResultado> mercados = null;
-	List<Cuota> cuotas = null;
-	
+		
 	public Evento() {
 		
 	}
@@ -51,21 +51,30 @@ public class Evento extends AbstractValueObject {
 		this.idDeporte = idDeporte;
 	}
 
-	public Long getIdParticipante() {
-		return idParticipante;
+	public String getParticipante() {
+		return participante;
 	}
 
-	public void setIdParticipante(Long idParticipante) {
-		this.idParticipante = idParticipante;
+	public void setParticipante(String participante) {
+		this.participante = participante;
 	}
 
-	public List<Participante> getParticipantes() {
-		return participantes;
+	public Participante getLocal() {
+		return local;
 	}
 
-	public void setParticipantes(List<Participante> participantes) {
-		this.participantes = participantes;
+	public void setLocal(Participante local) {
+		this.local = local;
 	}
+
+	public Participante getVisitante() {
+		return visitante;
+	}
+
+	public void setVisitante(Participante visitante) {
+		this.visitante = visitante;
+	}
+
 
 	public List<TipoResultado> getMercados() {
 		return mercados;

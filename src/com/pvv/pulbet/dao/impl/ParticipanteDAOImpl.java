@@ -177,7 +177,8 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 			sql =  "SELECT P.ID_PARTICIPANTE, P.NOMBRE, P.ID_DEPORTE "
 					+"FROM EVENTO E INNER JOIN RESULTADO_PARTICIPANTE_EVENTO RP ON E.ID_EVENTO = RP.ID_EVENTO "
 					+"INNER JOIN PARTICIPANTE P ON P.ID_PARTICIPANTE = RP.ID_PARTICIPANTE "
-					+"WHERE E.ID_EVENTO = ? ";
+					+"WHERE E.ID_EVENTO = ? "
+					+ "GROUP BY ID_PARTICIPANTE";
 			
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
@@ -208,6 +209,53 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 		} 
 	}
 	
+	@Override
+	public Boolean isLocal(Connection connection, Long idEvento, Long idParticipante) throws DataException {
+		if(logger.isDebugEnabled()) {
+			logger.debug("IdEvento = {}, IdParticipante", idEvento, idParticipante);
+		}
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+				
+			String sql;
+			sql =  "SELECT ID_PARTICIPANTE "
+					+"FROM RESULTADO_PARTICIPANTE_EVENTO "
+					+"WHERE ID_RESULTADO = 1 AND ID_EVENTO = ?";
+			
+			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			// Establece os parámetros
+			int i = 1;
+			preparedStatement.setLong(i++, idEvento);
+
+
+			resultSet = preparedStatement.executeQuery();			
+			//STEP 5: Extract data from result set			
+
+			i = 1;
+			
+			if(resultSet.next()) {
+				Long id = resultSet.getLong(i++);
+				if(id==idParticipante) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			
+			return false;
+		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
+			throw new DataException(ex);
+		} finally {            
+			JDBCUtils.closeResultSet(resultSet);
+			JDBCUtils.closeStatement(preparedStatement);
+		}
+		
+	}
+	
 	private Participante loadNext(Connection connection, ResultSet resultSet) throws SQLException{
 
 
@@ -223,5 +271,7 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 		return p;
 
 	}
+
+
 
 }

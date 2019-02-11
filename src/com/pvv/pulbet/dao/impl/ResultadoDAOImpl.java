@@ -213,7 +213,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 		try {
 
 			String sql;
-			sql =  "SELECT ID_RESULTADO, ID_TIPO_RESULTRADO "
+			sql =  "SELECT ID_RESULTADO, NOMBRE, ID_TIPO_RESULTRADO "
 					+"FROM RESULTADO ";
 
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -241,6 +241,71 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 		}  	
 	}
 	
+	@Override
+	public Resultado findCuota(Connection connection, Long idEvento, Long idResultado) throws DataException {
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", idEvento);
+		}
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try{
+
+			String sql;
+			sql =    "SELECT R.ID_RESULTADO, R.NOMBRE ,R.ID_TIPO_RESULTADO, E.ID_EVENTO, RP.CUOTA " 
+					+" FROM RESULTADO R INNER JOIN RESULTADO_PARTICIPANTE_EVENTO RP ON RP.ID_RESULTADO=R.ID_RESULTADO "
+					+" INNER JOIN EVENTO E ON E.ID_EVENTO = RP.ID_EVENTO "
+					+ " WHERE E.ID_EVENTO = ? AND R.ID_RESULTADO = ? "
+					+"	GROUP BY ID_EVENTO, ID_RESULTADO";
+
+			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			// Establece os parámetros
+			int i = 1;
+			preparedStatement.setLong(i++, idEvento);
+			preparedStatement.setLong(i++, idResultado);
+
+			resultSet = preparedStatement.executeQuery();			
+			//STEP 5: Extract data from result set			
+
+			Resultado r = null;
+
+
+			if(resultSet.next()) {
+				r = loadNextCuotas(connection,resultSet);
+			}
+
+			return r;
+
+		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
+			throw new DataException(ex);
+		} finally {            
+			JDBCUtils.closeResultSet(resultSet);
+			JDBCUtils.closeStatement(preparedStatement);
+		}
+	}
+
+	private Resultado loadNextCuotas(Connection connection,ResultSet resultSet) throws SQLException{
+
+
+		Resultado r = new Resultado();
+		int i = 1;
+		Long id = resultSet.getLong(i++);
+		String nome = resultSet.getString(i++);
+		Long idtr = resultSet.getLong(i++);
+		Long idEv = resultSet.getLong(i++);
+		Double cuota = resultSet.getDouble(i++);
+		
+		r.setIdResultado(id);
+		r.setNombre(nome);
+		r.setIdTipoResulatado(idtr);
+		r.setIdEvento(idEv);
+		r.setCuota(cuota);
+
+		return r;
+
+	}
 	
 	private Resultado loadNext(Connection connection,ResultSet resultSet) throws SQLException{
 
@@ -258,5 +323,6 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 		return r;
 
 	}
-
+	
+	
 }

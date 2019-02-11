@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.pvv.pulbet.dao.EventoDAO;
 import com.pvv.pulbet.dao.ParticipanteDAO;
+import com.pvv.pulbet.dao.ResultadoDAO;
 import com.pvv.pulbet.dao.TipoResultadoDAO;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
@@ -21,6 +22,7 @@ import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Evento;
 import com.pvv.pulbet.model.Participante;
+import com.pvv.pulbet.model.Resultado;
 import com.pvv.pulbet.model.TipoResultado;
 import com.pvv.pulbet.model.Usuario;
 import com.pvv.pulbet.service.EventoCriteria;
@@ -30,10 +32,12 @@ public class EventoDAOImpl implements EventoDAO{
 	private static Logger logger = LogManager.getLogger(EventoDAOImpl.class);
 	private TipoResultadoDAO tipoResultadoDAO = null;
 	private ParticipanteDAO participanteDAO = null;
+	private ResultadoDAO resultadoDAO = null;
 
 	public EventoDAOImpl() {
 		tipoResultadoDAO = new TipoResultadoDAOImpl();
 		participanteDAO = new ParticipanteDAOImpl();
+		resultadoDAO = new ResultadoDAOImpl();
 	}
 
 	@Override
@@ -178,10 +182,11 @@ public class EventoDAOImpl implements EventoDAO{
 		try {
 
 			queryString = new StringBuilder(
-					"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte, p.id_participante "
+					"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte,pp.nombre "
 							+ "from evento e inner join competicion c on c.id_competicion = e.id_competicion "
-							+ "inner join resultado_participante_evento p on p.id_evento = e.id_evento ");
-
+							+ "inner join resultado_participante_evento p on p.id_evento = e.id_evento "
+							+ "inner join participante pp on pp.id_participante = p.id_participante ");
+			
 			boolean first = true;
 
 
@@ -205,8 +210,8 @@ public class EventoDAOImpl implements EventoDAO{
 				first = false;
 			}			
 
-			if (evento.getIdParticipante()!=null) {
-				addClause(queryString, first, " p.id_participante = ? ");
+			if (evento.getParticipante()!=null) {
+				addClause(queryString, first, " pp.nombre like ? ");
 				first = false;
 			}	
 
@@ -225,8 +230,8 @@ public class EventoDAOImpl implements EventoDAO{
 				preparedStatement.setLong(i++, evento.getIdCompeticion());
 			if (evento.getIdDeporte()!=null)
 				preparedStatement.setLong(i++, evento.getIdDeporte());
-			if (evento.getIdParticipante()!=null) 
-				preparedStatement.setLong(i++, evento.getIdParticipante());
+			if (evento.getParticipante()!=null) 
+				preparedStatement.setString(i++, "%" + evento.getParticipante() + "%");
 
 			resultSet = preparedStatement.executeQuery();
 
@@ -266,13 +271,12 @@ public class EventoDAOImpl implements EventoDAO{
 		try {
 
 			queryString = new StringBuilder(
-					"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte, p.id_participante "
+					"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte, pp.nombre "
 							+ "from evento e inner join competicion c on c.id_competicion = e.id_competicion "
 							+ "inner join resultado_participante_evento p on p.id_evento = e.id_evento "
-							+ "where e.id_evento "
+							+ "inner join participante pp on pp.id_participante = p.id_participante "
+							+ "where e.id_evento = ? "
 							+ "group by id_evento, id_participante order by e.fecha_hora");
-
-
 
 			preparedStatement = connection.prepareStatement(queryString.toString(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
@@ -351,19 +355,38 @@ public class EventoDAOImpl implements EventoDAO{
 		Date fecha = resultSet.getDate(i++);
 		Long idComp = resultSet.getLong(i++);
 		Long idDeporte = resultSet.getLong(i++);
-		Long idParticipante = resultSet.getLong(i++);
+		String participante = resultSet.getString(i++);
 
 		e.setIdEvento(id);
 		e.setFecha(fecha);
 		e.setIdCompeticion(idComp);
 		e.setIdDeporte(idDeporte);
-		e.setIdParticipante(idParticipante);
+		e.setParticipante(participante);
 
-		List<TipoResultado> mercados = tipoResultadoDAO.findByDeporte(connection, idDeporte);
+		List<TipoResultado> mercados = tipoResultadoDAO.findByEvento(connection, idDeporte);
+		
+		List<Resultado> resultados = new ArrayList<Resultado>();
+		for(TipoResultado tr : mercados) {
+			
+			for(Resultado r : tr.getResultados()){
+				r = resultadoDAO.findCuota(connection, id, r.getIdResultado());
+				resultados.add(r);
+			}
+			
+			tr.setResultados(resultados);
+		}
 		e.setMercados(mercados);
 		
+		
+		
 		List<Participante> participantes = participanteDAO.findByEvento(connection, id);
-		e.setParticipantes(participantes);
+		for(Participante p : participantes) {
+			if(participanteDAO.isLocal(connection, id, p.getIdParticipante())) {
+				e.setLocal(p);
+			} else {
+				e.setVisitante(p);
+			}
+		}
 		
 		return e;
 

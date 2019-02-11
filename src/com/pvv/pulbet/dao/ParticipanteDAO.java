@@ -17,4 +17,6 @@ public interface ParticipanteDAO {
 	public List<Participante> findByDeporte(Connection connection, Long id) throws DataException;
 	
 	public List<Participante> findByEvento(Connection connection, Long id) throws DataException;
+	
+	public Boolean isLocal(Connection connection, Long idEvento, Long idParticipante) throws DataException;
 }

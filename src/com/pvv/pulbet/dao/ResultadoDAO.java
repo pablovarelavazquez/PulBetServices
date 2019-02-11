@@ -21,4 +21,6 @@ public interface ResultadoDAO {
 	
 	public List<Resultado> findAll(Connection connection)	throws DataException;
 	
+	public Resultado findCuota(Connection connection, Long idEvento, Long idResultado) throws DataException;
+	
 }
