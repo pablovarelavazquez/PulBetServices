@@ -234,10 +234,10 @@ public class ApuestaServiceImpl implements ApuestaService{
 			if (finalizada) {
 				if(acertada) {
 					apuesta.setProcesado(1);
-					apuestaDAO.update(connection, apuesta);
+					apuestaDAO.updateEstado(connection, apuesta);
 				}else {
 					apuesta.setProcesado(2);
-					apuestaDAO.update(connection, apuesta);
+					apuestaDAO.updateEstado(connection, apuesta);
 				}
 			}
 

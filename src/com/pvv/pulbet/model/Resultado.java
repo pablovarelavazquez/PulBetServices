@@ -5,7 +5,7 @@ public class Resultado extends AbstractValueObject {
 	private Long idResultado = null;
 	private String nombre = null;
 	private Long idTipoResulatado = null;
-	
+		
 	public Resultado() {
 		
 	}

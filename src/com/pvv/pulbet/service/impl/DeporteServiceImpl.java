@@ -7,57 +7,27 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.pvv.pulbet.dao.EventoDAO;
-import com.pvv.pulbet.dao.impl.EventoDAOImpl;
+import com.pvv.pulbet.dao.DeporteDAO;
+import com.pvv.pulbet.dao.impl.DeporteDAOImpl;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
-import com.pvv.pulbet.model.Evento;
-import com.pvv.pulbet.service.EventoCriteria;
-import com.pvv.pulbet.service.EventoService;
+import com.pvv.pulbet.model.Deporte;
+import com.pvv.pulbet.service.DeporteService;
 
-public class EventoServiceImpl implements EventoService{
+public class DeporteServiceImpl implements DeporteService{
 	
-	private static Logger logger = LogManager.getLogger(EventoServiceImpl.class);
-	private EventoDAO eventoDAO = null;
+	private static Logger logger = LogManager.getLogger(ApuestaServiceImpl.class);
+	private DeporteDAO deporteDAO = null;
 	
-	public EventoServiceImpl() {
-		eventoDAO = new EventoDAOImpl(); 
+	public DeporteServiceImpl() {
+		deporteDAO = new DeporteDAOImpl();
 	}
 
 	@Override
-	public List<Evento> findByCriteria(EventoCriteria evento) throws DataException {
-		
-		if(logger.isDebugEnabled()) {
-			logger.debug("EventoCriteria = {}", evento);
-		}
-		
-		Connection c = null;
-		
-		try {
-			
-			c = ConnectionManager.getConnection();
-			c.setAutoCommit(true);
-			
-			List<Evento> eventos = eventoDAO.findByCriteria(c,evento); 
-			
-			return eventos;
-			
-		} catch (SQLException e){
-			throw new DataException(e);
-		} finally {
-			JDBCUtils.closeConnection(c);
-		}
-	}
+	public List<Deporte> findAll() throws DataException {
 
-	@Override
-	public Evento findById(Integer id) throws InstanceNotFoundException, DataException {
-		
-		if(logger.isDebugEnabled()) {
-			logger.debug("Id = {}", id);
-		}
-		
 		Connection connection = null;
 		
 		try {
@@ -65,7 +35,7 @@ public class EventoServiceImpl implements EventoService{
 			connection = ConnectionManager.getConnection();
 			connection.setAutoCommit(true);
 
-			return eventoDAO.findById(connection, id);
+			return deporteDAO.findAll(connection);
 
 		} catch (SQLException e){
 			logger.warn(e.getMessage(), e);
@@ -76,12 +46,11 @@ public class EventoServiceImpl implements EventoService{
 	}
 
 	@Override
-	public List<Long> findResultadoFinal(Long id) throws DataException {
-
+	public List<Deporte> findByNombre(String nombre) throws DataException {
 		if(logger.isDebugEnabled()) {
-			logger.debug("Id = {}", id);
+			logger.debug("Nombre = {}", nombre);
 		}
-		
+
 		Connection connection = null;
 		
 		try {
@@ -89,7 +58,30 @@ public class EventoServiceImpl implements EventoService{
 			connection = ConnectionManager.getConnection();
 			connection.setAutoCommit(true);
 
-			return eventoDAO.findResultadoFinal(connection, id);
+			return deporteDAO.findByNombre(connection, nombre);
+
+		} catch (SQLException e){
+			logger.warn(e.getMessage(), e);
+			throw new DataException(e);
+		} finally {
+			JDBCUtils.closeConnection(connection);
+		}
+	}
+
+	@Override
+	public Deporte findById(Long id) throws InstanceNotFoundException, DataException {
+		if(logger.isDebugEnabled()) {
+			logger.debug("Id = {}", id);
+		}
+
+		Connection connection = null;
+		
+		try {
+
+			connection = ConnectionManager.getConnection();
+			connection.setAutoCommit(true);
+
+			return deporteDAO.findById(connection, id);
 
 		} catch (SQLException e){
 			logger.warn(e.getMessage(), e);

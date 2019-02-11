@@ -11,5 +11,7 @@ public interface EventoService {
 	public List<Evento> findByCriteria(EventoCriteria evento) throws DataException;
 	
 	public Evento findById(Integer id) throws InstanceNotFoundException, DataException;
+	
+	public List<Long> findResultadoFinal(Long id) throws DataException;
 
 }

@@ -12,12 +12,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.pvv.pulbet.dao.ResultadoDAO;
-import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Resultado;
+import com.pvv.pulbet.model.Usuario;
 
 public class ResultadoDAOImpl implements ResultadoDAO{
 	
@@ -205,6 +205,42 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 		}
 	}
 	
+	@Override
+	public List<Resultado> findAll(Connection connection) throws DataException {
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+
+			String sql;
+			sql =  "SELECT ID_RESULTADO, ID_TIPO_RESULTRADO "
+					+"FROM RESULTADO ";
+
+			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			resultSet = preparedStatement.executeQuery();			
+			//STEP 5: Extract data from result set			
+
+			List<Resultado> results = new ArrayList<Resultado>();                        
+			Resultado r = null;
+
+
+			while(resultSet.next()) {
+				r = loadNext(connection, resultSet);
+				results.add(r);               	
+			}
+
+			return results;
+
+		} catch (SQLException ex) {
+			logger.warn(ex.getMessage(), ex);
+			throw new DataException(ex);
+		} finally {            
+			JDBCUtils.closeResultSet(resultSet);
+			JDBCUtils.closeStatement(preparedStatement);
+		}  	
+	}
+	
 	
 	private Resultado loadNext(Connection connection,ResultSet resultSet) throws SQLException{
 
@@ -222,7 +258,5 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 		return r;
 
 	}
-
-
 
 }

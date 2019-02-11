@@ -219,8 +219,8 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		ResultSet resultSet = null;
 		try {          
 
-			String queryString = "INSERT INTO USUARIO(EMAIL,NOMBRE,APELLIDO1,APELLIDO2,PASSWORD,BANCO,TELEFONO,FECHA_NACIMIENTO,NOMBRE_USUARIO,DNI) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			String queryString = "INSERT INTO USUARIO(EMAIL,NOMBRE,APELLIDO1,APELLIDO2,PASSWORD,TELEFONO,FECHA_NACIMIENTO,NOMBRE_USUARIO,DNI) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			preparedStatement = connection.prepareStatement(queryString, Statement.RETURN_GENERATED_KEYS);
 
@@ -230,7 +230,6 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			preparedStatement.setString(i++, u.getApelido1());
 			preparedStatement.setString(i++, u.getApelido2());
 			preparedStatement.setString(i++, PasswordEncryptionUtil.encryptPassword(u.getPassword()));
-			preparedStatement.setDouble(i++, u.getBanco());
 			preparedStatement.setString(i++, u.getTelefono());
 			preparedStatement.setDate(i++, new java.sql.Date(u.getFechaNacimiento().getTime()));
 			preparedStatement.setString(i++, u.getNomeUsuario());
@@ -326,7 +325,8 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 				throw new SQLException("Duplicate row for id = '" + u.getIdUsuario() + "' in table 'Usuario'");
 			}
 
-
+			//direccionDAO.create(connection, d);
+			
 		} catch (SQLException ex) {
 			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);

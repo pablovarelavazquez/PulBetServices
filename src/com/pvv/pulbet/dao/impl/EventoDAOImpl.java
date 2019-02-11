@@ -13,12 +13,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.pvv.pulbet.dao.EventoDAO;
+import com.pvv.pulbet.dao.ParticipanteDAO;
 import com.pvv.pulbet.dao.TipoResultadoDAO;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Evento;
+import com.pvv.pulbet.model.Participante;
 import com.pvv.pulbet.model.TipoResultado;
 import com.pvv.pulbet.model.Usuario;
 import com.pvv.pulbet.service.EventoCriteria;
@@ -27,9 +29,11 @@ public class EventoDAOImpl implements EventoDAO{
 
 	private static Logger logger = LogManager.getLogger(EventoDAOImpl.class);
 	private TipoResultadoDAO tipoResultadoDAO = null;
+	private ParticipanteDAO participanteDAO = null;
 
 	public EventoDAOImpl() {
 		tipoResultadoDAO = new TipoResultadoDAOImpl();
+		participanteDAO = new ParticipanteDAOImpl();
 	}
 
 	@Override
@@ -357,7 +361,10 @@ public class EventoDAOImpl implements EventoDAO{
 
 		List<TipoResultado> mercados = tipoResultadoDAO.findByDeporte(connection, idDeporte);
 		e.setMercados(mercados);
-
+		
+		List<Participante> participantes = participanteDAO.findByEvento(connection, id);
+		e.setParticipantes(participantes);
+		
 		return e;
 
 	}

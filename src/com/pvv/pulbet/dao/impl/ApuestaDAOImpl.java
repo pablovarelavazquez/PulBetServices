@@ -494,5 +494,44 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		queryString.append(first? "WHERE ": " AND ").append(clause);
 	}
 
+	@Override
+	public void updateEstado(Connection connection, Apuesta a) throws InstanceNotFoundException, DataException {
+		PreparedStatement preparedStatement = null;
+		try {
+
+			if(logger.isDebugEnabled()) {
+				logger.debug("Apuesta = {} ", a);
+			}
+
+			String queryString = 
+					"UPDATE APUESTA " +
+							"SET PROCESADO = ? "+
+							"WHERE ID_APUESTA = ? ";
+
+			preparedStatement = connection.prepareStatement(queryString);
+
+			int i = 1;
+			preparedStatement.setInt(i++, a.getProcesado());
+			preparedStatement.setLong(i++, a.getIdApuesta());
+
+			int updatedRows = preparedStatement.executeUpdate();
+
+			if (updatedRows == 0) {
+				throw new InstanceNotFoundException("Non se atopou aposta: "+a.getIdApuesta(), Apuesta.class.getName());
+			}
+
+			if (updatedRows > 1) {
+				throw new SQLException("Duplicate row for id = '" + 
+						a.getIdApuesta() + "' in table 'Apuesta'");
+			}     
+
+		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
+			throw new DataException(e);    
+		} finally {
+			JDBCUtils.closeStatement(preparedStatement);
+		}
+	}
+
 
 }

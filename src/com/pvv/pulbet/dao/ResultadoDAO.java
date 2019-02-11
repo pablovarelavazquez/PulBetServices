@@ -7,6 +7,7 @@ import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Resultado;
+import com.pvv.pulbet.model.Usuario;
 
 public interface ResultadoDAO {
 
@@ -17,5 +18,7 @@ public interface ResultadoDAO {
 	public Resultado findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException;
 	
 	public List<Resultado> findByTipoResultado(Connection connection, Integer id) throws DataException;
+	
+	public List<Resultado> findAll(Connection connection)	throws DataException;
 	
 }

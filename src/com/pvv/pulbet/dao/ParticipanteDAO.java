@@ -15,4 +15,6 @@ public interface ParticipanteDAO {
 	public List<Participante> findByCompeticion(Connection connection, Long id) throws DataException;
 	
 	public List<Participante> findByDeporte(Connection connection, Long id) throws DataException;
+	
+	public List<Participante> findByEvento(Connection connection, Long id) throws DataException;
 }

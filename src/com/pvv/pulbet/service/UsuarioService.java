@@ -13,11 +13,11 @@ public interface UsuarioService {
 	
 	public Usuario login(String email, String password) throws DataException;
 	
+	public void editDireccion(Direccion direccion, Usuario u) throws InstanceNotFoundException, DataException;
+	
 	public Usuario create(Usuario u) throws DuplicateInstanceException, DataException, MailException;
 	
 	public void update(Usuario u) throws InstanceNotFoundException, DataException;
 	
 	public long delete(Long id)  throws InstanceNotFoundException, DataException;
-	
-	public void editDireccion(Direccion direccion, Usuario u) throws InstanceNotFoundException, DataException;
 }

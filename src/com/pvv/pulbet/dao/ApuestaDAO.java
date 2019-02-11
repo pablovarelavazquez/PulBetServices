@@ -24,6 +24,9 @@ public interface ApuestaDAO {
 	public List<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta, Date hasta) 
 			throws DataException;
 	
+	public void updateEstado(Connection connection, Apuesta a) 
+			throws InstanceNotFoundException, DataException;
+
 	public Apuesta create(Connection connection, Apuesta a) 
 			throws DuplicateInstanceException, DataException;
 	
@@ -32,5 +35,4 @@ public interface ApuestaDAO {
 	
 	public void update(Connection connection, Apuesta a) 
 			throws InstanceNotFoundException, DataException;
-
 }

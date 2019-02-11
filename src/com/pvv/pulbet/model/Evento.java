@@ -8,14 +8,13 @@ public class Evento extends AbstractValueObject {
 	private Long idEvento = null;
 	private Date fecha = null;
 	private Long idCompeticion = null;
-	
-	//Na base de datos non ten idDeporte e idParticipante pero penso que asi e mais facil traballar con el.
 	private Long idDeporte = null;
 	private Long idParticipante = null;
-	
-	List<TipoResultado> mercados = null;
-	
 
+	List<Participante> participantes = null;
+	List<TipoResultado> mercados = null;
+	List<Cuota> cuotas = null;
+	
 	public Evento() {
 		
 	}
@@ -58,6 +57,14 @@ public class Evento extends AbstractValueObject {
 
 	public void setIdParticipante(Long idParticipante) {
 		this.idParticipante = idParticipante;
+	}
+
+	public List<Participante> getParticipantes() {
+		return participantes;
+	}
+
+	public void setParticipantes(List<Participante> participantes) {
+		this.participantes = participantes;
 	}
 
 	public List<TipoResultado> getMercados() {
