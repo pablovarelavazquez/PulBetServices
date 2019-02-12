@@ -212,7 +212,7 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 	@Override
 	public Boolean isLocal(Connection connection, Long idEvento, Long idParticipante) throws DataException {
 		if(logger.isDebugEnabled()) {
-			logger.debug("IdEvento = {}, IdParticipante", idEvento, idParticipante);
+			logger.debug("IdEvento = {}, IdParticipante = {}", idEvento, idParticipante);
 		}
 		
 		PreparedStatement preparedStatement = null;
@@ -222,7 +222,7 @@ public class ParticipanteDAOImpl implements ParticipanteDAO{
 			String sql;
 			sql =  "SELECT ID_PARTICIPANTE "
 					+"FROM RESULTADO_PARTICIPANTE_EVENTO "
-					+"WHERE ID_RESULTADO = 1 AND ID_EVENTO = ?";
+					+"WHERE ID_RESULTADO IN (1,7) AND ID_EVENTO = ?";
 			
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 

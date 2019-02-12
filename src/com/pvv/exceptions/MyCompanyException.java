@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 
 public class MyCompanyException extends Exception {
 	
+	private String errorCode = null;
 		
 	public MyCompanyException() {
 		super();
@@ -45,5 +46,13 @@ public class MyCompanyException extends Exception {
 		} else {
 			super.printStackTrace(w);
 		}
+	}
+
+	public String getErrorCode() {
+		return errorCode;
+	}
+
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
 	}	
 }

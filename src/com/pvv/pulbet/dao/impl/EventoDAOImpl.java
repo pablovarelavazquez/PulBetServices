@@ -182,7 +182,7 @@ public class EventoDAOImpl implements EventoDAO{
 		try {
 
 			queryString = new StringBuilder(
-					"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte,pp.nombre "
+					"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte "
 							+ "from evento e inner join competicion c on c.id_competicion = e.id_competicion "
 							+ "inner join resultado_participante_evento p on p.id_evento = e.id_evento "
 							+ "inner join participante pp on pp.id_participante = p.id_participante ");
@@ -271,7 +271,7 @@ public class EventoDAOImpl implements EventoDAO{
 		try {
 
 			queryString = new StringBuilder(
-					"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte, pp.nombre "
+					"select e.id_evento, e.fecha_hora, e.id_competicion, c.id_deporte "
 							+ "from evento e inner join competicion c on c.id_competicion = e.id_competicion "
 							+ "inner join resultado_participante_evento p on p.id_evento = e.id_evento "
 							+ "inner join participante pp on pp.id_participante = p.id_participante "
@@ -355,17 +355,15 @@ public class EventoDAOImpl implements EventoDAO{
 		Date fecha = resultSet.getDate(i++);
 		Long idComp = resultSet.getLong(i++);
 		Long idDeporte = resultSet.getLong(i++);
-		String participante = resultSet.getString(i++);
 
 		e.setIdEvento(id);
 		e.setFecha(fecha);
 		e.setIdCompeticion(idComp);
 		e.setIdDeporte(idDeporte);
-		e.setParticipante(participante);
 
-		List<TipoResultado> mercados = tipoResultadoDAO.findByEvento(connection, idDeporte);
-		
+		List<TipoResultado> mercados = tipoResultadoDAO.findByEvento(connection, id);
 		List<Resultado> resultados = new ArrayList<Resultado>();
+		
 		for(TipoResultado tr : mercados) {
 			
 			for(Resultado r : tr.getResultados()){

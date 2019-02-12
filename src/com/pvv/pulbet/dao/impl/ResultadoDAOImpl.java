@@ -244,7 +244,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 	@Override
 	public Resultado findCuota(Connection connection, Long idEvento, Long idResultado) throws DataException {
 		if(logger.isDebugEnabled()) {
-			logger.debug("Id = {}", idEvento);
+			logger.debug("IdEvento = {}, idResultado = {}", idEvento, idResultado);
 		}
 		
 		PreparedStatement preparedStatement = null;

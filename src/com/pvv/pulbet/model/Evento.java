@@ -9,7 +9,6 @@ public class Evento extends AbstractValueObject {
 	private Date fecha = null;
 	private Long idCompeticion = null;
 	private Long idDeporte = null;
-	private String participante = null;
 
 	private Participante local = null;
 	private Participante visitante = null;
@@ -49,14 +48,6 @@ public class Evento extends AbstractValueObject {
 
 	public void setIdDeporte(Long idDeporte) {
 		this.idDeporte = idDeporte;
-	}
-
-	public String getParticipante() {
-		return participante;
-	}
-
-	public void setParticipante(String participante) {
-		this.participante = participante;
 	}
 
 	public Participante getLocal() {

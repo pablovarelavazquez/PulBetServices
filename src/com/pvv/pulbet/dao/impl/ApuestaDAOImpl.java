@@ -213,6 +213,10 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 			}
 
 			if (updatedRows > 1) {
+				
+				//DateException e = new DataException(Mensaje bl bla);
+				//e.setErrorCode(codigo)
+				//throw e;
 				throw new SQLException("Duplicate row for id = '" + 
 						a.getIdApuesta() + "' in table 'Apuesta'");
 			}     
