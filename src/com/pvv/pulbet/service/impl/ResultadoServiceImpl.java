@@ -3,7 +3,6 @@ package com.pvv.pulbet.service.impl;
 import java.util.List;
 
 import com.pvv.pulbet.exceptions.DataException;
-import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Resultado;
 import com.pvv.pulbet.service.ResultadoService;

@@ -26,7 +26,7 @@ public class DeporteServiceImpl implements DeporteService{
 	}
 
 	@Override
-	public List<Deporte> findAll() throws DataException {
+	public List<Deporte> findAll(String idioma) throws DataException {
 
 		Connection connection = null;
 		
@@ -35,7 +35,7 @@ public class DeporteServiceImpl implements DeporteService{
 			connection = ConnectionManager.getConnection();
 			connection.setAutoCommit(true);
 
-			return deporteDAO.findAll(connection);
+			return deporteDAO.findAll(connection, idioma);
 
 		} catch (SQLException e){
 			logger.warn(e.getMessage(), e);
@@ -46,7 +46,7 @@ public class DeporteServiceImpl implements DeporteService{
 	}
 
 	@Override
-	public List<Deporte> findByNombre(String nombre) throws DataException {
+	public List<Deporte> findByNombre(String nombre, String idioma) throws DataException {
 		if(logger.isDebugEnabled()) {
 			logger.debug("Nombre = {}", nombre);
 		}
@@ -58,7 +58,7 @@ public class DeporteServiceImpl implements DeporteService{
 			connection = ConnectionManager.getConnection();
 			connection.setAutoCommit(true);
 
-			return deporteDAO.findByNombre(connection, nombre);
+			return deporteDAO.findByNombre(connection, nombre, idioma);
 
 		} catch (SQLException e){
 			logger.warn(e.getMessage(), e);
@@ -69,7 +69,7 @@ public class DeporteServiceImpl implements DeporteService{
 	}
 
 	@Override
-	public Deporte findById(Long id) throws InstanceNotFoundException, DataException {
+	public Deporte findById(Long id, String idioma) throws InstanceNotFoundException, DataException {
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);
 		}
@@ -81,7 +81,7 @@ public class DeporteServiceImpl implements DeporteService{
 			connection = ConnectionManager.getConnection();
 			connection.setAutoCommit(true);
 
-			return deporteDAO.findById(connection, id);
+			return deporteDAO.findById(connection, id, idioma);
 
 		} catch (SQLException e){
 			logger.warn(e.getMessage(), e);

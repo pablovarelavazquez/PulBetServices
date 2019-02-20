@@ -27,7 +27,7 @@ public class EventoServiceImpl implements EventoService{
 	}
 
 	@Override
-	public List<Evento> findByCriteria(EventoCriteria evento) throws DataException {
+	public List<Evento> findByCriteria(EventoCriteria evento, String idioma) throws DataException {
 		
 		if(logger.isDebugEnabled()) {
 			logger.debug("EventoCriteria = {}", evento);
@@ -40,7 +40,7 @@ public class EventoServiceImpl implements EventoService{
 			c = ConnectionManager.getConnection();
 			c.setAutoCommit(true);
 			
-			List<Evento> eventos = eventoDAO.findByCriteria(c,evento); 
+			List<Evento> eventos = eventoDAO.findByCriteria(c,evento, idioma); 
 			
 			return eventos;
 			
@@ -52,7 +52,7 @@ public class EventoServiceImpl implements EventoService{
 	}
 
 	@Override
-	public Evento findById(Integer id) throws InstanceNotFoundException, DataException {
+	public Evento findById(Integer id, String idioma) throws InstanceNotFoundException, DataException {
 		
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);
@@ -65,7 +65,7 @@ public class EventoServiceImpl implements EventoService{
 			connection = ConnectionManager.getConnection();
 			connection.setAutoCommit(true);
 
-			return eventoDAO.findById(connection, id);
+			return eventoDAO.findById(connection, id, idioma);
 
 		} catch (SQLException e){
 			logger.warn(e.getMessage(), e);

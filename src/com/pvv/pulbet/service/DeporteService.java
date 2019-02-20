@@ -9,10 +9,10 @@ import com.pvv.pulbet.model.Deporte;
 
 public interface DeporteService {
 	
-	public List<Deporte> findAll() throws DataException;
+	public List<Deporte> findAll(String idioma) throws DataException;
 
-	public List<Deporte> findByNombre(String nombre) throws DataException;
+	public List<Deporte> findByNombre(String nombre, String idioma) throws DataException;
 	
-	public Deporte findById(Long id) throws InstanceNotFoundException, DataException;
+	public Deporte findById(Long id, String idioma) throws InstanceNotFoundException, DataException;
 	
 }
