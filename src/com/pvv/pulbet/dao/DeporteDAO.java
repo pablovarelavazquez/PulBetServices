@@ -10,14 +10,14 @@ import com.pvv.pulbet.model.Deporte;
 
 public interface DeporteDAO {
 	
-	public Deporte create(Connection connection, Deporte d) throws DuplicateInstanceException, DataException;
-
-	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException;
+//	public Deporte create(Connection connection, Deporte d) throws DuplicateInstanceException, DataException;
+//
+//	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException;
 	
-	public List<Deporte> findAll(Connection connection) throws DataException;
+	public List<Deporte> findAll(Connection connection, String idioma) throws DataException;
 	
-	public List<Deporte> findByNombre(Connection connection, String nombre) throws DataException;
+	public List<Deporte> findByNombre(Connection connection, String nombre, String idioma) throws DataException;
 	
-	public Deporte findById(Connection connection, Long id) throws InstanceNotFoundException, DataException;
+	public Deporte findById(Connection connection, Long id, String idioma) throws InstanceNotFoundException, DataException;
 	
 }

@@ -18,9 +18,9 @@ public interface EventoDAO {
 	
 	public void update(Connection connection, Evento e) throws InstanceNotFoundException, DataException;
 	
-	public Evento findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException;
+	public Evento findById(Connection connection, Integer id, String idioma) throws InstanceNotFoundException, DataException;
 	
-	public List<Evento> findByCriteria(Connection connection, EventoCriteria evento) throws DataException;
+	public List<Evento> findByCriteria(Connection connection, EventoCriteria evento, String idioma) throws DataException;
 	
 	public List<Long> findResultadoFinal(Connection connection, Long id) throws DataException;
 

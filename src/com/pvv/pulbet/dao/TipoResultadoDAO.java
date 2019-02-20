@@ -10,14 +10,15 @@ import com.pvv.pulbet.model.TipoResultado;
 
 public interface TipoResultadoDAO {
 	
-	public TipoResultado create(Connection connection, TipoResultado t) throws DuplicateInstanceException, DataException;
+//  Coa internalizacion da base de datos cambia.
+//	public TipoResultado create(Connection connection, TipoResultado t) throws DuplicateInstanceException, DataException;
+//	
+//	public long delete(Connection connection, Integer id) throws InstanceNotFoundException, DataException;
 	
-	public long delete(Connection connection, Integer id) throws InstanceNotFoundException, DataException;
+	public TipoResultado findById(Connection connection, Integer id, String idioma) throws InstanceNotFoundException, DataException;
 	
-	public TipoResultado findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException;
+	public List<TipoResultado> findByEvento(Connection connection, Long id, String idioma) throws DataException;
 	
-	public List<TipoResultado> findByEvento(Connection connection, Long id) throws DataException;
-	
-	public List<TipoResultado> findByDeporte(Connection connection, Long id) throws DataException;
+	public List<TipoResultado> findByDeporte(Connection connection, Long id, String idioma) throws DataException;
 
 }

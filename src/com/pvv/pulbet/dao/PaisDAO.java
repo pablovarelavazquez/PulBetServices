@@ -10,13 +10,13 @@ import com.pvv.pulbet.model.Pais;
 public interface PaisDAO {
 	
 	
-	public Pais findById(Connection connection, int id)
+	public Pais findById(Connection connection, int id, String idioma)
 		throws InstanceNotFoundException, DataException;
 
-	public List<Pais> findAll(Connection connection)
+	public List<Pais> findAll(Connection connection, String idioma)
 			throws DataException;
 	
-	public List<Pais> findByNombre(Connection connection, String nome)
+	public List<Pais> findByNombre(Connection connection, String nome, String idioma)
 			throws DataException;
 	
 }

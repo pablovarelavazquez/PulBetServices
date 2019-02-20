@@ -10,32 +10,32 @@ import com.pvv.pulbet.service.ResultadoService;
 
 public class ResultadoServiceImpl implements ResultadoService{
 
+//	@Override
+//	public Resultado create(Resultado r) throws DuplicateInstanceException, DataException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public Long delete(Long id) throws InstanceNotFoundException, DataException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
 	@Override
-	public Resultado create(Resultado r) throws DuplicateInstanceException, DataException {
+	public Resultado findById(Integer id, String idioma) throws InstanceNotFoundException, DataException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Long delete(Long id) throws InstanceNotFoundException, DataException {
+	public List<Resultado> findByTipoResultado(Integer id, String idioma) throws DataException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Resultado findById(Integer id) throws InstanceNotFoundException, DataException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Resultado> findByTipoResultado(Integer id) throws DataException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Resultado> findAll() throws DataException {
+	public List<Resultado> findAll(String idioma) throws DataException {
 		// TODO Auto-generated method stub
 		return null;
 	}

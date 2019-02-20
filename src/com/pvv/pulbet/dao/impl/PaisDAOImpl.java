@@ -21,7 +21,7 @@ public class PaisDAOImpl implements PaisDAO{
 	private static Logger logger = LogManager.getLogger(PaisDAOImpl.class);	
 	
 	@Override
-	public Pais findById(Connection connection, int id) throws InstanceNotFoundException, DataException {
+	public Pais findById(Connection connection, int id, String idioma) throws InstanceNotFoundException, DataException {
 		
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);
@@ -34,15 +34,16 @@ public class PaisDAOImpl implements PaisDAO{
 		try {
 				
 			String sql;
-			sql =  "SELECT ID_PAIS, NOMBRE "
-					+"FROM PAIS "
-					+"WHERE ID_PAIS = ? ";
+			sql =  "SELECT P.ID_PAIS, PI.NOMBRE "
+					+"FROM PAIS P INNER JOIN PAIS_IDIOMA PI ON P.ID_PAIS = PI.ID_PAIS "
+					+"WHERE P.ID_PAIS = ? AND PI.COD_IDIOMA = ? ";
 
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
 			int i = 1;
 			preparedStatement.setLong(i++, id);
+			preparedStatement.setString(i++, idioma);
 
 
 			resultSet = preparedStatement.executeQuery();			
@@ -68,20 +69,24 @@ public class PaisDAOImpl implements PaisDAO{
 	}
 
 	@Override
-	public List<Pais> findAll(Connection connection) throws DataException {
+	public List<Pais> findAll(Connection connection, String idioma) throws DataException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
 
 			String sql;
-			sql =  "SELECT ID_PAIS,NOMBRE "
-					+"FROM PAIS ";
+			sql =  "SELECT P.ID_PAIS, PI.NOMBRE "
+					+"FROM PAIS P INNER JOIN PAIS_IDIOMA PI ON P.ID_PAIS = PI.ID_PAIS "
+					+"WHERE PI.COD_IDIOMA = ? ";
 
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
+			int i = 1;
+			preparedStatement.setString(i++, idioma);
+			
 			resultSet = preparedStatement.executeQuery();			
 			//STEP 5: Extract data from result set			
-
+			
 			List<Pais> results = new ArrayList<Pais>();                        
 			Pais p= null;
 
@@ -103,7 +108,7 @@ public class PaisDAOImpl implements PaisDAO{
 	}
 
 	@Override
-	public List<Pais> findByNombre(Connection connection, String nome) throws DataException {
+	public List<Pais> findByNombre(Connection connection, String nome, String idioma) throws DataException {
 		
 		if(logger.isDebugEnabled()) {
 			logger.debug("Nombre= {}", nome);
@@ -114,16 +119,16 @@ public class PaisDAOImpl implements PaisDAO{
 		try{
 
 			String sql;
-			sql =    "SELECT ID_PAIS,NOMBRE " 
-					+" FROM PAIS "
-					+" WHERE "
-					+"	UPPER(NOMBRE) LIKE ?";
+			sql =   "SELECT P.ID_PAIS, PI.NOMBRE "
+					+"FROM PAIS P INNER JOIN PAIS_IDIOMA PI ON P.ID_PAIS = PI.ID_PAIS "
+					+"WHERE PI.NOMBRE = ? AND PI.COD_IDIOMA = ? ";
 
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			// Establece os parámetros
 			int i = 1;
 			preparedStatement.setString(i++, "%"+nome.toUpperCase()+"%");
+			preparedStatement.setString(i++, idioma);
 
 
 			resultSet = preparedStatement.executeQuery();			

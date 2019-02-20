@@ -1,6 +1,5 @@
 package com.pvv.pulbet.service;
 
-import java.util.Date;
 import java.util.List;
 
 import com.pvv.pulbet.exceptions.DataException;
@@ -18,9 +17,9 @@ public interface ApuestaService {
 	
 	public List<Apuesta> findByUsuario(Long id) throws DataException;
 	
-	public List<Apuesta> findHistorial(ApuestaCriteria apuesta, Date hasta) throws DataException;
+	public List<Apuesta> findHistorial(ApuestaCriteria apuesta) throws DataException;
 	
-	public List<Apuesta> findOpenBets(ApuestaCriteria apuesta, Date hasta) throws DataException;
+	public List<Apuesta> findOpenBets(ApuestaCriteria apuesta) throws DataException;
 	
 	public Apuesta comprobarApuesta( Apuesta apuesta) throws DataException;
 

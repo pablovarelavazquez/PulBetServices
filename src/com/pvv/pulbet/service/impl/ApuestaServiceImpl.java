@@ -93,11 +93,11 @@ public class ApuestaServiceImpl implements ApuestaService{
 	}
 
 	@Override
-	public List<Apuesta> findHistorial(ApuestaCriteria apuesta, Date hasta) throws DataException {
+	public List<Apuesta> findHistorial(ApuestaCriteria apuesta) throws DataException {
 		
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("ApuestaCriteria = {}, Fecha Hasta = {}", apuesta, hasta);
+			logger.debug("ApuestaCriteria = {}", apuesta);
 		}
 		
 		Connection connection = null;
@@ -113,7 +113,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 			connection.setAutoCommit(false);
 
-			result = apuestaDAO.findByCriteria(connection, apuesta, hasta); 
+			result = apuestaDAO.findByCriteria(connection, apuesta); 
 
 			List<Apuesta> finalizados = new ArrayList<Apuesta>();
 
@@ -136,10 +136,10 @@ public class ApuestaServiceImpl implements ApuestaService{
 	}
 
 	@Override
-	public List<Apuesta> findOpenBets(ApuestaCriteria apuesta, Date hasta) throws DataException {
+	public List<Apuesta> findOpenBets(ApuestaCriteria apuesta) throws DataException {
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("ApuestaCriteria = {}, Fecha Hasta = {}", apuesta, hasta);
+			logger.debug("ApuestaCriteria = {}", apuesta);
 		}
 		
 		Connection connection = null;
@@ -155,7 +155,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 			connection.setAutoCommit(false);
 
-			result = apuestaDAO.findByCriteria(connection, apuesta, hasta); 
+			result = apuestaDAO.findByCriteria(connection, apuesta); 
 
 			List<Apuesta> noFinalizados = new ArrayList<Apuesta>();
 

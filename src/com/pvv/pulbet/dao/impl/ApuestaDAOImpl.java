@@ -217,6 +217,8 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 				//DateException e = new DataException(Mensaje bl bla);
 				//e.setErrorCode(codigo)
 				//throw e;
+				//en vez de esto
+				
 				throw new SQLException("Duplicate row for id = '" + 
 						a.getIdApuesta() + "' in table 'Apuesta'");
 			}     
@@ -314,10 +316,10 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	}
 
 	@Override
-	public List<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta, Date hasta)
+	public List<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta)
 			throws DataException {
 		if(logger.isDebugEnabled()) {
-			logger.debug("ApuestaCriteria = {}, Fecha Hasta = {}", apuesta, hasta);
+			logger.debug("ApuestaCriteria = {}", apuesta);
 		}
 
 		PreparedStatement preparedStatement = null;
@@ -347,7 +349,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 				first = false;
 			}
 
-			if (apuesta.getFecha()!=null) {
+			if (apuesta.getDesde()!=null) {
 				addClause(queryString, first, " fecha >= ? ");
 				first = false;
 			}			
@@ -357,7 +359,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 				first = false;
 			}	
 
-			if (hasta!=null) {
+			if (apuesta.getHasta()!=null) {
 				addClause(queryString, first, " fecha <= ? ");
 				first = false;
 			}
@@ -374,8 +376,10 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 				preparedStatement.setDouble(i++, apuesta.getImporte());
 			if (apuesta.getIdUsuario()!=null) 
 				preparedStatement.setLong(i++, apuesta.getIdUsuario());
-			if (apuesta.getFecha()!=null)
-				preparedStatement.setDate(i++, new java.sql.Date(apuesta.getFecha().getTime()));
+			if (apuesta.getDesde()!=null)
+				preparedStatement.setDate(i++, new java.sql.Date(apuesta.getDesde().getTime()));
+			if (apuesta.getHasta()!=null)
+				preparedStatement.setDate(i++, new java.sql.Date(apuesta.getHasta().getTime()));
 			if (apuesta.getProcesado()!=null)
 				preparedStatement.setInt(i++, apuesta.getProcesado());
 

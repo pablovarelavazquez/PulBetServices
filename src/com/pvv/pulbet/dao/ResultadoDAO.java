@@ -11,15 +11,16 @@ import com.pvv.pulbet.model.Usuario;
 
 public interface ResultadoDAO {
 
-	public Resultado create(Connection connection, Resultado r) throws DuplicateInstanceException, DataException;
+//  Coa internalizacion da base de datos cambia.
+//	public Resultado create(Connection connection, Resultado r) throws DuplicateInstanceException, DataException;
+//	
+//	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException;
 	
-	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException;
+	public Resultado findById(Connection connection, Integer id, String idioma) throws InstanceNotFoundException, DataException;
 	
-	public Resultado findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException;
+	public List<Resultado> findByTipoResultado(Connection connection, Integer id, String idioma) throws DataException;
 	
-	public List<Resultado> findByTipoResultado(Connection connection, Integer id) throws DataException;
-	
-	public List<Resultado> findAll(Connection connection)	throws DataException;
+	public List<Resultado> findAll(Connection connection, String idioma)	throws DataException;
 	
 	public Resultado findCuota(Connection connection, Long idEvento, Long idResultado) throws DataException;
 	

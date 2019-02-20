@@ -9,15 +9,15 @@ import com.pvv.pulbet.model.Resultado;
 
 public interface ResultadoService {
 
-	public Resultado create( Resultado r) throws DuplicateInstanceException, DataException;
+//	public Resultado create( Resultado r) throws DuplicateInstanceException, DataException;
+//	
+//	public Long delete(Long id) throws InstanceNotFoundException, DataException;
 	
-	public Long delete(Long id) throws InstanceNotFoundException, DataException;
+	public Resultado findById(Integer id, String idioma) throws InstanceNotFoundException, DataException;
 	
-	public Resultado findById(Integer id) throws InstanceNotFoundException, DataException;
+	public List<Resultado> findByTipoResultado(Integer id, String idioma) throws DataException;
 	
-	public List<Resultado> findByTipoResultado(Integer id) throws DataException;
-	
-	public List<Resultado> findAll()	throws DataException;
+	public List<Resultado> findAll( String idioma ) throws DataException;
 	
 	public List<Resultado> findCuotas(Long idEvento) throws DataException;
 	

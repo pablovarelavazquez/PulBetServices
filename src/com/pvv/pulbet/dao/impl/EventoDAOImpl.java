@@ -169,7 +169,7 @@ public class EventoDAOImpl implements EventoDAO{
 
 
 	@Override
-	public List<Evento> findByCriteria(Connection connection, EventoCriteria evento) throws DataException {
+	public List<Evento> findByCriteria(Connection connection, EventoCriteria evento, String idioma) throws DataException {
 
 		if(logger.isDebugEnabled()) {
 			logger.debug("EventoCriteria = {}", evento);
@@ -239,7 +239,7 @@ public class EventoDAOImpl implements EventoDAO{
 			Evento e = null;
 
 			while(resultSet.next()) {
-				e = loadNext(connection, resultSet); 
+				e = loadNext(connection, resultSet, idioma); 
 				results.add(e);               	
 			}
 
@@ -257,7 +257,7 @@ public class EventoDAOImpl implements EventoDAO{
 
 
 	@Override
-	public Evento findById(Connection connection, Integer id) throws DataException {
+	public Evento findById(Connection connection, Integer id, String idioma) throws DataException {
 
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);
@@ -287,7 +287,7 @@ public class EventoDAOImpl implements EventoDAO{
 			resultSet = preparedStatement.executeQuery();			
 
 			if (resultSet.next()) {
-				e =  loadNext(connection, resultSet);			
+				e =  loadNext(connection, resultSet, idioma);			
 			} else {
 				throw new InstanceNotFoundException("Non se atopou usuario con id = "+id, Usuario.class.getName());
 			}
@@ -346,7 +346,7 @@ public class EventoDAOImpl implements EventoDAO{
 
 	}
 
-	private Evento loadNext(Connection connection, ResultSet resultSet) throws SQLException, DataException{
+	private Evento loadNext(Connection connection, ResultSet resultSet, String idioma) throws SQLException, DataException{
 
 
 		Evento e = new Evento();
@@ -361,7 +361,7 @@ public class EventoDAOImpl implements EventoDAO{
 		e.setIdCompeticion(idComp);
 		e.setIdDeporte(idDeporte);
 
-		List<TipoResultado> mercados = tipoResultadoDAO.findByEvento(connection, id);
+		List<TipoResultado> mercados = tipoResultadoDAO.findByEvento(connection, id, idioma);
 		List<Resultado> resultados = new ArrayList<Resultado>();
 		
 		for(TipoResultado tr : mercados) {
