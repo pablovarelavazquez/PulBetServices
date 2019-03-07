@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.pvv.pulbet.cache.Cache;
+import com.pvv.pulbet.cache.CacheManager;
 import com.pvv.pulbet.dao.DeporteDAO;
 import com.pvv.pulbet.dao.impl.DeporteDAOImpl;
 import com.pvv.pulbet.dao.util.ConnectionManager;
@@ -27,7 +29,11 @@ public class DeporteServiceImpl implements DeporteService{
 
 	@Override
 	public List<Deporte> findAll(String idioma) throws DataException {
-
+		
+		Cache<String, List<Deporte>> cache = CacheManager.getInstance().getCache(CacheNames.DEPORTES_LIST, String.class, List.class);
+		
+		List<Deporte> todas = cache.get("ALL");
+		
 		Connection connection = null;
 		
 		try {
@@ -70,9 +76,27 @@ public class DeporteServiceImpl implements DeporteService{
 
 	@Override
 	public Deporte findById(Long id, String idioma) throws InstanceNotFoundException, DataException {
+		
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);
 		}
+		
+		Cache<Long, Deporte> cache = CacheManager.getInstance().getCache(CacheNames.DEPORTES, Long.class, Deporte.class);
+		
+		Deporte d = cache.get(id);
+		
+		if(d!=null) {
+			//exito ou acierto cache
+			if (logger.isDebugEnabled()) {
+				logger.debug("Acierto cache: {}", id);
+			}
+			
+		} else {
+			
+			//fallo cache
+			if (logger.isDebugEnabled()) {
+				logger.debug("Fallo cache: {}", id);
+			}
 
 		Connection connection = null;
 		
@@ -81,7 +105,7 @@ public class DeporteServiceImpl implements DeporteService{
 			connection = ConnectionManager.getConnection();
 			connection.setAutoCommit(true);
 
-			return deporteDAO.findById(connection, id, idioma);
+			d = deporteDAO.findById(connection, id, idioma);
 
 		} catch (SQLException e){
 			logger.warn(e.getMessage(), e);
@@ -89,6 +113,11 @@ public class DeporteServiceImpl implements DeporteService{
 		} finally {
 			JDBCUtils.closeConnection(connection);
 		}
+		
+		cache.put(id, d);
+		
+	}
+		return d;
 	}
 
 }
