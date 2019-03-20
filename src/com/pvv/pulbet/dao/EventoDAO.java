@@ -7,8 +7,8 @@ import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Evento;
-import com.pvv.pulbet.model.Usuario;
 import com.pvv.pulbet.service.EventoCriteria;
+import com.pvv.pulbet.service.Results;
 
 public interface EventoDAO {
 	
@@ -20,7 +20,7 @@ public interface EventoDAO {
 	
 	public Evento findById(Connection connection, Integer id, String idioma) throws InstanceNotFoundException, DataException;
 	
-	public List<Evento> findByCriteria(Connection connection, EventoCriteria evento, String idioma) throws DataException;
+	public Results<Evento> findByCriteria(Connection connection, EventoCriteria evento, int startIndex, int count, String idioma) throws DataException;
 	
 	public List<Long> findResultadoFinal(Connection connection, Long id) throws DataException;
 

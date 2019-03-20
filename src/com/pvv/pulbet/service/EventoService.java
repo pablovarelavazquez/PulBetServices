@@ -8,7 +8,7 @@ import com.pvv.pulbet.model.Evento;
 
 public interface EventoService {
 	
-	public List<Evento> findByCriteria(EventoCriteria evento, String idioma) throws DataException;
+	public Results<Evento> findByCriteria(EventoCriteria evento, int startIndex, int count, String idioma) throws DataException;
 	
 	public Evento findById(Integer id, String idioma) throws InstanceNotFoundException, DataException;
 	

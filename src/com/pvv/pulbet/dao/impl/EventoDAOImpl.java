@@ -26,6 +26,7 @@ import com.pvv.pulbet.model.Resultado;
 import com.pvv.pulbet.model.TipoResultado;
 import com.pvv.pulbet.model.Usuario;
 import com.pvv.pulbet.service.EventoCriteria;
+import com.pvv.pulbet.service.Results;
 
 public class EventoDAOImpl implements EventoDAO{
 
@@ -169,7 +170,7 @@ public class EventoDAOImpl implements EventoDAO{
 
 
 	@Override
-	public List<Evento> findByCriteria(Connection connection, EventoCriteria evento, String idioma) throws DataException {
+	public Results<Evento> findByCriteria(Connection connection, EventoCriteria evento, int startIndex, int count, String idioma) throws DataException {
 
 		if(logger.isDebugEnabled()) {
 			logger.debug("EventoCriteria = {}", evento);
@@ -235,16 +236,25 @@ public class EventoDAOImpl implements EventoDAO{
 
 			resultSet = preparedStatement.executeQuery();
 
-			List<Evento> results = new ArrayList<Evento>();
+			List<Evento> page = new ArrayList<Evento>();
 			Evento e = null;
+			int currentCount = 0;
 
-			while(resultSet.next()) {
-				e = loadNext(connection, resultSet, idioma); 
-				results.add(e);               	
+			if ((startIndex >=1) && resultSet.absolute(startIndex)) {
+				do {
+					e = loadNext(connection, resultSet, idioma); 
+					page.add(e);               	
+					currentCount++;                	
+				} while ((currentCount < count) && resultSet.next()) ;
 			}
+			
+			
+			int totalRows = JDBCUtils.getTotalRows(resultSet);
 
+			Results<Evento> results = new Results<Evento>(page, startIndex, totalRows);
 
 			return results;
+			
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DataException(e);

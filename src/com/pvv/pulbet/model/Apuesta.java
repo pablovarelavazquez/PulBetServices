@@ -89,8 +89,6 @@ public class Apuesta extends AbstractValueObject{
 		 
 		return a.getIdApuesta().equals(this.getIdApuesta());
 		}
-		//con "equalsIgnoreCase" podemos comparar cadenas sen importar se ten mayusculas ou minusculas
-		//debemos xestionar os posibles casos para os datos que nos envian, por exemplo, neste caso, se o idApuesta e nulo
 		
 	}
 

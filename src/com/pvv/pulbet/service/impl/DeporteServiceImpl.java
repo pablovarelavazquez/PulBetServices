@@ -32,7 +32,7 @@ public class DeporteServiceImpl implements DeporteService{
 		
 		Cache<String, List<Deporte>> cache = CacheManager.getInstance().getCache(CacheNames.DEPORTES_LIST, String.class, List.class);
 		
-		List<Deporte> todas = cache.get("ALL");
+		List<Deporte> todas = cache.get(idioma);
 		
 		Connection connection = null;
 		

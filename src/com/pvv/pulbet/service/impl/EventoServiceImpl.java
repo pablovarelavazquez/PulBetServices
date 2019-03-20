@@ -16,6 +16,7 @@ import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Evento;
 import com.pvv.pulbet.service.EventoCriteria;
 import com.pvv.pulbet.service.EventoService;
+import com.pvv.pulbet.service.Results;
 
 public class EventoServiceImpl implements EventoService{
 	
@@ -27,7 +28,8 @@ public class EventoServiceImpl implements EventoService{
 	}
 
 	@Override
-	public List<Evento> findByCriteria(EventoCriteria evento, String idioma) throws DataException {
+	public Results<Evento> findByCriteria(EventoCriteria evento,int startIndex, int count, String idioma) throws DataException {
+		
 		
 		if(logger.isDebugEnabled()) {
 			logger.debug("EventoCriteria = {}", evento);
@@ -36,11 +38,12 @@ public class EventoServiceImpl implements EventoService{
 		Connection c = null;
 		
 		try {
-			
 			c = ConnectionManager.getConnection();
+			
+			
 			c.setAutoCommit(true);
 			
-			List<Evento> eventos = eventoDAO.findByCriteria(c,evento, idioma); 
+			Results<Evento> eventos = eventoDAO.findByCriteria(c,evento,startIndex, count, idioma); 
 			
 			return eventos;
 			

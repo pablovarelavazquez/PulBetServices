@@ -137,19 +137,31 @@ public class Usuario extends AbstractValueObject{
 
 	@Override
 	public boolean equals(Object obj) {
-		boolean error = false;
-		if (obj == null) {
-			return error;
-		} else {
-		Usuario u= (Usuario)obj;
-		 
-		return u.getIdUsuario().equals(this.getIdUsuario());
 		
+		if(obj == null || !(obj instanceof Usuario)) {
+			return false;
 		}
-		//con "equalsIgnoreCase" podemos comparar cadenas sen importar se ten mayusculas ou minusculas
+		
+		Usuario other = (Usuario)obj;
+		if(this.getIdUsuario() == null && other.getIdUsuario() == null) {
+			return true;
+		}
+		
+		if(!this.getIdUsuario().equals(other.getIdUsuario())) {
+			return false;
+		}
+		
+		return true;
 		
 	}
 
-
+	@Override
+	public int hashCode() {
+		if(idUsuario == null) return Integer.MAX_VALUE;
+		
+		return idUsuario.hashCode();
+		
+		//return idUsuario ==null? Integer.MAX_VALUE : idUsuario.hashCode();
+	}
 
 }
