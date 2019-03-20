@@ -286,7 +286,7 @@ public class EventoDAOImpl implements EventoDAO{
 							+ "inner join resultado_participante_evento p on p.id_evento = e.id_evento "
 							+ "inner join participante pp on pp.id_participante = p.id_participante "
 							+ "where e.id_evento = ? "
-							+ "group by id_evento, id_participante order by e.fecha_hora");
+							+ "group by e.id_evento, pp.id_participante order by e.fecha_hora");
 
 			preparedStatement = connection.prepareStatement(queryString.toString(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
