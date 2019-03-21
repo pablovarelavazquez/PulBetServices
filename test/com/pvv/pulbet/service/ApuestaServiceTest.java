@@ -21,9 +21,9 @@ public class ApuestaServiceTest {
 
 	public void testFindByUsuario() 
 			throws Exception {
-		List<Apuesta> lista = apuestaService.findByUsuario(3l);
+		Results<Apuesta> lista = apuestaService.findByUsuario(3l,1,10);
 
-		for (Apuesta a : lista) {
+		for (Apuesta a : lista.getPage()) {
 			System.out.println(a);
 		}
 	}
@@ -36,12 +36,11 @@ public class ApuestaServiceTest {
 	public void testHistorial() throws DataException {
 
 		ApuestaCriteria a = new ApuestaCriteria();
-		a.setIdUsuario(3l);
+		a.setIdUsuario(1l);
 
-		List<Apuesta> result = new ArrayList<Apuesta>();
-		result = apuestaService.findHistorial(a);
+		Results<Apuesta> result = apuestaService.findHistorial(a,1,10);
 
-		for(Apuesta ap: result) {
+		for(Apuesta ap: result.getPage()) {
 			System.out.println(ap);
 		}
 
@@ -50,12 +49,11 @@ public class ApuestaServiceTest {
 	public void testOpenBets() throws DataException {
 
 		ApuestaCriteria a = new ApuestaCriteria();
-		a.setIdUsuario(3l);
+		a.setIdUsuario(1l);
 
-		List<Apuesta> result = new ArrayList<Apuesta>();
-		result = apuestaService.findOpenBets(a);
+		Results<Apuesta> result = apuestaService.findOpenBets(a,1,10);
 
-		for(Apuesta ap: result) {
+		for(Apuesta ap: result.getPage()) {
 			System.out.println(ap);
 		}
 
@@ -111,7 +109,8 @@ public class ApuestaServiceTest {
 			//test.testFindByUsuario(); //OK
 			//test.testDelete();
 			test.testHistorial();; //OK
-			//test.testOpenBets();; //OK
+			System.out.println("---------------------------------------------------");
+			test.testOpenBets();; //OK
 			//test.testCreate(); //OK
 			//test.comprobar(); //OK
 

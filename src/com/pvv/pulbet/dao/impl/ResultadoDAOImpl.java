@@ -249,7 +249,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 	}
 	
 	@Override
-	public Resultado findCuota(Connection connection, Long idEvento, Long idResultado) throws DataException {
+	public Resultado findCuota(Connection connection, Long idEvento, Long idResultado, String idioma) throws DataException {
 		if(logger.isDebugEnabled()) {
 			logger.debug("IdEvento = {}, idResultado = {}", idEvento, idResultado);
 		}
@@ -263,7 +263,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 					+" FROM RESULTADO R INNER JOIN RESULTADO_PARTICIPANTE_EVENTO RP ON RP.ID_RESULTADO=R.ID_RESULTADO "
 					+" INNER JOIN EVENTO E ON E.ID_EVENTO = RP.ID_EVENTO "
 					+ "INNER JOIN RESULTADO_IDIOMA RI ON R.ID_RESULTADO = RI.ID_RESULTADO "
-					+ " WHERE E.ID_EVENTO = ? AND R.ID_RESULTADO = ? "
+					+ " WHERE E.ID_EVENTO = ? AND R.ID_RESULTADO = ? AND RI.COD_IDIOMA = ? "
 					+"	GROUP BY ID_EVENTO, ID_RESULTADO";
 
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -272,6 +272,8 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 			int i = 1;
 			preparedStatement.setLong(i++, idEvento);
 			preparedStatement.setLong(i++, idResultado);
+			preparedStatement.setString(i++, idioma);
+
 
 			resultSet = preparedStatement.executeQuery();			
 			//STEP 5: Extract data from result set			

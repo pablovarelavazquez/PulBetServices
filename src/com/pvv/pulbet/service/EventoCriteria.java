@@ -8,6 +8,7 @@ public class EventoCriteria {
 
 	private Long idEvento = null;
 	private Date fecha = null;
+	//private Date fechaHasta = null;
 	private Long idCompeticion = null;
 	private Long idDeporte = null;
 	private String participante = null;

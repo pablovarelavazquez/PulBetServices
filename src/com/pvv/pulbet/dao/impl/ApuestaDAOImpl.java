@@ -19,8 +19,10 @@ import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Apuesta;
+import com.pvv.pulbet.model.Evento;
 import com.pvv.pulbet.model.LineaApuesta;
 import com.pvv.pulbet.service.ApuestaCriteria;
+import com.pvv.pulbet.service.Results;
 
 public class ApuestaDAOImpl implements ApuestaDAO{
 
@@ -77,7 +79,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	}
 
 	@Override
-	public List<Apuesta> findByUsuario(Connection connection, Long id)
+	public Results<Apuesta> findByUsuario(Connection connection, Long id, int startIndex, int count)
 			throws DataException {
 
 		if(logger.isDebugEnabled()) {
@@ -100,17 +102,24 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 			preparedStatement.setLong(i++, id);
 
 
-			resultSet = preparedStatement.executeQuery();			
-			//STEP 5: Extract data from result set			
+			resultSet = preparedStatement.executeQuery();
 
-			List<Apuesta> results = new ArrayList<Apuesta>();                        
+			List<Apuesta> page = new ArrayList<Apuesta>();
 			Apuesta a = null;
+			int currentCount = 0;
 
-
-			while(resultSet.next()) {
-				a = loadNext(connection, resultSet);
-				results.add(a);               	
+			if ((startIndex >=1) && resultSet.absolute(startIndex)) {
+				do {
+					a = loadNext(connection, resultSet); 
+					page.add(a);               	
+					currentCount++;                	
+				} while ((currentCount < count) && resultSet.next()) ;
 			}
+			
+			
+			int totalRows = JDBCUtils.getTotalRows(resultSet);
+
+			Results<Apuesta> results = new Results<Apuesta>(page, startIndex, totalRows);
 
 			return results;
 
@@ -280,7 +289,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	}
 
 	@Override
-	public List<Apuesta> findAll(Connection connection) throws DataException {
+	public Results<Apuesta> findAll(Connection connection, int startIndex, int count) throws DataException {
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -292,17 +301,24 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-			resultSet = preparedStatement.executeQuery();			
-			//STEP 5: Extract data from result set			
+			resultSet = preparedStatement.executeQuery();
 
-			List<Apuesta> results = new ArrayList<Apuesta>();                        
+			List<Apuesta> page = new ArrayList<Apuesta>();
 			Apuesta a = null;
+			int currentCount = 0;
 
-
-			while(resultSet.next()) {
-				a = loadNext(connection, resultSet);
-				results.add(a);               	
+			if ((startIndex >=1) && resultSet.absolute(startIndex)) {
+				do {
+					a = loadNext(connection, resultSet); 
+					page.add(a);               	
+					currentCount++;                	
+				} while ((currentCount < count) && resultSet.next()) ;
 			}
+			
+			
+			int totalRows = JDBCUtils.getTotalRows(resultSet);
+
+			Results<Apuesta> results = new Results<Apuesta>(page, startIndex, totalRows);
 
 			return results;
 
@@ -316,7 +332,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	}
 
 	@Override
-	public List<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta)
+	public Results<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta, int startIndex, int count)
 			throws DataException {
 		if(logger.isDebugEnabled()) {
 			logger.debug("ApuestaCriteria = {}", apuesta);
@@ -385,16 +401,25 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 			resultSet = preparedStatement.executeQuery();
 
-			List<Apuesta> results = new ArrayList<Apuesta>();
+			List<Apuesta> page = new ArrayList<Apuesta>();
 			Apuesta a = null;
+			int currentCount = 0;
 
-			while(resultSet.next()) {
-				a = loadNext(connection, resultSet); 
-				results.add(a);               	
+			if ((startIndex >=1) && resultSet.absolute(startIndex)) {
+				do {
+					a = loadNext(connection, resultSet); 
+					page.add(a);               	
+					currentCount++;                	
+				} while ((currentCount < count) && resultSet.next()) ;
 			}
+			
+			
+			int totalRows = JDBCUtils.getTotalRows(resultSet);
 
+			Results<Apuesta> results = new Results<Apuesta>(page, startIndex, totalRows);
 
 			return results;
+			
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DataException(e);

@@ -3,7 +3,6 @@ package com.pvv.pulbet.service.impl;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +20,7 @@ import com.pvv.pulbet.model.LineaApuesta;
 import com.pvv.pulbet.service.ApuestaCriteria;
 import com.pvv.pulbet.service.ApuestaService;
 import com.pvv.pulbet.service.LineaApuestaService;
+import com.pvv.pulbet.service.Results;
 
 public class ApuestaServiceImpl implements ApuestaService{
 
@@ -34,7 +34,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 	}
 
 	@Override
-	public List<Apuesta> findByUsuario(Long id) throws DataException {
+	public Results<Apuesta> findByUsuario(Long id ,int startIndex, int count) throws DataException {
 		
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);
@@ -47,7 +47,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 			connection = ConnectionManager.getConnection();
 			connection.setAutoCommit(true);
 
-			return apuestaDAO.findByUsuario(connection, id);
+			return apuestaDAO.findByUsuario(connection, id,startIndex, count);
 
 		} catch (SQLException e){
 			logger.warn(e.getMessage(), e);
@@ -93,7 +93,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 	}
 
 	@Override
-	public List<Apuesta> findHistorial(ApuestaCriteria apuesta) throws DataException {
+	public Results<Apuesta> findHistorial(ApuestaCriteria apuesta,int startIndex, int count) throws DataException {
 		
 		
 		if(logger.isDebugEnabled()) {
@@ -102,7 +102,8 @@ public class ApuestaServiceImpl implements ApuestaService{
 		
 		Connection connection = null;
 		boolean commit = false;
-		List<Apuesta> result = null;
+		Results<Apuesta> result = null;
+		List<Apuesta> finalizados = new ArrayList<Apuesta>();
 
 		try {
 
@@ -113,11 +114,9 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 			connection.setAutoCommit(false);
 
-			result = apuestaDAO.findByCriteria(connection, apuesta); 
+			result = apuestaDAO.findByCriteria(connection, apuesta, startIndex, count); 
 
-			List<Apuesta> finalizados = new ArrayList<Apuesta>();
-
-			for (Apuesta a: result) {
+			for (Apuesta a: result.getPage()) {
 				if(a.getProcesado()!=0) {
 					finalizados.add(a);
 				}
@@ -125,7 +124,9 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 			commit = true;    
 
-			return finalizados;
+			result.setPage(finalizados);
+			
+			return result;
 
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
@@ -136,7 +137,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 	}
 
 	@Override
-	public List<Apuesta> findOpenBets(ApuestaCriteria apuesta) throws DataException {
+	public Results<Apuesta> findOpenBets(ApuestaCriteria apuesta,int startIndex, int count) throws DataException {
 		
 		if(logger.isDebugEnabled()) {
 			logger.debug("ApuestaCriteria = {}", apuesta);
@@ -144,7 +145,8 @@ public class ApuestaServiceImpl implements ApuestaService{
 		
 		Connection connection = null;
 		boolean commit = false;
-		List<Apuesta> result = null;
+		Results<Apuesta> result = null;
+		List<Apuesta> noFinalizados = new ArrayList<Apuesta>();
 
 		try {
 
@@ -155,18 +157,18 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 			connection.setAutoCommit(false);
 
-			result = apuestaDAO.findByCriteria(connection, apuesta); 
+			result = apuestaDAO.findByCriteria(connection, apuesta, startIndex, count); 
 
-			List<Apuesta> noFinalizados = new ArrayList<Apuesta>();
-
-			for (Apuesta a: result) {
+			for (Apuesta a: result.getPage()) {
 				if(a.getProcesado()==0) {
 					noFinalizados.add(a);
 				}
 			}
 
+			result.setPage(noFinalizados);
+			
 			commit = true;    
-			return noFinalizados;
+			return result;
 
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);

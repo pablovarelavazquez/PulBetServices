@@ -15,11 +15,11 @@ public interface ApuestaService {
 	
 	public Apuesta findById(Long id) throws InstanceNotFoundException, DataException;
 	
-	public List<Apuesta> findByUsuario(Long id) throws DataException;
+	public Results<Apuesta> findByUsuario(Long id,int startIndex, int count) throws DataException;
 	
-	public List<Apuesta> findHistorial(ApuestaCriteria apuesta) throws DataException;
+	public Results<Apuesta> findHistorial(ApuestaCriteria apuesta,int startIndex, int count) throws DataException;
 	
-	public List<Apuesta> findOpenBets(ApuestaCriteria apuesta) throws DataException;
+	public Results<Apuesta> findOpenBets(ApuestaCriteria apuesta,int startIndex, int count) throws DataException;
 	
 	public Apuesta comprobarApuesta( Apuesta apuesta) throws DataException;
 

@@ -372,12 +372,12 @@ public class EventoDAOImpl implements EventoDAO{
 		e.setIdDeporte(idDeporte);
 
 		List<TipoResultado> mercados = tipoResultadoDAO.findByEvento(connection, id, idioma);
-		List<Resultado> resultados = new ArrayList<Resultado>();
+		List<Resultado> resultados = null;
 		
 		for(TipoResultado tr : mercados) {
-			
+			resultados = new ArrayList<Resultado>();
 			for(Resultado r : tr.getResultados()){
-				r = resultadoDAO.findCuota(connection, id, r.getIdResultado());
+				r = resultadoDAO.findCuota(connection, id, r.getIdResultado(), idioma);
 				resultados.add(r);
 			}
 			

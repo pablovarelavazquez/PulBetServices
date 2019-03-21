@@ -18,7 +18,7 @@ public class EventoServiceTest {
 		//e.setIdDeporte(2l);
 		//e.setFecha(new Date());
 		//e.setIdCompeticion(1l);
-		//e.setIdEvento(6l);
+		e.setIdEvento(6l);
 		
 		Results<Evento> results = null;
 		int startIndex = 1;
@@ -26,7 +26,7 @@ public class EventoServiceTest {
 		int i = 1;
 				
 		do {
-			results = eventoService.findByCriteria(e, startIndex, count, "ESP");
+			results = eventoService.findByCriteria(e, startIndex, count, "ENG");
 			System.out.println("Found "+results.getTotal()+" results.");				
 			if (results.getPage().size()>0) {
 				System.out.println("Page ["+startIndex+" - "+(startIndex+results.getPage().size()-1)+"] : ");				

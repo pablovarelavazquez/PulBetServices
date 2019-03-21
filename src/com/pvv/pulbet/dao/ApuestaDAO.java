@@ -1,7 +1,6 @@
 package com.pvv.pulbet.dao;
 
 import java.sql.Connection;
-import java.util.Date;
 import java.util.List;
 
 import com.pvv.pulbet.exceptions.DataException;
@@ -9,19 +8,20 @@ import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.service.ApuestaCriteria;
+import com.pvv.pulbet.service.Results;
 
 public interface ApuestaDAO {
 	
 	public Apuesta findById(Connection connection, Long id)
 			throws InstanceNotFoundException, DataException;
 
-	public List<Apuesta> findByUsuario(Connection connection, Long id)
+	public Results<Apuesta> findByUsuario(Connection connection, Long id, int startIndex, int count)
 			throws DataException;
 	
-	public List<Apuesta> findAll(Connection connection) 
+	public Results<Apuesta> findAll(Connection connection, int startIndex, int count) 
 			throws DataException;
 	
-	public List<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta) 
+	public Results<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta, int startIndex, int count) 
 			throws DataException;
 	
 	public void updateEstado(Connection connection, Apuesta a) 
