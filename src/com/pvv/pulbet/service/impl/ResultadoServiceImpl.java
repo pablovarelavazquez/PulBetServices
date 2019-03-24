@@ -74,9 +74,28 @@ public class ResultadoServiceImpl implements ResultadoService{
 	}
 
 	@Override
-	public List<Resultado> findCuotas(Long idEvento) throws DataException {
-		// TODO Auto-generated method stub
-		return null;
+	public Resultado findCuota( Long idEvento, Long idResultado, String idioma) throws DataException {
+		
+		if(logger.isDebugEnabled()) {
+			logger.debug("IdEvento = {} IdResultado = {}", idEvento, idResultado);
+		}
+		
+		Connection connection = null;
+
+		try {
+
+			connection = ConnectionManager.getConnection();
+			connection.setAutoCommit(true);
+
+			return resultadoDAO.findCuota(connection, idEvento, idResultado, idioma);
+
+		} catch (SQLException e){
+			logger.warn(e.getMessage(), e);
+			throw new DataException(e);
+		} finally {
+			JDBCUtils.closeConnection(connection);
+		}
+		
 	}
 
 	

@@ -19,6 +19,6 @@ public interface ResultadoService {
 	
 	public List<Resultado> findAll( String idioma ) throws DataException;
 	
-	public List<Resultado> findCuotas(Long idEvento) throws DataException;
+	public Resultado findCuota(Long idEvento, Long idResultado, String idioma) throws DataException;
 	
 }
