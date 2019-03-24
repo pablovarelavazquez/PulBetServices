@@ -267,7 +267,7 @@ public class EventoDAOImpl implements EventoDAO{
 
 
 	@Override
-	public Evento findById(Connection connection, Integer id, String idioma) throws DataException {
+	public Evento findById(Connection connection, Long id, String idioma) throws DataException {
 
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);

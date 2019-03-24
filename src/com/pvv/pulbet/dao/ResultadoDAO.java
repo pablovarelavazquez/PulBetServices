@@ -16,7 +16,7 @@ public interface ResultadoDAO {
 //	
 //	public Long delete(Connection connection, Long id) throws InstanceNotFoundException, DataException;
 	
-	public Resultado findById(Connection connection, Integer id, String idioma) throws InstanceNotFoundException, DataException;
+	public Resultado findById(Connection connection, Long id, String idioma) throws InstanceNotFoundException, DataException;
 	
 	public List<Resultado> findByTipoResultado(Connection connection, Integer id, String idioma) throws DataException;
 	

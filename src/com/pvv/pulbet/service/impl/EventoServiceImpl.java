@@ -55,7 +55,7 @@ public class EventoServiceImpl implements EventoService{
 	}
 
 	@Override
-	public Evento findById(Integer id, String idioma) throws InstanceNotFoundException, DataException {
+	public Evento findById(Long id, String idioma) throws InstanceNotFoundException, DataException {
 		
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);

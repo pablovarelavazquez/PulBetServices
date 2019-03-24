@@ -38,7 +38,7 @@ public class ResultadoServiceImpl implements ResultadoService{
 //	}
 
 	@Override
-	public Resultado findById(Integer id, String idioma) throws InstanceNotFoundException, DataException {
+	public Resultado findById(Long id, String idioma) throws InstanceNotFoundException, DataException {
 
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);

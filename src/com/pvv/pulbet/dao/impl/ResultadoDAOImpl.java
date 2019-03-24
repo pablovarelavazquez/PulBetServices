@@ -112,7 +112,7 @@ public class ResultadoDAOImpl implements ResultadoDAO{
 	
 
 	@Override
-	public Resultado findById(Connection connection, Integer id, String idioma) throws InstanceNotFoundException, DataException {
+	public Resultado findById(Connection connection, Long id, String idioma) throws InstanceNotFoundException, DataException {
 		
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);
