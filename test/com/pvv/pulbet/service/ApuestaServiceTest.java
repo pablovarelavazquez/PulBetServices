@@ -65,6 +65,7 @@ public class ApuestaServiceTest {
 		a.setIdUsuario(3l);
 		a.setFecha(new Date());
 		a.setImporte(10.0d);
+		a.setGanancias(10.0);
 		
 		int cont = 1;
 		
@@ -108,10 +109,10 @@ public class ApuestaServiceTest {
 		try {
 			//test.testFindByUsuario(); //OK
 			//test.testDelete();
-			test.testHistorial();; //OK
-			System.out.println("---------------------------------------------------");
-			test.testOpenBets();; //OK
-			//test.testCreate(); //OK
+			//test.testHistorial();; //OK
+			//System.out.println("---------------------------------------------------");
+			//test.testOpenBets();; //OK
+			test.testCreate(); //OK
 			//test.comprobar(); //OK
 
 		} catch (Exception e) {

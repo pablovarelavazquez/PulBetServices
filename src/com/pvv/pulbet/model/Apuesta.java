@@ -9,6 +9,7 @@ public class Apuesta extends AbstractValueObject{
 	private Double importe = null;
 	private Long idUsuario = null;
 	private Date fecha = null;	
+	private Double ganancias = null;
 	private Integer procesado = null;
 	
 	private List<LineaApuesta> lineas = null;
@@ -56,6 +57,14 @@ public class Apuesta extends AbstractValueObject{
 
 	public Integer getProcesado() {
 		return procesado;
+	}
+
+	public Double getGanancias() {
+		return ganancias;
+	}
+
+	public void setGanancias(Double ganancias) {
+		this.ganancias = ganancias;
 	}
 
 	public void setProcesado(Integer procesado) {

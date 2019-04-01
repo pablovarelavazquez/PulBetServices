@@ -48,7 +48,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		try {
 
 			String sql;
-			sql =  "SELECT ID_APUESTA, IMPORTE, ID_USUARIO, FECHA, PROCESADO "
+			sql =  "SELECT ID_APUESTA, IMPORTE, ID_USUARIO, FECHA, GANANCIAS, PROCESADO "
 					+"FROM APUESTA "
 					+"WHERE ID_APUESTA = ? ";
 
@@ -91,7 +91,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		try {
 
 			String sql;
-			sql =  "SELECT ID_APUESTA, IMPORTE, ID_USUARIO, FECHA, PROCESADO "
+			sql =  "SELECT ID_APUESTA, IMPORTE, ID_USUARIO, FECHA, GANANCIAS, PROCESADO "
 					+"FROM APUESTA "
 					+"WHERE ID_USUARIO = ? ";
 
@@ -147,8 +147,8 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		try {          
 
 
-			String queryString = "INSERT INTO APUESTA(IMPORTE, ID_USUARIO, FECHA) "
-					+ "VALUES (?, ?, ?)";
+			String queryString = "INSERT INTO APUESTA(IMPORTE, ID_USUARIO, FECHA, GANANCIAS) "
+					+ "VALUES (?, ?, ?, ?)";
 
 			preparedStatement = connection.prepareStatement(queryString, Statement.RETURN_GENERATED_KEYS);
 
@@ -156,6 +156,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 			preparedStatement.setDouble(i++, a.getImporte());
 			preparedStatement.setLong(i++, a.getIdUsuario());
 			preparedStatement.setDate(i++, new java.sql.Date(a.getFecha().getTime()));
+			preparedStatement.setDouble(i++, a.getGanancias());
 
 
 
@@ -203,7 +204,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 			String queryString = 
 					"UPDATE APUESTA " +
-							"SET IMPORTE = ? , ID_USUARIO = ? , FECHA = ? , PROCESADO = ? "+
+							"SET IMPORTE = ? , ID_USUARIO = ? , FECHA = ? , PROCESADO = ? , GANANCIAS = ? "+
 							"WHERE ID_APUESTA = ? ";
 
 			preparedStatement = connection.prepareStatement(queryString);
@@ -213,6 +214,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 			preparedStatement.setLong(i++, a.getIdUsuario());
 			preparedStatement.setDate(i++, new java.sql.Date(a.getFecha().getTime()));
 			preparedStatement.setInt(i++, a.getProcesado());
+			preparedStatement.setDouble(i++, a.getGanancias());
 			preparedStatement.setLong(i++, a.getIdApuesta());
 
 			int updatedRows = preparedStatement.executeUpdate();
@@ -296,7 +298,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		try {
 
 			String sql;
-			sql =  "SELECT ID_APUESTA, IMPORTE, ID_USUARIO, FECHA, PROCESADO "
+			sql =  "SELECT ID_APUESTA, IMPORTE, ID_USUARIO, FECHA, GANANCIAS, PROCESADO "
 					+"FROM APUESTA";
 
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -344,7 +346,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 		try {
 			queryString = new StringBuilder(
-					"select id_apuesta, importe, id_usuario, fecha, procesado "
+					"select id_apuesta, importe, id_usuario, fecha, ganancias, procesado "
 							+ "from apuesta ");
 
 			boolean first = true;
@@ -370,6 +372,11 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 				first = false;
 			}			
 
+			if (apuesta.getGanancias()!=null) {
+				addClause(queryString, first, " ganancias = ? ");
+				first = false;
+			}	
+			
 			if (apuesta.getProcesado()!=null) {
 				addClause(queryString, first, " procesado = ? ");
 				first = false;
@@ -396,6 +403,8 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 				preparedStatement.setDate(i++, new java.sql.Date(apuesta.getDesde().getTime()));
 			if (apuesta.getHasta()!=null)
 				preparedStatement.setDate(i++, new java.sql.Date(apuesta.getHasta().getTime()));
+			if (apuesta.getGanancias()!=null) 
+				preparedStatement.setDouble(i++, apuesta.getGanancias());
 			if (apuesta.getProcesado()!=null)
 				preparedStatement.setInt(i++, apuesta.getProcesado());
 
@@ -441,12 +450,14 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		Double importe = resultSet.getDouble(i++);
 		Long idUsuario = resultSet.getLong(i++); 
 		Date fecha = resultSet.getDate(i++);
+		Double ganancias = resultSet.getDouble(i++);
 		Integer procesado = resultSet.getInt(i++);
 
 		a.setIdApuesta(idApuesta);
 		a.setImporte(importe);
 		a.setFecha(fecha);
 		a.setIdUsuario(idUsuario);
+		a.setGanancias(ganancias);
 		a.setProcesado(procesado);
 
 		List<LineaApuesta> lineas = lineaApuestaDAO.findByApuesta(c, idApuesta);

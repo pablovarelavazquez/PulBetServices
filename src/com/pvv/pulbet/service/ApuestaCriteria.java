@@ -12,6 +12,7 @@ public class ApuestaCriteria{
 	private Long idUsuario = null;
 	private Date desde = null;	
 	private Date hasta = null;
+	private Double ganancias = null;
 	private Integer procesado = null;
 	
 	private List<LineaApuesta> lineas = null;
@@ -58,6 +59,14 @@ public class ApuestaCriteria{
 
 	public void setHasta(Date hasta) {
 		this.hasta = hasta;
+	}
+
+	public Double getGanancias() {
+		return ganancias;
+	}
+
+	public void setGanancias(Double ganancias) {
+		this.ganancias = ganancias;
 	}
 
 	public Integer getProcesado() {
