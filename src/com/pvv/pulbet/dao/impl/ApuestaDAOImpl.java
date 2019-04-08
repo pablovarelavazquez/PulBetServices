@@ -5,6 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +23,6 @@ import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Apuesta;
-import com.pvv.pulbet.model.Evento;
 import com.pvv.pulbet.model.LineaApuesta;
 import com.pvv.pulbet.service.ApuestaCriteria;
 import com.pvv.pulbet.service.Results;
@@ -141,6 +144,8 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		if(logger.isDebugEnabled()) {
 			logger.debug("Apuesta = {} ", a);
 		}
+		
+		  
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -155,7 +160,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 			int i = 1;     			
 			preparedStatement.setDouble(i++, a.getImporte());
 			preparedStatement.setLong(i++, a.getIdUsuario());
-			preparedStatement.setDate(i++, new java.sql.Date(a.getFecha().getTime()));
+			preparedStatement.setTimestamp(i++, new Timestamp(a.getFecha().getTime()));
 			preparedStatement.setDouble(i++, a.getGanancias());
 
 
@@ -449,7 +454,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 		Long idApuesta = resultSet.getLong(i++);
 		Double importe = resultSet.getDouble(i++);
 		Long idUsuario = resultSet.getLong(i++); 
-		Date fecha = resultSet.getDate(i++);
+		Date fecha = resultSet.getTimestamp(i++);
 		Double ganancias = resultSet.getDouble(i++);
 		Integer procesado = resultSet.getInt(i++);
 

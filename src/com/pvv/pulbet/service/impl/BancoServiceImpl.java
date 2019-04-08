@@ -32,6 +32,7 @@ public class BancoServiceImpl implements BancoService{
 		
 		Connection connection = null;
 		Usuario u = null;
+		Usuario temp = new Usuario();
 		try {
 			
 			connection = ConnectionManager.getConnection();
@@ -41,7 +42,10 @@ public class BancoServiceImpl implements BancoService{
 			
 			u.setBanco(u.getBanco()+cantidad);
 			
-			dao.update(connection, u);
+			temp.setIdUsuario(u.getIdUsuario());
+			temp.setBanco(u.getBanco());
+			
+			dao.update(connection, temp);
 			
 		} catch (SQLException e){
 			logger.warn(e.getMessage(), e);
@@ -60,6 +64,7 @@ public class BancoServiceImpl implements BancoService{
 		
 		Connection connection = null;
 		Usuario u = null;
+		Usuario temp = new Usuario();
 		try {
 			
 			connection = ConnectionManager.getConnection();
@@ -69,9 +74,14 @@ public class BancoServiceImpl implements BancoService{
 			
 			if (u.getBanco() >= cantidad) {
 				u.setBanco(u.getBanco()-cantidad);
+				
+				temp.setIdUsuario(u.getIdUsuario());
+				temp.setBanco(u.getBanco());
+				
+				dao.update(connection, temp);
 			}
 			
-			dao.update(connection, u);
+			
 			
 			
 		} catch (SQLException e){

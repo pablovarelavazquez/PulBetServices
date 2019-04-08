@@ -22,6 +22,7 @@ import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.model.Direccion;
 import com.pvv.pulbet.model.Usuario;
+import com.pvv.pulbet.service.Results;
 import com.pvv.pulbet.util.PasswordEncryptionUtil;
 
 
@@ -92,7 +93,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		if(logger.isDebugEnabled()) {
 			logger.debug("EMAIL = {}",email);
 		}
-		
+
 		Usuario u = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -205,14 +206,18 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 	}
 
+	private void addUpdate(StringBuilder queryString, boolean first, String clause) {
+		queryString.append(first?" SET ": " , ").append(clause);
+	}
+
 	@Override
 	public Usuario create(Connection connection, Usuario u)
 			throws DuplicateInstanceException, DataException{
-		
+
 		if(logger.isDebugEnabled()) {
 			logger.debug("Usuario: id:{}, nome:{}, email:{}, apelidos:{} {}, banco:{}, dni:{}, fecha:{}, nomeUsuario:{}, password{}, direccion{}"
-			,u.getIdUsuario(), u.getNome(), u.getEmail(), u.getApelido1(), u.getApelido2(), u.getBanco(), u.getDNI(), 
-			u.getFechaNacimiento(), u.getNomeUsuario(), (u.getPassword()==null), u.getDireccion());
+					,u.getIdUsuario(), u.getNome(), u.getEmail(), u.getApelido1(), u.getApelido2(), u.getBanco(), u.getDNI(), 
+					u.getFechaNacimiento(), u.getNomeUsuario(), (u.getPassword()==null), u.getDireccion());
 		}
 
 		PreparedStatement preparedStatement = null;
@@ -273,46 +278,110 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 	@Override
 	public void update(Connection connection, Usuario u)
 			throws InstanceNotFoundException, DataException{
-		
+
 		if(logger.isDebugEnabled()) {
 			logger.debug("Usuario: id:{}, nome:{}, email:{}, apelidos:{} {}, banco:{}, dni:{}, fecha:{}, nomeUsuario:{}, password{}, direccion{}"
-			,u.getIdUsuario(), u.getNome(), u.getEmail(), u.getApelido1(), u.getApelido2(), u.getBanco(), u.getDNI(), 
-			u.getFechaNacimiento(), u.getNomeUsuario(), (u.getPassword()==null), u.getDireccion());
+					,u.getIdUsuario(), u.getNome(), u.getEmail(), u.getApelido1(), u.getApelido2(), u.getBanco(), u.getDNI(), 
+					u.getFechaNacimiento(), u.getNomeUsuario(), (u.getPassword()==null), u.getDireccion());
 		}
 
 		PreparedStatement preparedStatement = null;
+		StringBuilder queryString = null;
 		try {          
 
-			//Direccion d = u.getDireccion();
-			//direccionDAO.delete(connection, d.getId());
+			queryString = new StringBuilder(
+					" UPDATE USUARIO" 
+					);
 
-			String queryString = "UPDATE USUARIO "
-					+ "SET EMAIL = ?, "
-					+ "NOMBRE = ?, "
-					+ "APELLIDO1 = ?, "
-					+ "APELLIDO2 = ?, "
-					+ "PASSWORD = ?, "
-					+ "BANCO = ?, "
-					+ "TELEFONO = ?, "
-					+ "FECHA_NACIMIENTO = ?, "
-					+ "NOMBRE_USUARIO = ?, "
-					+ "DNI = ? "
-					+ "WHERE ID_USUARIO= ? ";
+			boolean first = true;
 
-			preparedStatement = connection.prepareStatement(queryString);
+			if (u.getEmail()!=null) {
+				addUpdate(queryString, first, " EMAIL = ? ");
+				first = false;
+			}
+			
+			if (u.getNome()!=null) {
+				addUpdate(queryString, first, " NOMBRE = ? ");
+				first = false;
+			}
+			
+			if (u.getApelido1()!=null) {
+				addUpdate(queryString, first, " APELLIDO1 = ? ");
+				first = false;
+			}
+			
+			if (u.getApelido2()!=null) {
+				addUpdate(queryString, first, " APELLIDO2 = ? ");
+				first = false;
+			}
+			
+			if (u.getPassword()!=null) {
+				addUpdate(queryString, first, " PASSWORD = ? ");
+				first = false;
+			}
+			
+			if (u.getBanco()!=null) {
+				addUpdate(queryString, first, " BANCO = ? ");
+				first = false;
+			}
+			
+			if (u.getTelefono()!=null) {
+				addUpdate(queryString, first, " TELEFONO = ? ");
+				first = false;
+			}
+			
+			if (u.getFechaNacimiento()!=null) {
+				addUpdate(queryString, first, " FECHA_NACIMIENTO = ? ");
+				first = false;
+			}
+			
+			if (u.getNomeUsuario()!=null) {
+				addUpdate(queryString, first, " NOMBRE_USUARIO = ? ");
+				first = false;
+			}
+			
+			if (u.getDNI()!=null) {
+				addUpdate(queryString, first, " DNI = ? ");
+				first = false;
+			}
+			
+			
+				queryString.append(" WHERE ID_USUARIO= ? ");
 
-			int i = 1;     			
-			preparedStatement.setString(i++, u.getEmail());
-			preparedStatement.setString(i++, u.getNome());
-			preparedStatement.setString(i++, u.getApelido1());
-			preparedStatement.setString(i++, u.getApelido2());
-			preparedStatement.setString(i++, u.getPassword());
-			preparedStatement.setDouble(i++, u.getBanco());
-			preparedStatement.setString(i++, u.getTelefono());
-			preparedStatement.setDate(i++, new java.sql.Date(u.getFechaNacimiento().getTime()));
-			preparedStatement.setString(i++, u.getNomeUsuario());
-			preparedStatement.setString(i++, u.getDNI());
-			preparedStatement.setLong(i++, u.getIdUsuario());
+			preparedStatement = connection.prepareStatement(queryString.toString());
+
+			int i = 1;     		
+			if(u.getEmail()!=null)
+					preparedStatement.setString(i++, u.getEmail());
+			
+			if(u.getNome()!=null)
+					preparedStatement.setString(i++, u.getNome());
+			
+			if(u.getApelido1()!=null)
+					preparedStatement.setString(i++, u.getApelido1());
+			
+			if(u.getApelido2()!=null)
+					preparedStatement.setString(i++, u.getApelido2());
+			
+			if(u.getPassword()!=null)
+					preparedStatement.setString(i++,PasswordEncryptionUtil.encryptPassword(u.getPassword()));
+			
+			if(u.getBanco()!=null)
+					preparedStatement.setDouble(i++, u.getBanco());
+			
+			if(u.getTelefono()!=null)
+					preparedStatement.setString(i++, u.getTelefono());
+			
+			if(u.getFechaNacimiento()!=null)
+					preparedStatement.setDate(i++, new java.sql.Date(u.getFechaNacimiento().getTime()));
+			
+			if(u.getNomeUsuario()!=null)
+					preparedStatement.setString(i++, u.getNomeUsuario());
+			
+			if(u.getDNI()!=null)
+					preparedStatement.setString(i++, u.getDNI());
+			
+					preparedStatement.setLong(i++, u.getIdUsuario());
 
 
 			int updatedRows = preparedStatement.executeUpdate();
@@ -325,8 +394,8 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 				throw new SQLException("Duplicate row for id = '" + u.getIdUsuario() + "' in table 'Usuario'");
 			}
 
-			//direccionDAO.create(connection, d);
-			
+
+
 		} catch (SQLException ex) {
 			logger.warn(ex.getMessage(), ex);
 			throw new DataException(ex);
@@ -344,7 +413,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		if(logger.isDebugEnabled()) {
 			logger.debug("ID = {}",id);
 		}
-		
+
 		PreparedStatement preparedStatement = null;
 
 		try {
@@ -353,9 +422,10 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			Direccion d = direccionDAO.findByUsuario(connection, id);
 			direccionDAO.delete(connection, d.getId());
 
-			List<Apuesta> apuestas = apuestaDAO.findByUsuario(connection, id);
+			//como facer para recuperar todas? Mirar algun exemplo que fixemos en calse nos test.
+			Results<Apuesta> apuestas = apuestaDAO.findByUsuario(connection, id, 0 , 10);
 
-			for(Apuesta a : apuestas) {
+			for(Apuesta a : apuestas.getPage()) {
 				apuestaDAO.delete(connection, a.getIdApuesta());
 			}
 

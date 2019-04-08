@@ -2,7 +2,9 @@ package com.pvv.pulbet.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
@@ -36,7 +38,7 @@ public class ApuestaServiceTest {
 	public void testHistorial() throws DataException {
 
 		ApuestaCriteria a = new ApuestaCriteria();
-		a.setIdUsuario(1l);
+		a.setIdUsuario(11l);
 
 		Results<Apuesta> result = apuestaService.findHistorial(a,1,10);
 
@@ -109,11 +111,18 @@ public class ApuestaServiceTest {
 		try {
 			//test.testFindByUsuario(); //OK
 			//test.testDelete();
-			//test.testHistorial();; //OK
+			test.testHistorial();; //OK
 			//System.out.println("---------------------------------------------------");
 			//test.testOpenBets();; //OK
-			test.testCreate(); //OK
+			//test.testCreate(); //OK
 			//test.comprobar(); //OK
+			
+			Properties systemPropierties = System.getProperties();
+			String key = null;
+			for (Enumeration keys = systemPropierties.keys(); keys.hasMoreElements();) {
+				key = (String) keys.nextElement();
+				System.out.println(key+"="+System.getProperty(key));
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -258,8 +258,9 @@ public class UsuarioServiceImpl implements UsuarioService{
 	            
 	            direccionDAO.delete(connection, d.getId());
 	            
+	            direccion = direccionDAO.create(connection, direccion);
+	            
 	            u.setDireccion(direccion);
-	            direccionDAO.create(connection, direccion);
 	            
 	            commit = true;
 	            	            
