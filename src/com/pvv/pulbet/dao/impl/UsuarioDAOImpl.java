@@ -255,7 +255,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 				Direccion d = u.getDireccion();
 				d.setIdUsuario(id);
-				direccionDAO.create(connection, d);
+				d = direccionDAO.create(connection, d);
 				u.setDireccion(d);
 
 			} else {

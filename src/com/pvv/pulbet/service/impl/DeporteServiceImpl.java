@@ -30,9 +30,22 @@ public class DeporteServiceImpl implements DeporteService{
 	@Override
 	public List<Deporte> findAll(String idioma) throws DataException {
 		
-		//Cache<String, List<Deporte>> cache = CacheManager.getInstance().getCache(CacheNames.DEPORTES_LIST, String.class, List.class);
+		Cache<String, List<Deporte>> cache = CacheManager.getInstance().getCache(CacheNames.DEPORTES_LIST, String.class, List.class);
 		
-		//List<Deporte> todas = cache.get(idioma);
+		List<Deporte> todos = cache.get(idioma);
+		
+		if (todos!=null) {
+			//exito ou acierto cache
+			if (logger.isDebugEnabled()) {
+				logger.debug("Acierto cache: {}", todos);
+			}
+		} else {
+			
+			//fallo cache
+			if (logger.isDebugEnabled()) {
+				logger.debug("Fallo cache: {}", todos);
+			}
+		
 		
 		Connection connection = null;
 		
@@ -41,7 +54,7 @@ public class DeporteServiceImpl implements DeporteService{
 			connection = ConnectionManager.getConnection();
 			connection.setAutoCommit(true);
 
-			return deporteDAO.findAll(connection, idioma);
+			todos =  deporteDAO.findAll(connection, idioma);
 
 		} catch (SQLException e){
 			logger.warn(e.getMessage(), e);
@@ -49,7 +62,14 @@ public class DeporteServiceImpl implements DeporteService{
 		} finally {
 			JDBCUtils.closeConnection(connection);
 		}
+		
+		cache.put(idioma, todos);
+		
+		}
+		
+		return todos;
 	}
+	
 
 	@Override
 	public List<Deporte> findByNombre(String nombre, String idioma) throws DataException {

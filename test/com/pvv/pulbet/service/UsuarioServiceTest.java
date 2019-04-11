@@ -33,12 +33,12 @@ public class UsuarioServiceTest {
 		d.setCiudad("Chantada");
 		d.setCodPostal(27500);
 		d.setIdProvincia(27l);
-		d.setLetra("B");
+		d.setLetra(null);
 		d.setNumero(35);
 		d.setPiso(4);
 
 		Usuario u = new Usuario();
-		u.setEmail("pruebaencriptada@vai.com");
+		u.setEmail("correoo@vai.com");
 		u.setNome("Encriptado");
 		u.setApelido1("Encriptando");
 		u.setApelido2("Amoaveh");
@@ -46,7 +46,7 @@ public class UsuarioServiceTest {
 		u.setBanco(10.0d);
 		u.setTelefono("670897654");
 		u.setFechaNacimiento(new Date());
-		u.setNomeUsuario("encript");
+		u.setNomeUsuario("jejee");
 		u.setDNI("11111222J");
 		u.setDireccion(d);
 
@@ -120,8 +120,8 @@ public class UsuarioServiceTest {
 
 		try {
 
-			test.testFindById(); //ok
-			//test.testCreate(); //ok
+			//test.testFindById(); //ok
+			test.testCreate(); //ok
 			//test.testLogin(); //ok
 			//test.testUpdate(); //ok --cambia datos de usuario, non direccion
 			//test.testUpdateDireccion(); //ok --cambia direccion
