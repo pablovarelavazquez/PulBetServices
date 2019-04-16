@@ -33,20 +33,20 @@ public class UsuarioServiceTest {
 		d.setCiudad("Chantada");
 		d.setCodPostal(27500);
 		d.setIdProvincia(27l);
-		d.setLetra(null);
+		//d.setLetra();
 		d.setNumero(35);
-		d.setPiso(4);
+		//d.setPiso(4);
 
 		Usuario u = new Usuario();
-		u.setEmail("correoo@vai.com");
+		u.setEmail("kk@gmail.com");
 		u.setNome("Encriptado");
 		u.setApelido1("Encriptando");
 		u.setApelido2("Amoaveh");
 		u.setPassword("abc123.");
-		u.setBanco(10.0d);
+		//u.setBanco(10.0d);
 		u.setTelefono("670897654");
 		u.setFechaNacimiento(new Date());
-		u.setNomeUsuario("jejee");
+		u.setNomeUsuario("prueba");
 		u.setDNI("11111222J");
 		u.setDireccion(d);
 

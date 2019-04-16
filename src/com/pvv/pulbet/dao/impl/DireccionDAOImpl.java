@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -201,7 +202,12 @@ public class DireccionDAOImpl implements DireccionDAO{
 			preparedStatement.setString(i++, d.getCalle());
 			preparedStatement.setInt(i++, d.getNumero());
 			preparedStatement.setInt(i++, d.getCodPostal());
-			preparedStatement.setInt(i++, d.getPiso());
+			if(d.getPiso()==null) {
+				preparedStatement.setNull(i++, Types.NULL);
+			} else {
+				preparedStatement.setInt(i++, d.getPiso());
+			}
+			
 			preparedStatement.setString(i++, d.getLetra());
 			preparedStatement.setLong(i++, d.getIdUsuario());
 

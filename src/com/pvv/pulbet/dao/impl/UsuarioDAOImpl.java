@@ -224,7 +224,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 		ResultSet resultSet = null;
 		try {          
 
-			String queryString = "INSERT INTO USUARIO(EMAIL,NOMBRE,APELLIDO1,APELLIDO2,PASSWORD,TELEFONO,FECHA_NACIMIENTO,NOMBRE_USUARIO,DNI) "
+			String queryString = "INSERT INTO USUARIO(EMAIL,NOMBRE,APELLIDO1,APELLIDO2,PASSWORD,TELEFONO,FECHA_NACIMIENTO,NOMBRE_USUARIO,DNI)"
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 			preparedStatement = connection.prepareStatement(queryString, Statement.RETURN_GENERATED_KEYS);
