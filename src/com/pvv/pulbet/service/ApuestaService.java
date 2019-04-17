@@ -1,5 +1,6 @@
 package com.pvv.pulbet.service;
 
+import java.sql.Connection;
 import java.util.List;
 
 import com.pvv.pulbet.exceptions.DataException;
@@ -17,10 +18,12 @@ public interface ApuestaService {
 	
 	public Results<Apuesta> findByUsuario(Long id,int startIndex, int count) throws DataException;
 	
+	//public Results<Apuesta> findAll(int startIndex, int count) throws DataException;
+		
 	public Results<Apuesta> findHistorial(ApuestaCriteria apuesta,int startIndex, int count) throws DataException;
 	
 	public Results<Apuesta> findOpenBets(ApuestaCriteria apuesta,int startIndex, int count) throws DataException;
 	
-	public Apuesta comprobarApuesta( Apuesta apuesta) throws DataException;
+	public Apuesta comprobarApuesta(Apuesta apuesta) throws DataException;
 
 }

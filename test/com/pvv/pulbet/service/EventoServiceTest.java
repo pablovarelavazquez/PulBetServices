@@ -18,7 +18,7 @@ public class EventoServiceTest {
 		//e.setIdDeporte(2l);
 		//e.setFecha(new Date());
 		//e.setIdCompeticion(1l);
-		e.setIdEvento(6l);
+		//e.setIdEvento(6l);
 		
 		Results<Evento> results = null;
 		int startIndex = 1;

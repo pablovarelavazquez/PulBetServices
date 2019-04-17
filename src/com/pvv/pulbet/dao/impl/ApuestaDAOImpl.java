@@ -24,6 +24,7 @@ import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.model.LineaApuesta;
+import com.pvv.pulbet.model.Provincia;
 import com.pvv.pulbet.service.ApuestaCriteria;
 import com.pvv.pulbet.service.Results;
 
@@ -296,7 +297,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	}
 
 	@Override
-	public Results<Apuesta> findAll(Connection connection, int startIndex, int count) throws DataException {
+	public List<Apuesta> findAll(Connection connection) throws DataException {
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -308,24 +309,17 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 			preparedStatement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-			resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();			
+			//STEP 5: Extract data from result set			
 
-			List<Apuesta> page = new ArrayList<Apuesta>();
-			Apuesta a = null;
-			int currentCount = 0;
+			List<Apuesta> results = new ArrayList<Apuesta>();                        
+			Apuesta a= null;
 
-			if ((startIndex >=1) && resultSet.absolute(startIndex)) {
-				do {
-					a = loadNext(connection, resultSet); 
-					page.add(a);               	
-					currentCount++;                	
-				} while ((currentCount < count) && resultSet.next()) ;
+
+			while(resultSet.next()) {
+				a = loadNext(connection, resultSet);
+				results.add(a);               	
 			}
-			
-			
-			int totalRows = JDBCUtils.getTotalRows(resultSet);
-
-			Results<Apuesta> results = new Results<Apuesta>(page, startIndex, totalRows);
 
 			return results;
 

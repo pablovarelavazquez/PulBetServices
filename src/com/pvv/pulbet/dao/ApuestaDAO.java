@@ -18,7 +18,7 @@ public interface ApuestaDAO {
 	public Results<Apuesta> findByUsuario(Connection connection, Long id, int startIndex, int count)
 			throws DataException;
 	
-	public Results<Apuesta> findAll(Connection connection, int startIndex, int count) 
+	public List<Apuesta> findAll(Connection connection) 
 			throws DataException;
 	
 	public Results<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta, int startIndex, int count) 
