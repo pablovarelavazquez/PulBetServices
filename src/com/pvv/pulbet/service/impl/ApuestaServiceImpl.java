@@ -315,4 +315,23 @@ public class ApuestaServiceImpl implements ApuestaService{
 		}
 	}
 
+	@Override
+	public List<Apuesta> findAll() throws DataException {
+		Connection connection = null;
+
+		try {
+
+			connection = ConnectionManager.getConnection();
+			connection.setAutoCommit(true);
+
+			return apuestaDAO.findAll(connection);
+
+		} catch (SQLException e){
+			logger.warn(e.getMessage(), e);
+			throw new DataException(e);
+		} finally {
+			JDBCUtils.closeConnection(connection);
+		}
+	}
+
 }

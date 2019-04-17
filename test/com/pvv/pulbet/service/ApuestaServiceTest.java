@@ -102,6 +102,15 @@ public class ApuestaServiceTest {
 		
 		System.out.println(a);
 	}
+	
+	public void testFindAll() throws DataException {
+		List<Apuesta> apuestas = apuestaService.findAll();
+		
+		for(Apuesta a : apuestas) {
+			System.out.println(a);
+		}
+		
+	}
 
 
 	public static void main(String args[]){
@@ -111,18 +120,20 @@ public class ApuestaServiceTest {
 		try {
 			//test.testFindByUsuario(); //OK
 			//test.testDelete();
-			test.testHistorial();; //OK
+			//test.testHistorial();; //OK
 			//System.out.println("---------------------------------------------------");
 			//test.testOpenBets();; //OK
 			//test.testCreate(); //OK
 			//test.comprobar(); //OK
 			
-			Properties systemPropierties = System.getProperties();
-			String key = null;
-			for (Enumeration keys = systemPropierties.keys(); keys.hasMoreElements();) {
-				key = (String) keys.nextElement();
-				System.out.println(key+"="+System.getProperty(key));
-			}
+			test.testFindAll();
+			
+//			Properties systemPropierties = System.getProperties();
+//			String key = null;
+//			for (Enumeration keys = systemPropierties.keys(); keys.hasMoreElements();) {
+//				key = (String) keys.nextElement();
+//				System.out.println(key+"="+System.getProperty(key));
+//			}
 
 		} catch (Exception e) {
 			e.printStackTrace();

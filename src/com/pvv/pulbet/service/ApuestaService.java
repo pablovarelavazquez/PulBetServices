@@ -18,7 +18,7 @@ public interface ApuestaService {
 	
 	public Results<Apuesta> findByUsuario(Long id,int startIndex, int count) throws DataException;
 	
-	//public Results<Apuesta> findAll(int startIndex, int count) throws DataException;
+	public List<Apuesta> findAll() throws DataException;
 		
 	public Results<Apuesta> findHistorial(ApuestaCriteria apuesta,int startIndex, int count) throws DataException;
 	
