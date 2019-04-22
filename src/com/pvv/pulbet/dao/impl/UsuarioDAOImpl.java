@@ -21,7 +21,9 @@ import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.model.Direccion;
+import com.pvv.pulbet.model.Evento;
 import com.pvv.pulbet.model.Usuario;
+import com.pvv.pulbet.service.ApuestaCriteria;
 import com.pvv.pulbet.service.Results;
 import com.pvv.pulbet.util.PasswordEncryptionUtil;
 
@@ -421,13 +423,23 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			//Temos que borrar a direccion do usuario e as apuestas
 			Direccion d = direccionDAO.findByUsuario(connection, id);
 			direccionDAO.delete(connection, d.getId());
+			
+			Results<Apuesta> results = null;
+			int startIndex = 1;
+			int count = 5;
+			int i = 1;
+			
+			do {
+				results = apuestaDAO.findByUsuario(connection, id, startIndex, count);
+				if (results.getPage().size()>0) {
+					for (Apuesta a: results.getPage()) {
+						apuestaDAO.delete(connection, a.getIdApuesta());
+						i++;
+					}
+					startIndex = startIndex + count;
+				}
 
-			//como facer para recuperar todas? Mirar algun exemplo que fixemos en calse nos test.
-			Results<Apuesta> apuestas = apuestaDAO.findByUsuario(connection, id, 0 , 10);
-
-			for(Apuesta a : apuestas.getPage()) {
-				apuestaDAO.delete(connection, a.getIdApuesta());
-			}
+			} while (!(results.getPage().size()<count));
 
 			String queryString =	
 					"DELETE FROM USUARIO " 
@@ -436,7 +448,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 			preparedStatement = connection.prepareStatement(queryString);
 
-			int i = 1;
+			i = 1;
 			preparedStatement.setLong(i++, id);
 
 			long removedRows = preparedStatement.executeUpdate();

@@ -54,11 +54,16 @@ public class LineaApuestaServiceImpl implements LineaApuestaService{
 
 			List<Long> resultados = eventoDAO.findResultadoFinal(connection, lineaApuesta.getIdEvento());
 
-			for(Long resultado : resultados) {
-				if(lineaApuesta.getIdResultado() == resultado) {
+			if((resultados!=null) && !(resultados.isEmpty())) {
+				
+				if(resultados.contains(lineaApuesta.getIdResultado())) {
 					correcta = true;
 				}
-			}
+//			for(Long resultado : resultados) {
+//				if(lineaApuesta.getIdResultado() == resultado) {
+//					correcta = true;
+//				}
+//			}
 
 			if(correcta) {
 				lineaApuesta.setProcesado(1);
@@ -66,6 +71,7 @@ public class LineaApuestaServiceImpl implements LineaApuestaService{
 			}else {
 				lineaApuesta.setProcesado(2);
 				lineaApuestaDAO.update(connection, lineaApuesta);
+			}
 			}
 
 			commit = true;    

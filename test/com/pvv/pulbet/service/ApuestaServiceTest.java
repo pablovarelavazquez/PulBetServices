@@ -97,7 +97,7 @@ public class ApuestaServiceTest {
 	
 	public void comprobar() throws InstanceNotFoundException, DataException {
 		
-		Apuesta a = apuestaService.findById(16l);
+		Apuesta a = apuestaService.findById(10l);
 		a = apuestaService.comprobarApuesta(a);
 		
 		System.out.println(a);
@@ -124,9 +124,9 @@ public class ApuestaServiceTest {
 			//System.out.println("---------------------------------------------------");
 			//test.testOpenBets();; //OK
 			//test.testCreate(); //OK
-			//test.comprobar(); //OK
+			test.comprobar(); //OK
 			
-			test.testFindAll();
+			//test.testFindAll();
 			
 //			Properties systemPropierties = System.getProperties();
 //			String key = null;
