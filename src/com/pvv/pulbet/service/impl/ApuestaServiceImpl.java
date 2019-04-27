@@ -15,21 +15,29 @@ import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
 import com.pvv.pulbet.exceptions.DuplicateInstanceException;
 import com.pvv.pulbet.exceptions.InstanceNotFoundException;
+import com.pvv.pulbet.exceptions.MailException;
 import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.model.LineaApuesta;
+import com.pvv.pulbet.model.Usuario;
 import com.pvv.pulbet.service.ApuestaCriteria;
 import com.pvv.pulbet.service.ApuestaService;
 import com.pvv.pulbet.service.LineaApuestaService;
+import com.pvv.pulbet.service.MailService;
 import com.pvv.pulbet.service.Results;
+import com.pvv.pulbet.service.UsuarioService;
 
 public class ApuestaServiceImpl implements ApuestaService{
 
 	private static Logger logger = LogManager.getLogger(ApuestaServiceImpl.class);
 	private ApuestaDAO apuestaDAO = null;
+	private UsuarioService usuarioService = null;
+	private MailService mailService = null;
 	private LineaApuestaService lineaService = null;
 
 	public ApuestaServiceImpl() {
 		apuestaDAO = new ApuestaDAOImpl();
+		usuarioService = new UsuarioServiceImpl();
+		mailService = new MailServiceImpl();
 		lineaService = new LineaApuestaServiceImpl();
 	}
 
@@ -93,7 +101,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 	}
 
 	@Override
-	public Results<Apuesta> findHistorial(ApuestaCriteria apuesta,int startIndex, int count) throws DataException {
+	public Results<Apuesta> findByCriteria(ApuestaCriteria apuesta,Boolean history, int startIndex, int count) throws DataException {
 		
 		
 		if(logger.isDebugEnabled()) {
@@ -102,8 +110,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 		
 		Connection connection = null;
 		boolean commit = false;
-		Results<Apuesta> result = null;
-		List<Apuesta> finalizados = new ArrayList<Apuesta>();
+		Results<Apuesta> results = null;
 
 		try {
 
@@ -114,66 +121,15 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 			connection.setAutoCommit(false);
 
-			result = apuestaDAO.findByCriteria(connection, apuesta, startIndex, count); 
-
-			for (Apuesta a: result.getPage()) {
-				if(a.getProcesado()!=0) {
-					finalizados.add(a);
-				}
-			}
+			results = apuestaDAO.findByCriteria(connection, apuesta, history, startIndex, count);
 
 			commit = true;    
 
-			result.setPage(finalizados);
-			
-			return result;
+			return results;
 
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DataException(e);
-		} finally {
-			JDBCUtils.closeConnection(connection, commit);
-		}	
-	}
-
-	@Override
-	public Results<Apuesta> findOpenBets(ApuestaCriteria apuesta,int startIndex, int count) throws DataException {
-		
-		if(logger.isDebugEnabled()) {
-			logger.debug("ApuestaCriteria = {}", apuesta);
-		}
-		
-		Connection connection = null;
-		boolean commit = false;
-		Results<Apuesta> result = null;
-		List<Apuesta> noFinalizados = new ArrayList<Apuesta>();
-
-		try {
-
-			connection = ConnectionManager.getConnection();
-
-			connection.setTransactionIsolation(
-					Connection.TRANSACTION_READ_COMMITTED);
-
-			connection.setAutoCommit(false);
-
-			result = apuestaDAO.findByCriteria(connection, apuesta, startIndex, count); 
-
-			for (Apuesta a: result.getPage()) {
-				if(a.getProcesado()==0) {
-					noFinalizados.add(a);
-				}
-			}
-
-			result.setPage(noFinalizados);
-			
-			commit = true;    
-			return result;
-
-		} catch (SQLException e) {
-			logger.warn(e.getMessage(), e);
-			throw new DataException(e);
-
 		} finally {
 			JDBCUtils.closeConnection(connection, commit);
 		}	
@@ -237,7 +193,21 @@ public class ApuestaServiceImpl implements ApuestaService{
 				if(acertada) {
 					apuesta.setProcesado(1);
 					apuestaDAO.updateEstado(connection, apuesta);
-					//mensaje de apuesta acertada.
+					
+					Usuario u = usuarioService.findById(apuesta.getIdUsuario());
+					
+					Usuario changes = new Usuario();
+					changes.setIdUsuario(u.getIdUsuario());
+					changes.setBanco(u.getBanco() + apuesta.getGanancias());
+					
+					usuarioService.update(changes);
+					
+					try {
+						mailService.sendMail("Enorabuena "+u.getNome()+" has ganado una apuesta, entra en la web para comprobarlo", "Apuesta acertada", u.getEmail());
+					} catch (MailException e) {
+						logger.warn(e.getMessage(),e);
+					}
+					
 				}else {
 					apuesta.setProcesado(2);
 					apuestaDAO.updateEstado(connection, apuesta);

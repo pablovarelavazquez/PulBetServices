@@ -2,7 +2,7 @@ package com.pvv.pulbet.model;
 
 public class Provincia extends AbstractValueObject{
 	
-	private Integer idProvincia = null;
+	private Long idProvincia = null;
 	private String nome = null;
 	private Integer idPais;
 	
@@ -10,11 +10,11 @@ public class Provincia extends AbstractValueObject{
 		
 	}
 
-	public Integer getIdProvincia() {
+	public Long getIdProvincia() {
 		return idProvincia;
 	}
 
-	public void setIdProvincia(Integer idProvincia) {
+	public void setIdProvincia(Long idProvincia) {
 		this.idProvincia = idProvincia;
 	}
 

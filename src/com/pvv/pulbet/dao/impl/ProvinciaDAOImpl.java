@@ -22,7 +22,7 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 	private static Logger logger = LogManager.getLogger(ProvinciaDAOImpl.class);
 	
 	@Override
-	public Provincia findById(Connection connection, int id) throws InstanceNotFoundException, DataException {
+	public Provincia findById(Connection connection, Long id) throws InstanceNotFoundException, DataException {
 		
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);
@@ -203,7 +203,7 @@ public class ProvinciaDAOImpl implements ProvinciaDAO{
 
 		Provincia p = new Provincia();
 		int i = 1;
-		Integer id = resultSet.getInt(i++);
+		Long id = resultSet.getLong(i++);
 		String nome = resultSet.getString(i++);
 		Integer idPais = resultSet.getInt(i++);
 		

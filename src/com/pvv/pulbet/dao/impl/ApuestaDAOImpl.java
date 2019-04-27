@@ -231,19 +231,12 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 
 			if (updatedRows > 1) {
 				
-				//DateException e = new DataException(Mensaje bl bla);
-				//e.setErrorCode(codigo)
-				//throw e;
-				//en vez de esto
-				
 				throw new SQLException("Duplicate row for id = '" + 
 						a.getIdApuesta() + "' in table 'Apuesta'");
 			}     
 
 			createLineasApuesta(connection, a.getIdApuesta(), a.getLineas());
 
-			//Se antes xa estaban procesadas as liñas de aposta o crealas de novo pon o atributo procesado a 0
-			//por eso facemos update pa que colla os valores.
 			for(LineaApuesta la :  a.getLineas()) {
 				lineaApuestaDAO.update(connection, la);
 			}
@@ -333,7 +326,7 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 	}
 
 	@Override
-	public Results<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta, int startIndex, int count)
+	public Results<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta, Boolean history, int startIndex, int count)
 			throws DataException {
 		if(logger.isDebugEnabled()) {
 			logger.debug("ApuestaCriteria = {}", apuesta);
@@ -413,11 +406,24 @@ public class ApuestaDAOImpl implements ApuestaDAO{
 			Apuesta a = null;
 			int currentCount = 0;
 
+			//Comprobaremos se estamos buscando apostas rematadas, sen rematar ou todas
 			if ((startIndex >=1) && resultSet.absolute(startIndex)) {
 				do {
-					a = loadNext(connection, resultSet); 
-					page.add(a);               	
-					currentCount++;                	
+					a = loadNext(connection, resultSet);
+					if(history == null){
+						page.add(a);               	
+						currentCount++;
+					} else if (history == false) {
+						if(a.getProcesado() == 0) {
+							page.add(a);               	
+							currentCount++;
+						}
+					} else if (history == true)  {
+						if(a.getProcesado() != 0) {
+							page.add(a);               	
+							currentCount++;
+						}
+					}
 				} while ((currentCount < count) && resultSet.next()) ;
 			}
 			

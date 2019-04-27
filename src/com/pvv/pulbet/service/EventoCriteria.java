@@ -8,7 +8,7 @@ public class EventoCriteria {
 
 	private Long idEvento = null;
 	private Date fecha = null;
-	//private Date fechaHasta = null;
+	private Date fechaHasta = null;
 	private Long idCompeticion = null;
 	private Long idDeporte = null;
 	private String participante = null;
@@ -33,6 +33,15 @@ public class EventoCriteria {
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
 	}
+
+	public Date getFechaHasta() {
+		return fechaHasta;
+	}
+
+	public void setFechaHasta(Date fechaHasta) {
+		this.fechaHasta = fechaHasta;
+	}
+
 
 	public Long getIdCompeticion() {
 		return idCompeticion;

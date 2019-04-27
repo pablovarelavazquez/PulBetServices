@@ -38,22 +38,9 @@ public class ApuestaServiceTest {
 	public void testHistorial() throws DataException {
 
 		ApuestaCriteria a = new ApuestaCriteria();
-		a.setIdUsuario(11l);
+		a.setIdUsuario(14l);
 
-		Results<Apuesta> result = apuestaService.findHistorial(a,1,10);
-
-		for(Apuesta ap: result.getPage()) {
-			System.out.println(ap);
-		}
-
-	}
-
-	public void testOpenBets() throws DataException {
-
-		ApuestaCriteria a = new ApuestaCriteria();
-		a.setIdUsuario(1l);
-
-		Results<Apuesta> result = apuestaService.findOpenBets(a,1,10);
+		Results<Apuesta> result = apuestaService.findByCriteria(a,true,1,3);
 
 		for(Apuesta ap: result.getPage()) {
 			System.out.println(ap);
@@ -120,11 +107,10 @@ public class ApuestaServiceTest {
 		try {
 			//test.testFindByUsuario(); //OK
 			//test.testDelete();
-			//test.testHistorial();; //OK
+			test.testHistorial();; //OK
 			//System.out.println("---------------------------------------------------");
-			//test.testOpenBets();; //OK
 			//test.testCreate(); //OK
-			test.comprobar(); //OK
+			//test.comprobar(); //OK
 			
 			//test.testFindAll();
 			

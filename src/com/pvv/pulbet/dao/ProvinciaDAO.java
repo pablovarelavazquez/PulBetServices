@@ -9,7 +9,7 @@ import com.pvv.pulbet.model.Provincia;
 
 public interface ProvinciaDAO {
 
-	public Provincia findById(Connection connection, int id)
+	public Provincia findById(Connection connection, Long id)
 			throws InstanceNotFoundException, DataException;
 
 	public List<Provincia> findAll(Connection connection)

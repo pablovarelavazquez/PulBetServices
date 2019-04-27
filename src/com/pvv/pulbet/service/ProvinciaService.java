@@ -9,7 +9,7 @@ import com.pvv.pulbet.model.Provincia;
 
 public interface ProvinciaService {
 	
-	public Provincia findById(int id)
+	public Provincia findById(Long id)
 			throws InstanceNotFoundException, DataException;
 
 	public List<Provincia> findAll()

@@ -20,9 +20,7 @@ public interface ApuestaService {
 	
 	public List<Apuesta> findAll() throws DataException;
 		
-	public Results<Apuesta> findHistorial(ApuestaCriteria apuesta,int startIndex, int count) throws DataException;
-	
-	public Results<Apuesta> findOpenBets(ApuestaCriteria apuesta,int startIndex, int count) throws DataException;
+	public Results<Apuesta> findByCriteria(ApuestaCriteria apuesta, Boolean history, int startIndex, int count) throws DataException;
 	
 	public Apuesta comprobarApuesta(Apuesta apuesta) throws DataException;
 

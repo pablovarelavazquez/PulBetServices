@@ -104,7 +104,7 @@ public class DireccionDAOImpl implements DireccionDAO{
 	}
 
 	@Override
-	public Direccion findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException {
+	public Direccion findById(Connection connection, Long id) throws InstanceNotFoundException, DataException {
 		
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}",id);

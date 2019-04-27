@@ -21,7 +21,7 @@ public interface ApuestaDAO {
 	public List<Apuesta> findAll(Connection connection) 
 			throws DataException;
 	
-	public Results<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta, int startIndex, int count) 
+	public Results<Apuesta> findByCriteria(Connection connection, ApuestaCriteria apuesta, Boolean history, int startIndex, int count) 
 			throws DataException;
 	
 	public void updateEstado(Connection connection, Apuesta a) 

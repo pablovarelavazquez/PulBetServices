@@ -26,7 +26,7 @@ public class ProvinciaServiceImpl implements ProvinciaService{
 	}
 
 	@Override
-	public Provincia findById(int id) throws InstanceNotFoundException, DataException {
+	public Provincia findById(Long id) throws InstanceNotFoundException, DataException {
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);
 		}

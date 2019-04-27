@@ -18,5 +18,5 @@ public interface DireccionDAO {
 	
 	public List<Direccion> findAll(Connection connection) throws DataException;
 	
-	public Direccion findById(Connection connection, Integer id) throws InstanceNotFoundException, DataException;
+	public Direccion findById(Connection connection, Long id) throws InstanceNotFoundException, DataException;
 }

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,7 +60,7 @@ public class EventoDAOImpl implements EventoDAO{
 			preparedStatement = connection.prepareStatement(queryString, Statement.RETURN_GENERATED_KEYS);
 
 			int i = 1;     			
-			preparedStatement.setDate(i++, new java.sql.Date(e.getFecha().getTime()));
+			preparedStatement.setTimestamp(i++, new Timestamp(e.getFecha().getTime()));
 			preparedStatement.setLong(i++, e.getIdCompeticion());
 
 
@@ -197,7 +198,7 @@ public class EventoDAOImpl implements EventoDAO{
 			}
 
 			if (evento.getFecha()!=null) {
-				addClause(queryString, first, " e.fecha_hora <= ? ");
+				addClause(queryString, first, " e.fecha_hora >= ? ");
 				first = false;
 			}
 
@@ -215,6 +216,11 @@ public class EventoDAOImpl implements EventoDAO{
 				addClause(queryString, first, " pp.nombre like ? ");
 				first = false;
 			}	
+			
+			if (evento.getFechaHasta()!=null) {
+				addClause(queryString, first, " e.fecha_hora <= ? ");
+				first = false;
+			}
 
 
 			queryString.append("group by e.id_evento order by e.fecha_hora ");
@@ -233,6 +239,9 @@ public class EventoDAOImpl implements EventoDAO{
 				preparedStatement.setLong(i++, evento.getIdDeporte());
 			if (evento.getParticipante()!=null) 
 				preparedStatement.setString(i++, "%" + evento.getParticipante() + "%");
+			if (evento.getFechaHasta()!=null) 
+				preparedStatement.setDate(i++, new java.sql.Date(evento.getFechaHasta().getTime()));
+			
 
 			resultSet = preparedStatement.executeQuery();
 
@@ -362,7 +371,7 @@ public class EventoDAOImpl implements EventoDAO{
 		Evento e = new Evento();
 		int i = 1;
 		Long id = resultSet.getLong(i++);
-		Date fecha = resultSet.getDate(i++);
+		Date fecha = resultSet.getTimestamp(i++);
 		Long idComp = resultSet.getLong(i++);
 		Long idDeporte = resultSet.getLong(i++);
 
