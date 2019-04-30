@@ -3,7 +3,9 @@ package com.pvv.pulbet.service.impl;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +27,9 @@ import com.pvv.pulbet.service.LineaApuestaService;
 import com.pvv.pulbet.service.MailService;
 import com.pvv.pulbet.service.Results;
 import com.pvv.pulbet.service.UsuarioService;
+import com.pvv.pulbet.velocity.MailEngineBuilder;
+import com.pvv.pulbet.velocity.util.MapNames;
+import com.pvv.pulbet.velocity.util.TemplateURL;
 
 public class ApuestaServiceImpl implements ApuestaService{
 
@@ -147,6 +152,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 		boolean acertada = true;
 		boolean finalizada = false;
 		int cont = 0;
+		Map<String, Object> mapa = null;
 
 		try {
 
@@ -203,7 +209,11 @@ public class ApuestaServiceImpl implements ApuestaService{
 					usuarioService.update(changes);
 					
 					try {
-						mailService.sendMail("Enorabuena "+u.getNome()+" has ganado una apuesta, entra en la web para comprobarlo", "Apuesta acertada", u.getEmail());
+						mapa = new HashMap<String, Object>();
+						mapa.put(MapNames.NOMBRE, u.getNome());
+						String template = TemplateURL.BET_WIN_TEMPLATE;
+						String mensaje = MailEngineBuilder.createMail(template, mapa);
+						mailService.sendMail(mensaje, "Has ganado tu apuesta" ,u.getEmail());
 					} catch (MailException e) {
 						logger.warn(e.getMessage(),e);
 					}

@@ -38,7 +38,7 @@ public class UsuarioServiceTest {
 		//d.setPiso(4);
 
 		Usuario u = new Usuario();
-		u.setEmail("kk@gmail.com");
+		u.setEmail("zzzzzzzzzz@gmail.com");
 		u.setNome("Encriptado");
 		u.setApelido1("Encriptando");
 		u.setApelido2("Amoaveh");
@@ -46,8 +46,8 @@ public class UsuarioServiceTest {
 		//u.setBanco(10.0d);
 		u.setTelefono("670897654");
 		u.setFechaNacimiento(new Date());
-		u.setNomeUsuario("prueba");
-		u.setDNI("11111222J");
+		u.setNomeUsuario("zzzzzzzzz");
+		u.setDNI("1111124X");
 		u.setDireccion(d);
 
 		usuarioService.create(u);
@@ -107,7 +107,7 @@ public class UsuarioServiceTest {
 	}
 	
 	public void testDelete() throws DataException {
-		usuarioService.delete(11l);
+		usuarioService.delete(15l);
 	}
 	
 	public void testDeleteApuestas() {
@@ -121,6 +121,7 @@ public class UsuarioServiceTest {
 		try {
 
 			//test.testFindById(); //ok
+			//test.testDelete(); //ok
 			test.testCreate(); //ok
 			//test.testLogin(); //ok
 			//test.testUpdate(); //ok --cambia datos de usuario, non direccion

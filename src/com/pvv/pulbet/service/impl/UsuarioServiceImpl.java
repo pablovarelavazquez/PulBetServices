@@ -2,6 +2,8 @@ package com.pvv.pulbet.service.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +24,9 @@ import com.pvv.pulbet.service.BancoService;
 import com.pvv.pulbet.service.MailService;
 import com.pvv.pulbet.service.UsuarioService;
 import com.pvv.pulbet.util.PasswordEncryptionUtil;
+import com.pvv.pulbet.velocity.MailEngineBuilder;
+import com.pvv.pulbet.velocity.util.MapNames;
+import com.pvv.pulbet.velocity.util.TemplateURL;
 
 public class UsuarioServiceImpl implements UsuarioService{
 	
@@ -77,6 +82,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 		boolean commit = false;
 		Connection c = null;
 		MailService mailService = null;
+		Map<String, Object> mapa = null;
 		
 	try {
 		mailService = new MailServiceImpl();
@@ -86,8 +92,12 @@ public class UsuarioServiceImpl implements UsuarioService{
 		
 		
 		
-		u = usuarioDAO.create(c,u); 
-		mailService.sendMail("Benvido a PulBet", "Benvido "+u.getNome(),u.getEmail());
+		u = usuarioDAO.create(c,u);
+		mapa = new HashMap<String, Object>();
+		mapa.put(MapNames.NOMBRE, u.getNome());
+		String template = TemplateURL.WELCOME_TEMPLATE;
+		String mensaje = MailEngineBuilder.createMail(template, mapa);
+		mailService.sendMail(mensaje, "Benvido a PulBet" ,u.getEmail());
 		
 		
 		commit=true;
