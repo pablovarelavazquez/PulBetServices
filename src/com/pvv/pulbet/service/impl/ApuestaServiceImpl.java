@@ -60,7 +60,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 			connection = ConnectionManager.getConnection();
 			connection.setAutoCommit(true);
 
-			return apuestaDAO.findByUsuario(connection, id,startIndex, count);
+			return apuestaDAO.findByUsuario(connection,id,startIndex, count);
 
 		} catch (SQLException e){
 			logger.warn(e.getMessage(), e);

@@ -23,7 +23,7 @@ public class ApuestaServiceTest {
 
 	public void testFindByUsuario() 
 			throws Exception {
-		Results<Apuesta> lista = apuestaService.findByUsuario(3l,1,10);
+		Results<Apuesta> lista = apuestaService.findByUsuario(2l,6,5);
 
 		for (Apuesta a : lista.getPage()) {
 			System.out.println(a);
@@ -105,9 +105,9 @@ public class ApuestaServiceTest {
 		ApuestaServiceTest test = new ApuestaServiceTest();
 
 		try {
-			//test.testFindByUsuario(); //OK
+			test.testFindByUsuario(); //OK
 			//test.testDelete();
-			test.testHistorial();; //OK
+			//test.testHistorial();; //OK
 			//System.out.println("---------------------------------------------------");
 			//test.testCreate(); //OK
 			//test.comprobar(); //OK

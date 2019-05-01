@@ -426,15 +426,13 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			
 			Results<Apuesta> results = null;
 			int startIndex = 1;
-			int count = 5;
-			int i = 1;
+			int count = 10;
 			
 			do {
 				results = apuestaDAO.findByUsuario(connection, id, startIndex, count);
 				if (results.getPage().size()>0) {
 					for (Apuesta a: results.getPage()) {
 						apuestaDAO.delete(connection, a.getIdApuesta());
-						i++;
 					}
 					startIndex = startIndex + count;
 				}
@@ -448,7 +446,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 
 			preparedStatement = connection.prepareStatement(queryString);
 
-			i = 1;
+			int i = 1;
 			preparedStatement.setLong(i++, id);
 
 			long removedRows = preparedStatement.executeUpdate();
