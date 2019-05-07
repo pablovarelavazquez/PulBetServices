@@ -16,7 +16,7 @@ public class MailServiceImpl implements MailService{
 	public void sendMail(String mensajeHTMl, String subject, String... to) throws MailException{
 		
 		if(logger.isDebugEnabled()) {
-			logger.debug("Mensaje = {}, subject = {}, to = {}", mensajeHTMl, subject, to);
+			logger.debug("Enviando mensaje a {}", to);
 		}
 		
 		try {

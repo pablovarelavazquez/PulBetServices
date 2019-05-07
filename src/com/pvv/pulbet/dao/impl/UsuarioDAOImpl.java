@@ -426,7 +426,7 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			
 			Results<Apuesta> results = null;
 			int startIndex = 1;
-			int count = 10;
+			int count = 5;
 			
 			do {
 				results = apuestaDAO.findByUsuario(connection, id, startIndex, count);
