@@ -23,9 +23,9 @@ public class ApuestaServiceTest {
 
 	public void testFindByUsuario() 
 			throws Exception {
-		Results<Apuesta> lista = apuestaService.findByUsuario(2l,6,5);
+		List<Apuesta> lista = apuestaService.findByUsuario(1l);
 
-		for (Apuesta a : lista.getPage()) {
+		for (Apuesta a : lista) {
 			System.out.println(a);
 		}
 	}

@@ -19,6 +19,7 @@ import com.pvv.pulbet.exceptions.InstanceNotFoundException;
 import com.pvv.pulbet.model.Apuesta;
 import com.pvv.pulbet.model.LineaApuesta;
 import com.pvv.pulbet.model.LineaApuestaId;
+import com.pvv.pulbet.service.BetStatus;
 import com.pvv.pulbet.service.LineaApuestaService;
 
 public class LineaApuestaServiceImpl implements LineaApuestaService{
@@ -59,17 +60,12 @@ public class LineaApuestaServiceImpl implements LineaApuestaService{
 				if(resultados.contains(lineaApuesta.getIdResultado())) {
 					correcta = true;
 				}
-//			for(Long resultado : resultados) {
-//				if(lineaApuesta.getIdResultado() == resultado) {
-//					correcta = true;
-//				}
-//			}
 
 			if(correcta) {
-				lineaApuesta.setProcesado(1);
+				lineaApuesta.setProcesado(BetStatus.ACERTADA);
 				lineaApuestaDAO.update(connection, lineaApuesta);
 			}else {
-				lineaApuesta.setProcesado(2);
+				lineaApuesta.setProcesado(BetStatus.FALLADA);
 				lineaApuestaDAO.update(connection, lineaApuesta);
 			}
 			}

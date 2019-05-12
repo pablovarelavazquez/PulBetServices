@@ -20,7 +20,7 @@ import com.pvv.pulbet.service.DeporteService;
 
 public class DeporteServiceImpl implements DeporteService{
 	
-	private static Logger logger = LogManager.getLogger(ApuestaServiceImpl.class);
+	private static Logger logger = LogManager.getLogger(DeporteServiceImpl.class);
 	private DeporteDAO deporteDAO = null;
 	
 	public DeporteServiceImpl() {

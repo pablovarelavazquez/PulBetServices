@@ -18,7 +18,7 @@ import com.pvv.pulbet.service.CompeticionService;
 
 public class CompeticionServiceImpl implements CompeticionService{
 
-	private static Logger logger = LogManager.getLogger(ApuestaServiceImpl.class);
+	private static Logger logger = LogManager.getLogger(CompeticionServiceImpl.class);
 	private CompeticionDAO competicionDAO = null;
 	
 	public CompeticionServiceImpl() {

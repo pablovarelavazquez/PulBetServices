@@ -15,7 +15,7 @@ public interface ApuestaDAO {
 	public Apuesta findById(Connection connection, Long id)
 			throws InstanceNotFoundException, DataException;
 
-	public Results<Apuesta> findByUsuario(Connection connection, Long id, int startIndex, int count)
+	public List<Apuesta> findByUsuario(Connection connection, Long id)
 			throws DataException;
 	
 	public List<Apuesta> findAll(Connection connection) 

@@ -204,7 +204,6 @@ public class UsuarioServiceImpl implements UsuarioService{
 		Connection connection = null;
         boolean commit = false;
         Long result = null;
-        Usuario u = null;
 
         try {
           
@@ -215,20 +214,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 
             connection.setAutoCommit(false);
             
-            u = usuarioDAO.findById(connection, id);
-            
-            if(u.getBanco()>0d) {
-            	
-            banco.retirar(u.getIdUsuario(), u.getBanco());
-            
             result = usuarioDAO.delete(connection, id);   
-            
-            } else if ( u.getBanco()<=0d) {
-            	
-            	result = usuarioDAO.delete(connection, id);
-            	
-            }
-            
             
             commit = true;            
             return result;

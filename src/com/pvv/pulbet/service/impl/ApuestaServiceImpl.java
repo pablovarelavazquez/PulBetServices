@@ -11,7 +11,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.pvv.pulbet.dao.ApuestaDAO;
+import com.pvv.pulbet.dao.UsuarioDAO;
 import com.pvv.pulbet.dao.impl.ApuestaDAOImpl;
+import com.pvv.pulbet.dao.impl.UsuarioDAOImpl;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
 import com.pvv.pulbet.exceptions.DataException;
@@ -23,10 +25,10 @@ import com.pvv.pulbet.model.LineaApuesta;
 import com.pvv.pulbet.model.Usuario;
 import com.pvv.pulbet.service.ApuestaCriteria;
 import com.pvv.pulbet.service.ApuestaService;
+import com.pvv.pulbet.service.BetStatus;
 import com.pvv.pulbet.service.LineaApuestaService;
 import com.pvv.pulbet.service.MailService;
 import com.pvv.pulbet.service.Results;
-import com.pvv.pulbet.service.UsuarioService;
 import com.pvv.pulbet.velocity.MailEngineBuilder;
 import com.pvv.pulbet.velocity.util.MapNames;
 import com.pvv.pulbet.velocity.util.TemplateURL;
@@ -35,19 +37,19 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 	private static Logger logger = LogManager.getLogger(ApuestaServiceImpl.class);
 	private ApuestaDAO apuestaDAO = null;
-	private UsuarioService usuarioService = null;
+	private UsuarioDAO usuarioDAO = null;
 	private MailService mailService = null;
 	private LineaApuestaService lineaService = null;
 
 	public ApuestaServiceImpl() {
 		apuestaDAO = new ApuestaDAOImpl();
-		usuarioService = new UsuarioServiceImpl();
+		usuarioDAO = new UsuarioDAOImpl();
 		mailService = new MailServiceImpl();
 		lineaService = new LineaApuestaServiceImpl();
 	}
 
 	@Override
-	public Results<Apuesta> findByUsuario(Long id ,int startIndex, int count) throws DataException {
+	public List<Apuesta> findByUsuario(Long id) throws DataException {
 		
 		if(logger.isDebugEnabled()) {
 			logger.debug("Id = {}", id);
@@ -60,7 +62,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 			connection = ConnectionManager.getConnection();
 			connection.setAutoCommit(true);
 
-			return apuestaDAO.findByUsuario(connection,id,startIndex, count);
+			return apuestaDAO.findByUsuario(connection,id);
 
 		} catch (SQLException e){
 			logger.warn(e.getMessage(), e);
@@ -161,13 +163,15 @@ public class ApuestaServiceImpl implements ApuestaService{
 			connection.setTransactionIsolation(
 					Connection.TRANSACTION_READ_COMMITTED);
 
+			//Iniciamos transaccion.
 			connection.setAutoCommit(false);
 
+			
 			List<LineaApuesta> lineas = new ArrayList<LineaApuesta>();
-			//Procesar lineas se se pode
+			//Intentamos procesar as lineas de aposta.
 			for(LineaApuesta l : apuesta.getLineas()){
 
-				if(l.getProcesado()==0) {
+				if(l.getProcesado()==BetStatus.PENDIENTE) {
 					l = lineaService.comprobarLinea(l);
 				}
 				lineas.add(l);
@@ -175,18 +179,18 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 			apuesta.setLineas(lineas);	
 
-			//Mirar se todas as lineas estan procesadas, se e asi comprobamos se a aposta esta acertada
+			//Comprobamos se estan todas procesadas.
 			for(LineaApuesta l : lineas) {
-				if(l.getProcesado()!=0) {
+				if(l.getProcesado()!=BetStatus.PENDIENTE) {
 					cont++;
 				}
 			}
 
-
+			//Comprobamos se esta finalizada e acertada.
 			if(cont == lineas.size()) {
 
 				for(LineaApuesta l : lineas) {
-					if(l.getProcesado()==2){
+					if(l.getProcesado()==BetStatus.FALLADA){
 						acertada = false;
 					}
 
@@ -195,18 +199,20 @@ public class ApuestaServiceImpl implements ApuestaService{
 				finalizada =  true;
 			}
 
+			//Se esta finalizada
 			if (finalizada) {
 				if(acertada) {
-					apuesta.setProcesado(1);
+					//Se esta acertada, editamos aposta, banco do usuario e enviamos email.
+					apuesta.setProcesado(BetStatus.ACERTADA);
 					apuestaDAO.updateEstado(connection, apuesta);
 					
-					Usuario u = usuarioService.findById(apuesta.getIdUsuario());
+					Usuario u = usuarioDAO.findById(connection, apuesta.getIdUsuario());
 					
 					Usuario changes = new Usuario();
 					changes.setIdUsuario(u.getIdUsuario());
 					changes.setBanco(u.getBanco() + apuesta.getGanancias());
 					
-					usuarioService.update(changes);
+					usuarioDAO.update(connection, changes);
 					
 					try {
 						mapa = new HashMap<String, Object>();
@@ -219,7 +225,8 @@ public class ApuestaServiceImpl implements ApuestaService{
 					}
 					
 				}else {
-					apuesta.setProcesado(2);
+					//Se esta fallada, editamos usuario
+					apuesta.setProcesado(BetStatus.FALLADA);
 					apuestaDAO.updateEstado(connection, apuesta);
 				}
 			}
@@ -233,6 +240,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 			throw new DataException(e);
 
 		} finally {
+			//Se todo foi ben commit, senon rollback.
 			JDBCUtils.closeConnection(connection, commit);
 		}
 	}
@@ -259,7 +267,7 @@ public class ApuestaServiceImpl implements ApuestaService{
 
 			a = apuestaDAO.create(connection, a);; 
 
-
+			
 			commit = true;    
 			return a;
 

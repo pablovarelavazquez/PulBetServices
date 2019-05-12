@@ -19,7 +19,7 @@ import com.pvv.pulbet.service.ProvinciaService;
 public class ProvinciaServiceImpl implements ProvinciaService{
 
 	private ProvinciaDAO provinciaDAO = null;
-	private static Logger logger = LogManager.getLogger(PaisServiceImpl.class);
+	private static Logger logger = LogManager.getLogger(ProvinciaServiceImpl.class);
 
 	public ProvinciaServiceImpl() {
 		provinciaDAO = new ProvinciaDAOImpl();

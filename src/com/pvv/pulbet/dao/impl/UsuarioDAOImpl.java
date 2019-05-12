@@ -424,20 +424,14 @@ public class UsuarioDAOImpl implements UsuarioDAO{
 			Direccion d = direccionDAO.findByUsuario(connection, id);
 			direccionDAO.delete(connection, d.getId());
 			
-			Results<Apuesta> results = null;
-			int startIndex = 1;
-			int count = 5;
+			List<Apuesta> results = null;
 			
-			do {
-				results = apuestaDAO.findByUsuario(connection, id, startIndex, count);
-				if (results.getPage().size()>0) {
-					for (Apuesta a: results.getPage()) {
-						apuestaDAO.delete(connection, a.getIdApuesta());
-					}
-					startIndex = startIndex + count;
-				}
-
-			} while (!(results.getPage().size()<count));
+			results = apuestaDAO.findByUsuario(connection, id);
+			
+			for(Apuesta a : results) {
+				apuestaDAO.delete(connection, a.getIdApuesta());
+			}
+			
 
 			String queryString =	
 					"DELETE FROM USUARIO " 

@@ -16,7 +16,7 @@ public interface ApuestaService {
 	
 	public Apuesta findById(Long id) throws InstanceNotFoundException, DataException;
 	
-	public Results<Apuesta> findByUsuario(Long id,int startIndex, int count) throws DataException;
+	public List<Apuesta> findByUsuario(Long id) throws DataException;
 	
 	public List<Apuesta> findAll() throws DataException;
 		
