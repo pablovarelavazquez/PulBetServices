@@ -29,7 +29,7 @@ public class DireccionDAOTest {
 		d.setPiso(3);
 		d.setLetra("O");
 
-		dao.create(d);
+//		dao.create(d);
 		System.out.println(d);
 
 	}
@@ -38,7 +38,7 @@ public class DireccionDAOTest {
 			throws Exception{
 		long iddd;
 		long idd = 12;
-		iddd = dao.delete(idd);
+//		iddd = dao.delete(idd);
 		System.out.println("Se elimino la direccion con id "+idd);
 
 	}
@@ -47,7 +47,7 @@ public class DireccionDAOTest {
 			throws Exception{
 		List<Direccion> results = null;
 
-		results = dao.findByUsuario(2);
+//		results = dao.findByUsuario(2);
 
 		for (Direccion d: results) {
 			System.out.println(d);
@@ -59,7 +59,7 @@ public class DireccionDAOTest {
 			throws Exception{
 		List<Direccion> results = null;
 
-		results = dao.findAll();
+//		results = dao.findAll();
 
 		for (Direccion d: results) {
 			System.out.println(d);
@@ -68,8 +68,8 @@ public class DireccionDAOTest {
 	
 	public void testFindById() 
 			throws Exception {
-		Direccion d = dao.findById(5);
-		System.out.println(d);
+//		Direccion d = dao.findById(5);
+//		System.out.println(d);
 	}
 	
 	

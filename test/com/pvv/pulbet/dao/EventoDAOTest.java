@@ -22,7 +22,7 @@ public class EventoDAOTest {
 		e.setFecha(new Date());
 		e.setIdCompeticion(1l);
 
-		dao.create(e);
+		dao.create(null, e);
 		System.out.println(e);
 
 	}
@@ -31,7 +31,7 @@ public class EventoDAOTest {
 			throws Exception{
 		long iddd;
 		long idd = 14;
-		iddd = dao.delete(idd);
+		iddd = dao.delete(null, idd);
 		System.out.println("Se elimino el usuario con id "+idd);
 
 	}
@@ -40,7 +40,7 @@ public class EventoDAOTest {
 			throws Exception{
 		List<Evento> results = null;
 
-		results = dao.findAll();
+//		results = dao.findAll();
 
 		for (Evento e: results) {
 			System.out.println(e);

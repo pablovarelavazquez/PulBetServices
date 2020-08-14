@@ -18,15 +18,15 @@ public class CompeticionDAOTest {
 
 	public void testFindById() 
 			throws Exception {
-		Competicion c = dao.findById(5l);
-		System.out.println(c);
+//		Competicion c = dao.findById(5l);
+//		System.out.println(c);
 	}
 
 	public void testFindByDeporte() 
 			throws Exception{
 		List<Competicion> results = null;
 
-		results = dao.findByDeporte(2l);
+//		results = dao.findByDeporte(2l);
 
 		for (Competicion c: results) {
 			System.out.println(c);
@@ -44,7 +44,7 @@ public class CompeticionDAOTest {
 		c.setFechaInicio(new Date());
 		c.setFechaFin(new Date());
 
-		dao.create(c);
+//		dao.create(c);
 		System.out.println(c);
 
 	}
@@ -53,7 +53,7 @@ public class CompeticionDAOTest {
 			throws Exception{
 		List<Competicion> results = null;
 
-		results = dao.findAll();
+//		results = dao.findAll();
 
 		for (Competicion c: results) {
 			System.out.println(c);
@@ -62,10 +62,10 @@ public class CompeticionDAOTest {
 	
 	public void testFindByNombre() 
 			throws Exception {
-		List<Competicion> lista = dao.findByNombre("a");
-		for (Competicion c:lista) {
-			System.out.println(c);
-		}
+//		List<Competicion> lista = dao.findByNombre("a");
+//		for (Competicion c:lista) {
+//			System.out.println(c);
+//		}
 
 	}
 

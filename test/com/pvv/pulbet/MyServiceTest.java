@@ -17,7 +17,7 @@ public class MyServiceTest {
 	
 	public void miMetodo() throws Exception{
 		
-		dao.findById(null, 1);
+		dao.findById(null, 1l);
 	}
 
 	public static void main(String[] args) {

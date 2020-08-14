@@ -18,15 +18,15 @@ public class ApuestaDAOTest {
 
 	public void testFindById() 
 			throws Exception {
-		Apuesta a = dao.findById(5);
-		System.out.println(a);
+//		Apuesta a = dao.findById(5);
+//		System.out.println(a);
 	}
 
 	public void testFindByUsuario() 
 			throws Exception{
 		List<Apuesta> results = null;
 
-		results = dao.findByUsuario(2);
+//		results = dao.findByUsuario(2);
 
 		for (Apuesta a: results) {
 			System.out.println(a);
@@ -43,8 +43,8 @@ public class ApuestaDAOTest {
 		a.setIdUsuario(2l);
 		a.setFecha(new Date());
 
-		dao.create(a);
-		System.out.println(a);
+//		dao.create(a);
+//		System.out.println(a);
 
 	}
 
@@ -52,7 +52,7 @@ public class ApuestaDAOTest {
 			throws Exception{
 		List<Apuesta> results = null;
 
-		results = dao.findAll();
+//		results = dao.findAll();
 
 		for (Apuesta a: results) {
 			System.out.println(a);

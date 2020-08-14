@@ -17,7 +17,7 @@ public class PaisDAOTest {
 	
 	public void testFindById() 
 			throws Exception {
-		Pais p = dao.findById(34);
+		Pais p = dao.findById(null,34, "");
 		System.out.println(p);
 	}
 	
@@ -25,7 +25,7 @@ public class PaisDAOTest {
 			throws Exception{
 		List<Pais> results = null;
 
-		results = dao.findAll();
+		results = dao.findAll(null, "");
 
 		for (Pais p: results) {
 			System.out.println(p);
@@ -36,7 +36,7 @@ public class PaisDAOTest {
 			throws Exception{
 		List<Pais> results = null;
 
-		results = dao.findByNombre("pO");
+		results = dao.findByNombre(null, "pO", "");
 
 		for (Pais p: results) {
 			System.out.println(p);

@@ -26,7 +26,7 @@ public class LineaApuestaDAOTest {
 		l.setIdResultado(8l);
 		l.setIdEvento(13l);
 
-		dao.create(l);
+		dao.create(null, null);
 		System.out.println(l);
 
 	}
@@ -38,7 +38,7 @@ public class LineaApuestaDAOTest {
 		id.setIdApuesta(2l);
 		id.setNumLinea(2);
 		
-		dao.delete(id);
+		dao.delete(null, id);
 		System.out.println("Se elimino la linea de apuesta con id -> NumeroLinea: "+id.getNumLinea()+" y IdAPuesta: "+id.getIdApuesta());
 
 	}
@@ -50,7 +50,7 @@ public class LineaApuestaDAOTest {
 		id.setIdApuesta(1l);
 		id.setNumLinea(2);	
 		
-		LineaApuesta l = dao.findById(id);
+		LineaApuesta l = dao.findById(null, id);
 		System.out.println(l);
 	}
 	
@@ -58,7 +58,7 @@ public class LineaApuestaDAOTest {
 			throws Exception{
 		List<LineaApuesta> results = null;
 
-		results = dao.findAll();
+		results = dao.findAll(null);
 
 		for (LineaApuesta l: results) {
 			System.out.println(l);
@@ -69,7 +69,7 @@ public class LineaApuestaDAOTest {
 			throws Exception{
 		List<LineaApuesta> results = null;
 
-		results = dao.findByApuesta(1l);
+		results = dao.findByApuesta(null, 1l);
 
 		for (LineaApuesta l: results) {
 			System.out.println(l);

@@ -10,7 +10,7 @@ import java.util.List;
 import com.pvv.pulbet.dao.impl.DeporteDAOImpl;
 import com.pvv.pulbet.dao.util.ConnectionManager;
 import com.pvv.pulbet.dao.util.JDBCUtils;
-import com.pvv.pulbet.exception.DataException;
+//import com.pvv.pulbet.exception.DataException;
 import com.pvv.pulbet.model.Deporte;
 import com.pvv.pulbet.model.Usuario;
 
@@ -28,7 +28,7 @@ public class DeporteDAOTest {
 		Deporte d = new Deporte();
 		d.setNome("PRUEBA");
 
-		dao.create(d);
+//		dao.create(d);
 		System.out.println(d);
 
 	}
@@ -37,7 +37,7 @@ public class DeporteDAOTest {
 			throws Exception{
 		long iddd;
 		long idd = 12;
-		iddd = dao.delete(idd);
+//		iddd = dao.delete(idd);
 		System.out.println("Se elimino el deporte con id "+idd);
 
 	}
@@ -46,7 +46,7 @@ public class DeporteDAOTest {
 			throws Exception{
 		List<Deporte> results = null;
 
-		results = dao.findAll();
+//		results = dao.findAll();
 
 		for (Deporte d: results) {
 			System.out.println(d);
@@ -56,10 +56,10 @@ public class DeporteDAOTest {
 
 	public void testFindByNombre() 
 			throws Exception {
-		List<Deporte> lista = dao.findByNombre("a");
-		for (Deporte d: lista) {
-			System.out.println(d);
-		}
+//		List<Deporte> lista = dao.findByNombre("a");
+//		for (Deporte d: lista) {
+//			System.out.println(d);
+//		}
 
 	}
 	
